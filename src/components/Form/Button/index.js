@@ -7,6 +7,7 @@ import { theme } from "ui/theme-color";
 import { Icon } from 'ui/styled';
 
 export const Button = ({
+  className,
   children,
   title,
   label,
@@ -34,7 +35,7 @@ export const Button = ({
     return (
         <>
           <ThemedComponent>
-              <ColorButton variant={ link ? "text" : outline ? "outlined" : "contained" } color={ safeColor } nospace={nospace} centred={centred} rounded={rounded} fit={fit} small={small} onClick={safeOnClick} disabled={disabled}>
+              <ColorButton className={className} variant={ link ? "text" : outline ? "outlined" : "contained" } color={ safeColor } nospace={nospace} centred={centred} rounded={rounded} fit={fit} small={small} onClick={safeOnClick} disabled={disabled}>
                 { safeLeftIcon && <Icon icon={safeLeftIcon} /> }
                 {
                   loading ? <Load color={ safeColor } outline={outline} /> : <>
@@ -49,6 +50,7 @@ export const Button = ({
 }
 
 Button.propTypes = {
+  className: PropTypes.string,
   children: PropTypes.node,
   title: PropTypes.node,
   label: PropTypes.node,
@@ -71,6 +73,7 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
+  className: undefined,
   children: undefined,
   title: undefined,
   label: undefined,

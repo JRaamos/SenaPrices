@@ -69,6 +69,12 @@ export const Content = styled.div.attrs({
     overflow:hidden;
 `; 
 
+export const SimpleContent = styled.div.attrs({
+})`
+    min-height: 100vh;
+    background: #f0f4f8;
+`;
+
 export const Touch = styled.div.attrs({ 
 })`           
     cursor: pointer;

@@ -1,19 +1,32 @@
 import React from "react"; 
 
 import { 
-    FormTitle,
-    FormText,
-    FormSpacer,
-    RegisterForgot,
-    ForgotLink,
-    RegisterCall
+    BackAction,
+    BackActionBottom,
+    CredentialsBox,
+    CredentialsDescription,
+    CredentialsItem,
+    CredentialsTitle,
+    LoginActions,
+    LoginCard,
+    LoginCardTitle,
+    LoginLogo,
+    LoginLogoAccent,
+    LoginLogoBlock,
+    LoginLogoCaption,
+    LoginLogoText,
+    LoginShell,
+    LoginTab,
+    LoginTabs,
+    LoginTopBar,
+    LoginTopButton,
+    LoginWrapper,
+    StyledCore,
+    StyledPrimaryButton,
 } from './styled' 
-
-import Button from "components/Form/Button";
 
 import ContainerUnauthenticated from "containers/Unauthenticated";
 
-import Core from "components/Form/Core";
 import useController from "./controller";
 
 export default function Login(){ 
@@ -23,24 +36,61 @@ export default function Login(){
         formItems,
         navigate,
         loading,
-        login
+        login,
+        goPresentation
     } = useController()
  
     return ( 
-        <>  
-            <ContainerUnauthenticated> 
-                <FormTitle>Bem-vindo de volta!</FormTitle>
-                <FormText>Entre com seus dados do cadastro para acessar sua conta</FormText> 
-                <Core ref={formRef} formItems={formItems} />
-                <RegisterForgot>
-                    Esqueceu a senha?
-                    <ForgotLink onClick={() => navigate('forgot')}>Recupere sua senha</ForgotLink>
-                </RegisterForgot> 
-                <FormSpacer /> 
-                <Button color="primary" loading={loading} onClick={login}>Entrar</Button>
-                <RegisterCall> Ainda não tem conta? </RegisterCall>
-                <Button color="primary" outline onClick={() => navigate('register')}>Criar uma conta</Button> 
-            </ContainerUnauthenticated> 
-        </>
+        <ContainerUnauthenticated simple> 
+            <LoginShell>
+                <LoginTopBar>
+                    <LoginTopButton onClick={goPresentation} type="button">
+                        <BackAction />
+                        Voltar à apresentação
+                    </LoginTopButton>
+                </LoginTopBar>
+
+                <LoginWrapper>
+                    <LoginLogoBlock>
+                        <LoginLogo>
+                            <LoginLogoText>Sena</LoginLogoText>
+                            <LoginLogoAccent>Prices</LoginLogoAccent>
+                        </LoginLogo>
+                        <LoginLogoCaption>Sistema Promocional</LoginLogoCaption>
+                    </LoginLogoBlock>
+
+                    <LoginCard>
+                        <LoginCardTitle>Entrar na sua conta</LoginCardTitle>
+
+                        <LoginTabs>
+                            <LoginTab $active type="button">Email e Senha</LoginTab>
+                            <LoginTab type="button">Acesso por PIN</LoginTab>
+                        </LoginTabs>
+
+                        <StyledCore ref={formRef} formItems={formItems} flat />
+
+                        <LoginActions>
+                            <StyledPrimaryButton color="primary" loading={loading} onClick={login}>
+                                Entrar
+                            </StyledPrimaryButton>
+                        </LoginActions>
+
+                        <CredentialsBox>
+                            <CredentialsTitle>Acesso padrão:</CredentialsTitle>
+                            <CredentialsItem>Admin: admin@sistema.com / admin123 (PIN: 12341234)</CredentialsItem>
+                            <CredentialsItem>Usuário: João Silva / user123 (PIN: 11112222)</CredentialsItem>
+                            <CredentialsDescription onClick={() => navigate('forgot')} type="button">
+                                Esqueceu sua senha?
+                            </CredentialsDescription>
+                        </CredentialsBox>
+                    </LoginCard>
+
+                    <BackActionBottom onClick={goPresentation} type="button">
+                        <BackAction />
+                        Voltar à página de apresentação
+                    </BackActionBottom>
+                </LoginWrapper>
+            </LoginShell>
+        </ContainerUnauthenticated> 
     );
 }

@@ -13,11 +13,12 @@ import {
     FormContent,
     AppLogo,
     Content,
-    Touch
+    Touch,
+    SimpleContent,
 } from './styled'
  
 
-export default function ContainerUnauthenticated({ children, keep }){   
+export default function ContainerUnauthenticated({ children, keep, simple }){   
     
     const n = useNavigate();
     const navigate = to => n(`/${ to }`); 
@@ -41,24 +42,30 @@ export default function ContainerUnauthenticated({ children, keep }){
     return ( 
         <> 
             <ThemedComponent>
-                <Content>
-                    <Row>
-                        <Col md={{ size:7 }}>
-                            <SideBackgroundImageContainer>
-                                <SideBackgroundImage />
-                                <SideBackgroundImageDegree />
-                            </SideBackgroundImageContainer>
-                        </Col>
-                        <Col md={{ size:5 }}>
-                            <FormContent>
-                                <Touch onClick={() => navigate('')}>
-                                    <AppLogo /> 
-                                </Touch>
-                                { children }
-                            </FormContent>
-                        </Col>
-                    </Row>  
-                </Content>
+                {
+                    simple ? (
+                        <SimpleContent>{ children }</SimpleContent>
+                    ) : (
+                        <Content>
+                            <Row>
+                                <Col md={{ size:7 }}>
+                                    <SideBackgroundImageContainer>
+                                        <SideBackgroundImage />
+                                        <SideBackgroundImageDegree />
+                                    </SideBackgroundImageContainer>
+                                </Col>
+                                <Col md={{ size:5 }}>
+                                    <FormContent>
+                                        <Touch onClick={() => navigate('')}>
+                                            <AppLogo /> 
+                                        </Touch>
+                                        { children }
+                                    </FormContent>
+                                </Col>
+                            </Row>  
+                        </Content>
+                    )
+                }
             </ThemedComponent>
         </>
     );

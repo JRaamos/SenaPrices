@@ -51,7 +51,7 @@ const customTypes = [
     "map",
 ]
 
-export default forwardRef(function FormCore({ formItems, register, disabled, title, nospace, flat }, ref) {
+export default forwardRef(function FormCore({ className, formItems, register, disabled, title, nospace, flat }, ref) {
 
     const [form, setForm] = useState({})
     const formValue = ref => { return form?.[ref] ? form?.[ref] : ''; }
@@ -208,7 +208,7 @@ export default forwardRef(function FormCore({ formItems, register, disabled, tit
 
     return (
         <>
-            <ContentForm active={!!title}>
+            <ContentForm active={!!title} className={className}>
                 <ContentFormHeader active={!!title}>{title}</ContentFormHeader>
                 <FormWrapper nospace={nospace}>
                     {

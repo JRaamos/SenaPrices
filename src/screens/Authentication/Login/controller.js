@@ -14,8 +14,8 @@ export default function useController(){
 
     const formRef = useRef()
     const formItems = [
-        { ref:"identifier", label:"E-mail", required:true, full:true },
-        { ref:"password", label:"Senha", type:"password", required:true, full:true, onSubmitEditing: () => login() },
+        { ref:"identifier", label:"EMAIL OU NOME", placeholder:"seu@email.com ou nome completo", required:true, full:true },
+        { ref:"password", label:"SENHA", placeholder:"••••••••", type:"password", required:true, full:true, onSubmitEditing: () => login() },
     ]
 
     const login = async () => {
@@ -39,7 +39,8 @@ export default function useController(){
         formItems,
         navigate,
         loading,
-        login
+        login,
+        goPresentation: () => navigate('')
     }
 
 }
