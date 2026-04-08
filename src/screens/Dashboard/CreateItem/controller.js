@@ -156,19 +156,19 @@ export default function useController() {
         ],
         actions: [
             {
-                label: "Criar preco",
+                label: "Itens",
                 icon: "products",
                 rounded: true,
                 outline: true,
                 color: "primary",
-                action: () => navigate("dashboard/prices/create"),
+                action: () => navigate("dashboard/items"),
             },
             {
-                label: "Painel",
-                icon: "home",
+                label: "Criar preco",
+                icon: "products",
                 rounded: true,
-                color: "secondary",
-                action: () => navigate("dashboard"),
+                color: "primary",
+                action: () => navigate("dashboard/prices/create"),
             },
         ],
     }), [navigate]);

@@ -30,7 +30,7 @@ export function sanitizeItemDraft(values = {}) {
     };
 }
 
-export function validateItemDraft(values, existingItems = []) {
+export function validateItemDraft(values, existingItems = [], currentId = null) {
     const draft = sanitizeItemDraft(values);
     const errors = {};
     const warnings = [];
@@ -47,7 +47,7 @@ export function validateItemDraft(values, existingItems = []) {
         errors.ean13 = "Use um EAN-13 valido com digito verificador correto.";
     }
 
-    const conflicts = getCatalogIdentifierConflicts(draft, existingItems);
+    const conflicts = getCatalogIdentifierConflicts(draft, existingItems, currentId);
 
     if (conflicts.internalCodeItem) {
         errors.internalCode = "Este codigo interno ja esta em uso no catalogo.";

@@ -23,8 +23,8 @@ const ROADMAP_MODULES = [
     },
     {
         key: "items",
-        title: "Itens e Importacao",
-        description: "Cadastro, edicao e ingestao de produtos para sustentar os demais modulos.",
+        title: "Importacao",
+        description: "Carga em lote do catalogo para acelerar onboarding e manutencao operacional.",
         status: "Planejado",
         icon: "/icons/products.svg",
     },
@@ -123,6 +123,14 @@ export default function useController() {
             action: () => navigate("dashboard/items/create"),
         },
         {
+            key: "items",
+            icon: "/icons/products.svg",
+            title: "Itens",
+            description: "Consulte, edite e encaminhe itens da base para a criacao de preco sem perder consistencia.",
+            buttonLabel: "Abrir catalogo",
+            action: () => navigate("dashboard/items"),
+        },
+        {
             key: "quick-price",
             icon: "/icons/products.svg",
             title: "Criacao Rapida",
@@ -185,7 +193,7 @@ export default function useController() {
         },
         {
             title: "Base de catalogo iniciada",
-            description: "O cadastro estruturado de itens agora comeca a alimentar o restante da evolucao funcional do sistema.",
+            description: "Cadastro e manutencao de itens agora compartilham a mesma base local e alimentam a criacao de preco.",
         },
     ]), []);
 
@@ -218,6 +226,15 @@ export default function useController() {
             icon: "/icons/products.svg",
             actionLabel: "Cadastrar item",
             action: () => navigate("dashboard/items/create"),
+        },
+        {
+            key: "items",
+            title: "Itens",
+            description: "Consulta e manutencao da base catalogada com reutilizacao direta no fluxo de precificacao.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Abrir catalogo",
+            action: () => navigate("dashboard/items"),
         },
         {
             key: "account",
