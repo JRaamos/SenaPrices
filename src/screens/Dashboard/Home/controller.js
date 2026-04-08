@@ -8,13 +8,6 @@ import { optionsSupport } from "utils/options";
 
 const ROADMAP_MODULES = [
     {
-        key: "quick-price",
-        title: "Criacao Rapida",
-        description: "Fluxo agil por EAN ou nome para gerar precos com menos etapas operacionais.",
-        status: "Planejado",
-        icon: "/icons/training.svg",
-    },
-    {
         key: "labels",
         title: "Etiquetas",
         description: "Geracao de etiquetas para gondola e fluxos de impressao especificos.",
@@ -122,6 +115,14 @@ export default function useController() {
             action: () => navigate("dashboard/support/create"),
         },
         {
+            key: "quick-price",
+            icon: "/icons/products.svg",
+            title: "Criacao Rapida",
+            description: "Monte lotes operacionais com varias linhas e validacao completa antes da liberacao.",
+            buttonLabel: "Abrir modo rapido",
+            action: () => navigate("dashboard/prices/quick"),
+        },
+        {
             key: "support-list",
             icon: "/icons/proposal.svg",
             title: "Fila de suporte",
@@ -171,8 +172,8 @@ export default function useController() {
             description: "Perfil e troca de senha ja seguem o padrao alto definido para o sistema.",
         },
         {
-            title: "Criacao de cartaz ativa",
-            description: "A pagina principal de composicao de preco agora funciona com validacao, preview e impressao.",
+            title: "Operacao de precificacao ativa",
+            description: "A base ja possui criacao de cartaz unitario e criacao rapida em lote com validacao e impressao.",
         },
     ]), []);
 
@@ -187,6 +188,15 @@ export default function useController() {
             icon: "/icons/products.svg",
             actionLabel: "Criar cartaz",
             action: () => navigate("dashboard/prices/create"),
+        },
+        {
+            key: "quick-price",
+            title: "Criacao Rapida",
+            description: "Fluxo enxuto para montar varios cartazes no mesmo lote com validacao por linha.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Abrir modo rapido",
+            action: () => navigate("dashboard/prices/quick"),
         },
         {
             key: "account",
