@@ -31,6 +31,17 @@ export function buildPromotionPrintMarkup(order, entries = []) {
     });
 }
 
+export function buildBatchSelectionPrintMarkup({ title, subtitle, entries = [] }) {
+    const uniqueEntries = dedupeHistoryEntries(entries);
+    const cards = uniqueEntries.flatMap(buildCardsFromHistoryEntry);
+
+    return buildPricingDocumentMarkup({
+        title: title || "Lote SenaPrices",
+        subtitle: subtitle || "",
+        cards,
+    });
+}
+
 function buildCardsFromHistoryEntry(entry = {}) {
     if (!entry?.restoreDraft) {
         return [];
@@ -255,6 +266,20 @@ function renderMeta(label, value) {
             <div class="meta-value">${escapeHtml(value)}</div>
         </div>
     `;
+}
+
+function dedupeHistoryEntries(entries = []) {
+    const register = new Map();
+
+    (Array.isArray(entries) ? entries : []).forEach(entry => {
+        if (!entry?.id || register.has(entry.id)) {
+            return;
+        }
+
+        register.set(entry.id, entry);
+    });
+
+    return Array.from(register.values());
 }
 
 function formatDate(value) {

@@ -15,16 +15,9 @@ const ROADMAP_MODULES = [
         icon: "/icons/training.svg",
     },
     {
-        key: "batch-print",
-        title: "Impressao em Lote",
-        description: "Selecao e impressao agrupada de precos para operacao diaria do varejo.",
-        status: "Planejado",
-        icon: "/icons/products.svg",
-    },
-    {
-        key: "promotions",
-        title: "Impressao em Lote",
-        description: "Execucao agrupada de cartazes selecionados para ganhar escala em operacoes maiores.",
+        key: "labels-print",
+        title: "Fluxos de Etiquetas",
+        description: "Execucao dedicada para etiquetas de gondola, formatos especificos e saidas de impressao segmentadas.",
         status: "Planejado",
         icon: "/icons/products.svg",
     },
@@ -147,6 +140,14 @@ export default function useController() {
             action: () => navigate("dashboard/prices/quick"),
         },
         {
+            key: "batch-print",
+            icon: "/icons/products.svg",
+            title: "Impressao em Lote",
+            description: "Consolide Historico e Promocoes numa fila unica para imprimir em escala com rastreabilidade.",
+            buttonLabel: "Abrir lote",
+            action: () => navigate("dashboard/prices/batch"),
+        },
+        {
             key: "history",
             icon: "/icons/products.svg",
             title: "Historico",
@@ -227,6 +228,10 @@ export default function useController() {
             title: "Fila promocional conectada",
             description: "Promocoes agora reaproveitam selecao real do historico para organizar campanhas e impressao futura.",
         },
+        {
+            title: "Impressao em lote ativa",
+            description: "Historico e Promocoes agora alimentam a mesma fila operacional de impressao agrupada com controle por perfil.",
+        },
     ]), []);
 
     const recentTickets = useMemo(() => supportRows.slice(0, 3), [supportRows]);
@@ -249,6 +254,15 @@ export default function useController() {
             icon: "/icons/products.svg",
             actionLabel: "Abrir modo rapido",
             action: () => navigate("dashboard/prices/quick"),
+        },
+        {
+            key: "batch-print",
+            title: "Impressao em Lote",
+            description: "Fila unica para imprimir em escala sobre Historico e Promocoes, com deduplicacao e respeito ao perfil do usuario.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Abrir lote",
+            action: () => navigate("dashboard/prices/batch"),
         },
         {
             key: "create-item",

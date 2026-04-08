@@ -44,6 +44,7 @@ export default function DashboardSide({ fluid }){
         { label: 'Home', icon: 'home', path: 'dashboard', border: true },
         { label: 'Criar Preco', icon: 'products', path: 'dashboard/prices/create' },
         { label: 'Criacao Rapida', icon: 'products', path: 'dashboard/prices/quick' },
+        { label: 'Impressao em Lote', icon: 'products', path: 'dashboard/prices/batch' },
         { label: 'Historico', icon: 'products', path: 'dashboard/history' },
         { label: 'Promocoes', icon: 'products', path: 'dashboard/promotions' },
         { label: 'Itens', icon: 'products', path: 'dashboard/items' },
