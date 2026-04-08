@@ -59,6 +59,10 @@ export function canManagePromotions(user = {}) {
     return role === "admin" || role === "subadmin";
 }
 
+export function canAccessSupportLog(user = {}) {
+    return normalizeUserRole(user) === "admin";
+}
+
 function normalizeUsersResponse(result) {
     if (Array.isArray(result)) {
         return result;
@@ -82,7 +86,7 @@ function normalizeUserRecord(user = {}) {
         id,
         documentId: `${user?.documentId || user?.id || ""}`,
         rawId: user?.id || null,
-        name: `${user?.name || user?.username || user?.fullName || user?.email || "Usuario SenaPrices"}`.trim(),
+        name: `${user?.name || user?.username || user?.fullName || user?.email || "Usuário SenaPrices"}`.trim(),
         email: `${user?.email || ""}`.trim(),
         role: normalizeUserRole(user),
         active: user?.active !== false && user?.blocked !== true,

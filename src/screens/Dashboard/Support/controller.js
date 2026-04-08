@@ -12,6 +12,7 @@ import {
     TableLabelContainer,
 } from "ui/styled";
 import { optionsSupport } from "utils/options";
+import { canAccessSupportLog } from "services/users";
 
 const STATUS_COLORS = {
     opened: "blue",
@@ -39,6 +40,7 @@ export default function useController() {
     const navigate = useCallback((to) => n(`/${to}`), [n]);
 
     const { user } = useContext(CoreContext);
+    const canSeeSupportLog = canAccessSupportLog(user);
 
     const formPage = "dashboard/support/create";
 
@@ -60,15 +62,24 @@ export default function useController() {
                 color: "primary",
                 action: () => navigate(formPage),
             },
+            ...(!canSeeSupportLog ? [] : [
+                {
+                    label: "Log de suporte",
+                    rounded: true,
+                    outline: true,
+                    color: "primary",
+                    action: () => navigate("dashboard/support/access"),
+                },
+            ]),
             {
                 label: "Meu perfil",
                 rounded: true,
-                outline: true,
+                outline: !canSeeSupportLog,
                 color: "primary",
                 action: () => navigate("dashboard/me"),
             },
         ],
-    }), [navigate]);
+    }), [canSeeSupportLog, navigate]);
 
     const rows = useMemo(() => (
         (registers || []).map(item => ({
@@ -173,7 +184,17 @@ export default function useController() {
             buttonLabel: "Abrir perfil",
             action: () => navigate("dashboard/me"),
         },
-    ]), [navigate]);
+        ...(!canSeeSupportLog ? [] : [
+            {
+                key: "support-access",
+                icon: "/icons/training.svg",
+                title: "Log de suporte",
+                description: "Acompanhe a trilha de acessos administrativos vinculados aos atendimentos do ambiente.",
+                buttonLabel: "Abrir log",
+                action: () => navigate("dashboard/support/access"),
+            },
+        ]),
+    ]), [canSeeSupportLog, navigate]);
 
     const profile = useMemo(() => ({
         displayName: user?.name || "Usuário SenaPrices",

@@ -18,7 +18,7 @@ import {
 import { CoreContext } from "context/CoreContext";
 import DashboardSideCollapse from "../SideCollapse";
 import { DoLogout } from "services/authentication";
-import { canManagePromotions } from "services/users";
+import { canAccessSupportLog, canManagePromotions } from "services/users";
 
 export default function DashboardSide({ fluid }) {
     const n = useNavigate();
@@ -26,6 +26,7 @@ export default function DashboardSide({ fluid }) {
 
     const { side, setSide, user } = useContext(CoreContext);
     const canManage = canManagePromotions(user);
+    const canSeeSupportLog = canAccessSupportLog(user);
 
     const verifyClose = event => {
         if (!event.target.closest(".menu-contant")) {
@@ -55,7 +56,10 @@ export default function DashboardSide({ fluid }) {
             { label: "Relatórios", icon: "training", path: "dashboard/reports" },
         ] : []),
         { label: "Suporte", icon: "proposal", path: "dashboard/support" },
-    ]), [canManage]);
+        ...(canSeeSupportLog ? [
+            { label: "Log de Suporte", icon: "training", path: "dashboard/support/access" },
+        ] : []),
+    ]), [canManage, canSeeSupportLog]);
 
     const footerOptions = useMemo(() => ([
         {

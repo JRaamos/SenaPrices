@@ -30,6 +30,7 @@ import DashboardReports from "screens/Dashboard/Reports";
 import DashboardSettings from "screens/Dashboard/Settings";
 import DashboardMe from 'screens/Dashboard/Me' 
 import DashboardSupport from "screens/Dashboard/Support";
+import DashboardSupportAccess from "screens/Dashboard/SupportAccess";
 import DashboardSupportForm from "screens/Dashboard/SupportForm";
 import DashboardMePassword from "screens/Dashboard/MePassword";
 
@@ -63,6 +64,7 @@ export default function AppRouter() {
             <Route path="/dashboard/me/password" exact element={<DashboardMePassword />} /> 
 
             <Route path="/dashboard/support" exact element={<DashboardSupport />} /> 
+            <Route path="/dashboard/support/access" exact element={<DashboardSupportAccess />} /> 
             <Route path="/dashboard/support/create" exact element={<DashboardSupportForm />} /> 
             <Route path="/dashboard/support/create/:id" exact element={<DashboardSupportForm />} /> 
             

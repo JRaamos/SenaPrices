@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { CoreContext } from "context/CoreContext";
 import useList from "hooks/useList";
 import { optionsSupport } from "utils/options";
-import { canManagePromotions, normalizeUserRole } from "services/users";
+import { canAccessSupportLog, canManagePromotions, normalizeUserRole } from "services/users";
 
 const ROADMAP_MODULES = [
     {
@@ -23,6 +23,7 @@ export default function useController() {
 
     const { user } = useContext(CoreContext);
     const canManage = canManagePromotions(user);
+    const canSeeSupportLog = canAccessSupportLog(user);
     const role = normalizeUserRole(user);
 
     const { loading, registers } = useList({
@@ -211,9 +212,19 @@ export default function useController() {
                 buttonLabel: "Abrir relatórios",
                 action: () => navigate("dashboard/reports"),
             },
+            ...(!canSeeSupportLog ? [] : [
+                {
+                    key: "support-access",
+                    icon: "/icons/training.svg",
+                    title: "Log de suporte",
+                    description: "Consulte a trilha administrativa de acessos vinculados ao atendimento de clientes.",
+                    buttonLabel: "Abrir log",
+                    action: () => navigate("dashboard/support/access"),
+                },
+            ]),
             ...baseActions.slice(6),
         ];
-    }, [canManage, navigate]);
+    }, [canManage, canSeeSupportLog, navigate]);
 
     const summaryItems = useMemo(() => {
         const totalTickets = supportRows.length;
@@ -269,6 +280,10 @@ export default function useController() {
         {
             title: "Definições centralizadas",
             description: "A governança de impressão, seções, etiquetas e acessos já foi consolidada em uma central única para admin e subadmin.",
+        },
+        {
+            title: "Trilha de suporte auditável",
+            description: "Administradores agora contam com um log dedicado para registrar acessos sensíveis a contas de clientes.",
         },
         {
             title: "Leitura gerencial disponível",
@@ -426,9 +441,20 @@ export default function useController() {
                 actionLabel: "Abrir relatórios",
                 action: () => navigate("dashboard/reports"),
             },
+            ...(!canSeeSupportLog ? [] : [
+                {
+                    key: "support-access",
+                    title: "Log de Suporte",
+                    description: "Auditoria administrativa dos acessos feitos durante atendimentos e intervenções em contas de clientes.",
+                    status: "Ativo",
+                    icon: "/icons/training.svg",
+                    actionLabel: "Abrir log",
+                    action: () => navigate("dashboard/support/access"),
+                },
+            ]),
             ...baseCards.slice(7),
         ];
-    }, [canManage, navigate]);
+    }, [canManage, canSeeSupportLog, navigate]);
 
     return {
         header,
