@@ -42,6 +42,7 @@ export default function DashboardSide({ fluid }){
 
     const menuOptions = [
         { label: 'Home', icon: 'home', path: 'dashboard', border: true },
+        { label: 'Criar Preco', icon: 'products', path: 'dashboard/prices/create' },
         { label: 'Suporte', icon: 'proposal', path: 'dashboard/support' },
     ]
 

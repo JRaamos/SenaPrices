@@ -8,46 +8,46 @@ import { optionsSupport } from "utils/options";
 
 const ROADMAP_MODULES = [
     {
-        key: "create-price",
-        title: "Criar Preço",
-        description: "Tela principal para montar cartazes promocionais com visualização e impressão.",
-        status: "Planejado",
-        icon: "/icons/products.svg",
-    },
-    {
         key: "quick-price",
-        title: "Criação Rápida",
-        description: "Fluxo ágil por EAN ou nome para gerar preços com menos etapas operacionais.",
+        title: "Criacao Rapida",
+        description: "Fluxo agil por EAN ou nome para gerar precos com menos etapas operacionais.",
         status: "Planejado",
         icon: "/icons/training.svg",
     },
     {
         key: "labels",
         title: "Etiquetas",
-        description: "Geração de etiquetas para gôndola e fluxos de impressão específicos.",
+        description: "Geracao de etiquetas para gondola e fluxos de impressao especificos.",
         status: "Planejado",
         icon: "/icons/training.svg",
     },
     {
         key: "batch-print",
-        title: "Impressão em Lote",
-        description: "Seleção e impressão agrupada de preços para operação diária do varejo.",
+        title: "Impressao em Lote",
+        description: "Selecao e impressao agrupada de precos para operacao diaria do varejo.",
         status: "Planejado",
         icon: "/icons/products.svg",
     },
     {
         key: "items",
-        title: "Itens e Importação",
-        description: "Cadastro, edição e ingestão de produtos para sustentar os demais módulos.",
+        title: "Itens e Importacao",
+        description: "Cadastro, edicao e ingestao de produtos para sustentar os demais modulos.",
         status: "Planejado",
         icon: "/icons/products.svg",
     },
     {
         key: "reports",
-        title: "Relatórios",
-        description: "Visão analítica de uso, produtividade e histórico operacional do sistema.",
+        title: "Relatorios",
+        description: "Visao analitica de uso, produtividade e historico operacional do sistema.",
         status: "Planejado",
         icon: "/icons/training.svg",
+    },
+    {
+        key: "print-history",
+        title: "Historico de Impressao",
+        description: "Rastreabilidade de cartazes gerados, fontes de impressao e revisao operacional.",
+        status: "Planejado",
+        icon: "/icons/products.svg",
     },
 ];
 
@@ -65,8 +65,8 @@ export default function useController() {
     const supportRows = useMemo(() => (
         (registers || []).map(item => ({
             id: item?.documentId,
-            title: item?.title || "Ticket sem título",
-            description: item?.description || "Sem descrição informada.",
+            title: item?.title || "Ticket sem titulo",
+            description: item?.description || "Sem descricao informada.",
             status: item?.support_status || "opened",
             statusLabel: optionsSupport?.find(option => option.id === item?.support_status)?.title || "Aberto",
             date: moment(item?.createdAt).isValid() ? moment(item?.createdAt).format("L") : "--",
@@ -82,10 +82,10 @@ export default function useController() {
         ],
         actions: [
             {
-                label: "Abrir suporte",
+                label: "Criar preco",
                 rounded: true,
                 color: "primary",
-                action: () => navigate("dashboard/support/create"),
+                action: () => navigate("dashboard/prices/create"),
             },
             {
                 label: "Minha conta",
@@ -98,7 +98,7 @@ export default function useController() {
     }), [navigate]);
 
     const profile = useMemo(() => ({
-        displayName: user?.name || "Usuário SenaPrices",
+        displayName: user?.name || "Usuario SenaPrices",
         email: user?.email || "email@nao-informado.com",
         memberSince: formatDate(user?.createdAt || user?.created_at),
         accountId: user?.documentId || user?.id || "--",
@@ -106,10 +106,18 @@ export default function useController() {
 
     const quickActions = useMemo(() => ([
         {
+            key: "create-price",
+            icon: "/icons/products.svg",
+            title: "Criar preco",
+            description: "Monte cartazes promocionais com validacao, preview e impressao orientada por padrao.",
+            buttonLabel: "Abrir criacao",
+            action: () => navigate("dashboard/prices/create"),
+        },
+        {
             key: "support-create",
             icon: "/icons/proposal.svg",
             title: "Novo ticket",
-            description: "Abra um chamado para dúvidas, correções ou apoio operacional do sistema.",
+            description: "Abra um chamado para duvidas, correcoes ou apoio operacional do sistema.",
             buttonLabel: "Abrir suporte",
             action: () => navigate("dashboard/support/create"),
         },
@@ -117,7 +125,7 @@ export default function useController() {
             key: "support-list",
             icon: "/icons/proposal.svg",
             title: "Fila de suporte",
-            description: "Acompanhe tickets já criados, status e histórico de atendimento.",
+            description: "Acompanhe tickets ja criados, status e historico de atendimento.",
             buttonLabel: "Ver tickets",
             action: () => navigate("dashboard/support"),
         },
@@ -132,7 +140,7 @@ export default function useController() {
         {
             key: "security",
             icon: "/icons/password.svg",
-            title: "Senha e segurança",
+            title: "Senha e seguranca",
             description: "Atualize a senha e mantenha o acesso ao sistema protegido.",
             buttonLabel: "Gerenciar senha",
             action: () => navigate("dashboard/me/password"),
@@ -156,15 +164,15 @@ export default function useController() {
     const systemHighlights = useMemo(() => ([
         {
             title: "Base de suporte ativa",
-            description: "Chamados, histórico e edição de tickets já estão operacionais nesta etapa do projeto.",
+            description: "Chamados, historico e edicao de tickets ja estao operacionais nesta etapa do projeto.",
         },
         {
-            title: "Conta e segurança ativas",
-            description: "Perfil e troca de senha já seguem o padrão alto definido para o sistema.",
+            title: "Conta e seguranca ativas",
+            description: "Perfil e troca de senha ja seguem o padrao alto definido para o sistema.",
         },
         {
-            title: "Módulos de operação mapeados",
-            description: "As páginas locais estão servindo como referência funcional para evolução consistente do produto.",
+            title: "Criacao de cartaz ativa",
+            description: "A pagina principal de composicao de preco agora funciona com validacao, preview e impressao.",
         },
     ]), []);
 
@@ -172,9 +180,18 @@ export default function useController() {
 
     const moduleCards = useMemo(() => ([
         {
+            key: "create-price",
+            title: "Criar Preco",
+            description: "Composicao segura de cartazes com rascunho local, preview e impressao.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Criar cartaz",
+            action: () => navigate("dashboard/prices/create"),
+        },
+        {
             key: "account",
             title: "Minha Conta",
-            description: "Gestão do perfil do usuário e manutenção de dados pessoais.",
+            description: "Gestao do perfil do usuario e manutencao de dados pessoais.",
             status: "Ativo",
             icon: "/icons/user.svg",
             actionLabel: "Abrir conta",
@@ -182,8 +199,8 @@ export default function useController() {
         },
         {
             key: "security",
-            title: "Senha e Segurança",
-            description: "Atualização de credenciais e proteção de acesso do sistema.",
+            title: "Senha e Seguranca",
+            description: "Atualizacao de credenciais e protecao de acesso do sistema.",
             status: "Ativo",
             icon: "/icons/password.svg",
             actionLabel: "Gerenciar senha",
@@ -192,7 +209,7 @@ export default function useController() {
         {
             key: "support",
             title: "Suporte",
-            description: "Registro e acompanhamento de tickets de suporte técnico e operacional.",
+            description: "Registro e acompanhamento de tickets de suporte tecnico e operacional.",
             status: "Ativo",
             icon: "/icons/proposal.svg",
             actionLabel: "Ver suporte",

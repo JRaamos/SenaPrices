@@ -15,6 +15,7 @@ import Forgot from 'screens/Authentication/Forgot'
 import CreatePassword from 'screens/Authentication/CreatePassword' 
 
 import DashboardHome from 'screens/Dashboard/Home' 
+import DashboardCreatePrice from "screens/Dashboard/CreatePrice";
 import DashboardMe from 'screens/Dashboard/Me' 
 import DashboardSupport from "screens/Dashboard/Support";
 import DashboardSupportForm from "screens/Dashboard/SupportForm";
@@ -33,6 +34,7 @@ export default function AppRouter() {
             <Route path="/create-password" exact element={<CreatePassword />} /> 
             
             <Route path="/dashboard" exact element={<DashboardHome />} /> 
+            <Route path="/dashboard/prices/create" exact element={<DashboardCreatePrice />} />
             <Route path="/dashboard/me" exact element={<DashboardMe />} /> 
             <Route path="/dashboard/me/password" exact element={<DashboardMePassword />} /> 
 
