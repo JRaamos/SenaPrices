@@ -12,16 +12,16 @@ export function sanitizeLabelFilters(values = {}) {
 
 export function buildLabelItemRow(item = {}, priceRecords = []) {
     const latestPriceRecord = findLatestPriceRecord(item, priceRecords);
-    const sectionLabel = item.section || "Sem secao";
+    const sectionLabel = item.section || "Sem seção";
     const unitLabel = item.unit || "unidade";
 
     return {
         ...item,
         latestPriceRecord,
         canSelect: !!latestPriceRecord,
-        statusLabel: latestPriceRecord ? "Precificado" : "Sem preco",
+        statusLabel: latestPriceRecord ? "Precificado" : "Sem preço",
         statusTone: latestPriceRecord ? "green" : "orange",
-        priceLabel: latestPriceRecord?.primaryPrice || "Sem preco atualizado",
+        priceLabel: latestPriceRecord?.primaryPrice || "Sem preço atualizado",
         secondaryPrice: latestPriceRecord?.supportingPrice || "",
         offerLabel: latestPriceRecord?.offerTitle || "",
         sectionLabel,
@@ -61,8 +61,8 @@ export function buildLabelStatus({ rows = [], visibleRows = [], selectedItems = 
     if (!rows.length) {
         return {
             tone: "orange",
-            title: "Catalogo sem itens",
-            description: "Cadastre ou importe itens antes de emitir etiquetas de gondola.",
+            title: "Catálogo sem itens",
+            description: "Cadastre ou importe itens antes de emitir etiquetas de gôndola.",
         };
     }
 
@@ -70,7 +70,7 @@ export function buildLabelStatus({ rows = [], visibleRows = [], selectedItems = 
         return {
             tone: "orange",
             title: "Nenhum item encontrado",
-            description: "Revise a busca e os filtros de secao para recuperar itens elegiveis da operacao.",
+            description: "Revise a busca e os filtros de seção para recuperar itens elegíveis da operação.",
         };
     }
 
@@ -79,10 +79,10 @@ export function buildLabelStatus({ rows = [], visibleRows = [], selectedItems = 
     if (!selectedItems.length) {
         return {
             tone: pricedRows ? "orange" : "orange",
-            title: pricedRows ? "Selecao pronta para montar" : "Itens sem precificacao rastreavel",
+            title: pricedRows ? "Seleção pronta para montar" : "Itens sem precificação rastreável",
             description: pricedRows
-                ? `${pricedRows} item(ns) desta visao possuem preco valido para gerar etiqueta.`
-                : "Atualize a precificacao dos itens desta visao para liberar a emissao de etiquetas.",
+                ? `${pricedRows} item(ns) desta visão possuem preço válido para gerar etiqueta.`
+                : "Atualize a precificação dos itens desta visão para liberar a emissão de etiquetas.",
         };
     }
 

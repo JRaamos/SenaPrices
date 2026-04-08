@@ -7,8 +7,8 @@ export const BATCH_PRINT_DEFAULT_DRAFT = {
 
 export const BATCH_PRINT_SOURCE_OPTIONS = [
     { value: "", label: "Todas as origens" },
-    { value: "promotion", label: "Promocoes programadas" },
-    { value: "history", label: "Historico operacional" },
+    { value: "promotion", label: "Promoções programadas" },
+    { value: "history", label: "Histórico operacional" },
 ];
 
 export const BATCH_PRINT_PAPER_OPTIONS = [
@@ -21,14 +21,14 @@ export const BATCH_PRINT_PAPER_OPTIONS = [
 export const BATCH_PRINT_GUIDELINES = [
     {
         title: "Monte o lote sobre fontes reais",
-        description: "A selecao usa Historico e Promocoes para evitar duplicidade de base e manter a impressao coerente com o que ja foi produzido.",
+        description: "A selecao usa Histórico e Promoções para evitar duplicidade de base e manter a impressao coerente com o que ja foi produzido.",
     },
     {
         title: "Respeite o recorte por perfil",
-        description: "Usuarios operacionais enxergam apenas o proprio historico e as promocoes atribuidas ao seu usuario, sem expor filas administrativas.",
+        description: "Usuários operacionais enxergam apenas o próprio histórico e as promoções atribuídas ao seu usuário, sem expor filas administrativas.",
     },
     {
-        title: "Impressao atualiza a trilha",
+        title: "Impressão atualiza a trilha",
         description: "Ao imprimir o lote, os registros subjacentes recebem confirmacao de impressao para manter rastreabilidade operacional.",
     },
 ];

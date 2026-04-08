@@ -220,7 +220,7 @@ export default function DashboardItems() {
                                     Toda alteracao aqui atualiza a mesma base que sera consumida pelos demais modulos do sistema.
                                 </CatalogCardText>
                                 <EditorBadge $active={isEditorDirty}>
-                                    {isEditorDirty ? "Alteracoes nao salvas" : "Sem alteracoes pendentes"}
+                                    {isEditorDirty ? "Alterações não salvas" : "Sem alterações pendentes"}
                                 </EditorBadge>
                             </CatalogCardHeader>
 
@@ -273,7 +273,7 @@ export default function DashboardItems() {
                                     </EditorGrid>
 
                                     <CatalogField>
-                                        <CatalogLabel>Descricao principal</CatalogLabel>
+                                        <CatalogLabel>Descrição principal</CatalogLabel>
                                         <CatalogInput
                                             value={editor.description1}
                                             maxLength={80}
@@ -288,7 +288,7 @@ export default function DashboardItems() {
 
                                     <EditorGrid>
                                         <CatalogField>
-                                            <CatalogLabel>Descricao complementar</CatalogLabel>
+                                            <CatalogLabel>Descrição complementar</CatalogLabel>
                                             <CatalogInput
                                                 value={editor.description2}
                                                 maxLength={60}
@@ -302,7 +302,7 @@ export default function DashboardItems() {
                                         </CatalogField>
 
                                         <CatalogField>
-                                            <CatalogLabel>Descricao adicional</CatalogLabel>
+                                            <CatalogLabel>Descrição adicional</CatalogLabel>
                                             <CatalogInput
                                                 value={editor.description3}
                                                 maxLength={60}
@@ -362,7 +362,7 @@ export default function DashboardItems() {
                                 <CatalogCardEyebrow>Lista</CatalogCardEyebrow>
                                 <CatalogCardTitle>Itens cadastrados</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Selecione um item para editar ou use as acoes por linha para acelerar duplicacao, exclusao e criacao de preco.
+                                    Selecione um item para editar ou use as ações por linha para acelerar duplicação, exclusão e criação de preço.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -373,7 +373,7 @@ export default function DashboardItems() {
                             ) : (
                                 <ItemsTable>
                                     <ItemsTableHeader>
-                                        <ItemsTableHeaderCell>Descricao</ItemsTableHeaderCell>
+                                        <ItemsTableHeaderCell>Descrição</ItemsTableHeaderCell>
                                         <ItemsTableHeaderCell>Secao e unidade</ItemsTableHeaderCell>
                                         <ItemsTableHeaderCell>Identificadores</ItemsTableHeaderCell>
                                         <ItemsTableHeaderCell>Data base</ItemsTableHeaderCell>
@@ -398,8 +398,8 @@ export default function DashboardItems() {
                                             </ItemCell>
 
                                             <ItemCell>
-                                                <ItemCode>{item.ean13 || "EAN nao informado"}</ItemCode>
-                                                <ItemMeta>{item.internalCode || "Codigo interno nao informado"}</ItemMeta>
+                                                <ItemCode>{item.ean13 || "EAN não informado"}</ItemCode>
+                                                <ItemMeta>{item.internalCode || "Código interno não informado"}</ItemMeta>
                                             </ItemCell>
 
                                             <ItemCell>
@@ -422,7 +422,7 @@ export default function DashboardItems() {
                                                         handleCreatePriceFromItem(item);
                                                     }}
                                                 >
-                                                    Criar preco
+                                                    Criar preço
                                                 </ItemActionButton>
                                                 <ItemActionButton
                                                     onClick={(event) => {

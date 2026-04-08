@@ -132,10 +132,10 @@ describe("Dashboard BatchPrint page", () => {
 
         mountPage();
 
-        cy.contains("Impressao em Lote").should("exist");
+        cy.contains("Impressão em Lote").should("exist");
         cy.contains("Cafe Pilao 500g").should("exist");
         cy.contains("Campanha do cafe").should("exist");
-        cy.get("select").eq(0).select("Promocoes programadas");
+        cy.get("select").eq(0).select("Promoções programadas");
         cy.contains("Campanha do cafe").should("exist");
     });
 

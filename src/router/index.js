@@ -24,6 +24,7 @@ import DashboardItems from "screens/Dashboard/Items";
 import DashboardLabels from "screens/Dashboard/Labels";
 import DashboardPromotions from "screens/Dashboard/Promotions";
 import DashboardQuickPrice from "screens/Dashboard/QuickPrice";
+import DashboardReports from "screens/Dashboard/Reports";
 import DashboardMe from 'screens/Dashboard/Me' 
 import DashboardSupport from "screens/Dashboard/Support";
 import DashboardSupportForm from "screens/Dashboard/SupportForm";
@@ -48,6 +49,7 @@ export default function AppRouter() {
             <Route path="/dashboard/history" exact element={<DashboardHistory />} />
             <Route path="/dashboard/promotions" exact element={<DashboardPromotions />} />
             <Route path="/dashboard/labels" exact element={<DashboardLabels />} />
+            <Route path="/dashboard/reports" exact element={<DashboardReports />} />
             <Route path="/dashboard/items/create" exact element={<DashboardCreateItem />} />
             <Route path="/dashboard/items/import" exact element={<DashboardImport />} />
             <Route path="/dashboard/items" exact element={<DashboardItems />} />

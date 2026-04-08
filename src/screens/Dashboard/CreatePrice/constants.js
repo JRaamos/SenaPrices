@@ -48,16 +48,16 @@ export const SPECIAL_LAYOUT_OPTIONS = [
 
 export const QUALITY_GUIDELINES = [
     {
-        title: "Descricao clara e objetiva",
+        title: "Descrição clara e objetiva",
         description: "Use o nome principal do produto de forma curta para manter leitura rapida no ponto de venda.",
     },
     {
         title: "Dados validos antes da impressao",
-        description: "Revise preco, validade e regra promocional para evitar retrabalho e divergencia operacional.",
+        description: "Revise preço, validade e regra promocional para evitar retrabalho e divergência operacional.",
     },
     {
         title: "Nada sensivel no cartaz",
-        description: "Nao inclua observacoes internas, codigos confidenciais ou dados que nao devam aparecer ao cliente.",
+        description: "Não inclua observações internas, códigos confidenciais ou dados que não devam aparecer ao cliente.",
     },
 ];
 

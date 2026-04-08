@@ -80,7 +80,7 @@ export function updateCatalogItem(id, values, user) {
     const currentItem = catalogItems.find(item => item.id === id || item.documentId === id);
 
     if (!currentItem) {
-        throw new Error("Item nao encontrado para atualizacao.");
+        throw new Error("Item não encontrado para atualização.");
     }
 
     const draft = sanitizeCatalogItem({
@@ -121,7 +121,7 @@ export function duplicateCatalogItem(id, user) {
     const currentItem = catalogItems.find(item => item.id === id || item.documentId === id);
 
     if (!currentItem) {
-        throw new Error("Item nao encontrado para duplicacao.");
+        throw new Error("Item não encontrado para duplicação.");
     }
 
     const copy = {

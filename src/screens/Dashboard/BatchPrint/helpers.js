@@ -104,7 +104,7 @@ export function buildBatchStatus({
         return {
             tone: "orange",
             title: "Nenhum cartaz disponivel",
-            description: "Assim que houver historico proprio ou promocoes atribuidas, os registros aparecerao aqui para impressao em lote.",
+            description: "Assim que houver histórico próprio ou promoções atribuídas, os registros aparecerão aqui para impressão em lote.",
         };
     }
 
@@ -155,8 +155,8 @@ export function buildBatchSourceSummary(candidates = []) {
     const promotionCount = candidates.filter(item => item.source === "promotion").length;
 
     return [
-        historyCount ? `${historyCount} historico` : "",
-        promotionCount ? `${promotionCount} promocao(oes)` : "",
+        historyCount ? `${historyCount} histórico` : "",
+        promotionCount ? `${promotionCount} promoção(ões)` : "",
     ].filter(Boolean).join(" - ") || "Selecao manual";
 }
 
@@ -194,9 +194,9 @@ function buildHistoryCandidate(entry = {}) {
         key: `history:${entry.id}`,
         id: entry.id,
         source: "history",
-        sourceLabel: "Historico",
+        sourceLabel: "Histórico",
         title: entry.title || "Registro sem titulo",
-        description: entry.summaryLabel || entry.offerTitle || "Registro salvo no historico operacional.",
+        description: entry.summaryLabel || entry.offerTitle || "Registro salvo no histórico operacional.",
         detailLabel: "Criado por",
         detailValue: entry.createdBy || "--",
         periodLabel: entry.printedAt
@@ -237,7 +237,7 @@ function buildPromotionCandidate(order, historyEntries = []) {
         title: safeOrder.name || "Promocao sem titulo",
         description: safeOrder.description || "Campanha programada para impressao operacional.",
         detailLabel: "Destinatarios",
-        detailValue: safeOrder.assignedUserNames.join(", ") || `${safeOrder.assignedUserIds.length} usuario(s)`,
+        detailValue: safeOrder.assignedUserNames.join(", ") || `${safeOrder.assignedUserIds.length} usuário(s)`,
         periodLabel: [formatDate(safeOrder.validFrom), formatDate(safeOrder.validTo)].filter(Boolean).join(" ate "),
         statusLabel: isUpcoming ? "Programada" : "Ativa",
         statusTone: isUpcoming ? "blue" : "green",

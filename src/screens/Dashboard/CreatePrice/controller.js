@@ -165,7 +165,7 @@ export default function useController() {
             const printWindow = window.open("", "_blank", "noopener,noreferrer,width=980,height=720");
 
             if (!printWindow) {
-                toast.error("Nao foi possivel abrir a impressao. Verifique se o navegador bloqueou pop-ups.");
+                toast.error("Não foi possível abrir a impressão. Verifique se o navegador bloqueou pop-ups.");
                 setLoading(false);
                 return;
             }
@@ -271,11 +271,11 @@ export default function useController() {
     }, [handlePrint, handleSaveSnapshot, ready]);
 
     const header = useMemo(() => ({
-        title: "Criar Preco",
+        title: "Criar Preço",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Operacao" },
-            { label: "Criar Preco" },
+            { label: "Operação" },
+            { label: "Criar Preço" },
         ],
         actions: [
             {
@@ -287,7 +287,7 @@ export default function useController() {
                 action: () => navigate("dashboard"),
             },
             {
-                label: "Historico",
+                label: "Histórico",
                 icon: "products",
                 rounded: true,
                 outline: true,
@@ -363,7 +363,7 @@ export default function useController() {
     const shortcuts = useMemo(() => ([
         {
             label: "Ctrl + S",
-            description: "Salva a composicao valida no historico local criptografado.",
+            description: "Salva a composição válida no histórico local criptografado.",
         },
         {
             label: "Ctrl + P",

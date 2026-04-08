@@ -169,15 +169,15 @@ export default function useController() {
     }, [activeOrders, canManage, currentUserId]);
 
     const header = useMemo(() => ({
-        title: "Promocoes",
+        title: "Promoções",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Operacao" },
-            { label: "Promocoes" },
+            { label: "Operação" },
+            { label: "Promoções" },
         ],
         actions: [
             {
-                label: "Historico",
+                label: "Histórico",
                 icon: "products",
                 rounded: true,
                 outline: true,
@@ -185,7 +185,7 @@ export default function useController() {
                 action: () => navigate("dashboard/history"),
             },
             !canManage ? null : {
-                label: "Criar preco",
+                label: "Criar preço",
                 icon: "products",
                 rounded: true,
                 color: "secondary",
@@ -210,14 +210,14 @@ export default function useController() {
         clearPromotionDraft();
         clearPromotionSeed();
         setForm(readPromotionDraft());
-        toast.success("Formulario de promocao limpo com sucesso.");
+        toast.success("Formulário de promoção limpo com sucesso.");
     }, [canManage]);
 
     const confirmClearForm = useCallback(() => {
         setModal({
             type: "confirm",
-            title: "Deseja limpar esta promocao?",
-            text: "O formulario atual sera limpo, mas a fila ja criada continuara preservada.",
+            title: "Deseja limpar esta promoção?",
+            text: "O formulário atual será limpo, mas a fila já criada continuará preservada.",
             action: clearForm,
         });
     }, [clearForm, setModal]);
@@ -248,12 +248,12 @@ export default function useController() {
 
     const handleCreateOrder = useCallback(() => {
         if (!canManage) {
-            toast.error("Somente admin e subadmin podem criar promocoes programadas.");
+            toast.error("Somente admin e subadmin podem criar promoções programadas.");
             return;
         }
 
         if (!validation.isValid) {
-            toast.error(validation.errorList[0] || "Revise os dados da promocao antes de enviar para a fila.");
+            toast.error(validation.errorList[0] || "Revise os dados da promoção antes de enviar para a fila.");
             return;
         }
 
@@ -273,9 +273,9 @@ export default function useController() {
             clearPromotionDraft();
             clearPromotionSeed();
             setForm(readPromotionDraft());
-            toast.success("Promocao enviada para a fila com sucesso.");
+            toast.success("Promoção enviada para a fila com sucesso.");
         } catch (error) {
-            toast.error(error?.message || "Nao foi possivel criar a promocao.");
+            toast.error(error?.message || "Não foi possível criar a promoção.");
         } finally {
             setLoading(false);
         }
@@ -297,19 +297,19 @@ export default function useController() {
             selectedEntryIds: safeOrder.historyEntryIds,
             assignedUserIds: safeOrder.assignedUserIds,
         });
-        toast.info("Promocao carregada como base no formulario.");
+        toast.info("Promoção carregada como base no formulário.");
     }, [applyPatch, canManage]);
 
     const handlePrintOrder = useCallback((order) => {
         if (!canManage && !order?.assignedUserIds?.includes(currentUserId)) {
-            toast.error("Esta promocao nao esta atribuida ao seu usuario.");
+            toast.error("Esta promoção não está atribuída ao seu usuário.");
             return;
         }
 
         const relatedEntries = resolvePromotionEntries(order.historyEntryIds, readPrintHistory());
 
         if (!relatedEntries.length) {
-            toast.error("Nenhum registro valido do historico foi encontrado para esta promocao.");
+            toast.error("Nenhum registro válido do histórico foi encontrado para esta promoção.");
             return;
         }
 
@@ -319,7 +319,7 @@ export default function useController() {
             const printWindow = window.open("", "_blank", "noopener,noreferrer,width=1180,height=820");
 
             if (!printWindow) {
-                toast.error("Nao foi possivel abrir a impressao da promocao. Verifique o bloqueio de pop-ups.");
+                toast.error("Não foi possível abrir a impressão da promoção. Verifique o bloqueio de pop-ups.");
                 setLoading(false);
                 return;
             }
@@ -341,7 +341,7 @@ export default function useController() {
             }, 250);
         } catch (error) {
             console.log("PromotionPrintError", error);
-            toast.error("Nao foi possivel imprimir a promocao.");
+            toast.error("Não foi possível imprimir a promoção.");
             setLoading(false);
         }
     }, [canManage, currentUserId, refreshState]);
@@ -351,12 +351,12 @@ export default function useController() {
 
         deletePromotionOrder(order.id);
         refreshState();
-        toast.success("Promocao removida da fila.");
+        toast.success("Promoção removida da fila.");
     }, [refreshState]);
 
     const handleDeleteOrder = useCallback((order) => {
         if (!canManage) {
-            toast.error("Somente admin e subadmin podem remover promocoes.");
+            toast.error("Somente admin e subadmin podem remover promoções.");
             return;
         }
 
@@ -364,15 +364,15 @@ export default function useController() {
 
         setModal({
             type: "confirm",
-            title: "Deseja remover esta promocao?",
-            text: "A remocao afeta apenas a fila promocional. Os registros originais do historico permanecem preservados.",
+            title: "Deseja remover esta promoção?",
+            text: "A remoção afeta apenas a fila promocional. Os registros originais do histórico permanecem preservados.",
             action: () => performDeleteOrder(order),
         });
     }, [canManage, performDeleteOrder, setModal]);
 
     const actions = useMemo(() => ([
         !canManage ? null : {
-            label: "Limpar formulario",
+            label: "Limpar formulário",
             color: "error",
             outline: true,
             rounded: true,
@@ -392,7 +392,7 @@ export default function useController() {
             },
         },
         !canManage ? null : {
-            label: "Criar promocao",
+            label: "Criar promoção",
             color: "primary",
             rounded: true,
             loadable: true,
@@ -407,7 +407,7 @@ export default function useController() {
         if (!canManage) {
             return [
                 { label: "Perfil", value: "user" },
-                { label: "Recebidas por voce", value: `${visibleOrders.length}` },
+                { label: "Recebidas por você", value: `${visibleOrders.length}` },
                 { label: "Cartazes na fila", value: `${queueCards}` },
                 { label: "Prontas para imprimir", value: `${visibleOrders.length}` },
             ];
@@ -417,9 +417,9 @@ export default function useController() {
             { label: "Perfil", value: currentUserRole },
             { label: "Ativas", value: `${activeOrders.length}` },
             { label: "Encerradas", value: `${archivedOrders.length}` },
-            { label: "Usuarios elegiveis", value: `${usersDirectory.length}` },
-            { label: "Selecionados no formulario", value: `${selectedEntries.length}` },
-            { label: "Cartazes da selecao", value: `${selectedCards}` },
+            { label: "Usuários elegíveis", value: `${usersDirectory.length}` },
+            { label: "Selecionados no formulário", value: `${selectedEntries.length}` },
+            { label: "Cartazes da seleção", value: `${selectedCards}` },
         ];
     }, [
         activeOrders.length,

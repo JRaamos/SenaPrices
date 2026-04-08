@@ -136,7 +136,7 @@ export default function DashboardCreateItem() {
 
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Descricao</CatalogCardEyebrow>
+                                <CatalogCardEyebrow>Descrição</CatalogCardEyebrow>
                                 <CatalogCardTitle>Linhas do produto</CatalogCardTitle>
                                 <CatalogCardText>
                                     Organize a nomenclatura do item de forma pronta para impressao e manutencao por qualquer operador ou analista.
@@ -145,7 +145,7 @@ export default function DashboardCreateItem() {
 
                             <CatalogGrid>
                                 <CatalogField $full>
-                                    <CatalogLabel>Descricao principal</CatalogLabel>
+                                    <CatalogLabel>Descrição principal</CatalogLabel>
                                     <CatalogInput
                                         value={form.description1}
                                         maxLength={80}
@@ -159,7 +159,7 @@ export default function DashboardCreateItem() {
                                 </CatalogField>
 
                                 <CatalogField $full>
-                                    <CatalogLabel>Descricao complementar</CatalogLabel>
+                                    <CatalogLabel>Descrição complementar</CatalogLabel>
                                     <CatalogInput
                                         value={form.description2}
                                         maxLength={60}
@@ -173,7 +173,7 @@ export default function DashboardCreateItem() {
                                 </CatalogField>
 
                                 <CatalogField $full>
-                                    <CatalogLabel>Descricao adicional</CatalogLabel>
+                                    <CatalogLabel>Descrição adicional</CatalogLabel>
                                     <CatalogInput
                                         value={form.description3}
                                         maxLength={60}
@@ -326,7 +326,7 @@ export default function DashboardCreateItem() {
 
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Catalogo ativo</CatalogCardEyebrow>
+                                <CatalogCardEyebrow>Catálogo ativo</CatalogCardEyebrow>
                                 <CatalogCardTitle>Itens recentes</CatalogCardTitle>
                                 <CatalogCardText>
                                     Use uma base existente como referencia para acelerar cadastro sem duplicar identificadores.

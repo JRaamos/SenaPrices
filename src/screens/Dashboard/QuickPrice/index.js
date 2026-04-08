@@ -114,8 +114,8 @@ export default function DashboardQuickPrice() {
                     <QuickPriceMain>
                         <QuickCard>
                             <QuickCardHeader>
-                                <QuickCardEyebrow>Configuracao</QuickCardEyebrow>
-                                <QuickCardTitle>Lote rapido de cartazes</QuickCardTitle>
+                                <QuickCardEyebrow>Configuração</QuickCardEyebrow>
+                                <QuickCardTitle>Lote rápido de cartazes</QuickCardTitle>
                                 <QuickCardText>
                                     Configure o contexto do lote e padronize os metadados antes de preencher as linhas operacionais.
                                 </QuickCardText>
@@ -211,7 +211,7 @@ export default function DashboardQuickPrice() {
                             </SetupGrid>
 
                             <DraftNotice>
-                                Esta versao trabalha com entrada manual segura e nao depende de catalogo externo. Use descricao curta para nome do produto ou EAN-13 completo quando estiver operando com codigo.
+                                Esta versão trabalha com entrada manual segura e não depende de catálogo externo. Use descrição curta para nome do produto ou EAN-13 completo quando estiver operando com código.
                             </DraftNotice>
                         </QuickCard>
 
@@ -537,7 +537,7 @@ export default function DashboardQuickPrice() {
                                 <QuickCardEyebrow>Boas praticas</QuickCardEyebrow>
                                 <QuickCardTitle>Checklist de operacao</QuickCardTitle>
                                 <QuickCardText>
-                                    Diretrizes de mercado para manter velocidade sem perder controle no lote rapido.
+                                    Diretrizes de mercado para manter velocidade sem perder controle no lote rápido.
                                 </QuickCardText>
                             </QuickCardHeader>
 
@@ -553,7 +553,7 @@ export default function DashboardQuickPrice() {
 
                         <QuickCard>
                             <QuickCardHeader>
-                                <QuickCardEyebrow>Historico local</QuickCardEyebrow>
+                                <QuickCardEyebrow>Histórico local</QuickCardEyebrow>
                                 <QuickCardTitle>Lotes recentes</QuickCardTitle>
                                 <QuickCardText>
                                     Restauracao rapida de lotes validos salvos com a infraestrutura atual de storage criptografado.
@@ -570,7 +570,7 @@ export default function DashboardQuickPrice() {
                                     <RecentItem key={item.id}>
                                         <RecentHeader>
                                             <div>
-                                                <RecentTitle>{item.offerTitle || "Lote rapido"}</RecentTitle>
+                                                <RecentTitle>{item.offerTitle || "Lote rápido"}</RecentTitle>
                                                 <RecentMeta>{item.helper}</RecentMeta>
                                                 <RecentMeta>{item.relativeDate}</RecentMeta>
                                             </div>

@@ -6,14 +6,14 @@ export const DEFAULT_LABEL_FILTERS = {
 export const LABEL_GUIDELINES = [
     {
         title: "Etiqueta nasce da mesma base do cartaz",
-        description: "A selecao reaproveita itens do catalogo e a ultima precificacao vinculada por EAN-13 ou codigo interno, evitando divergencia entre gondola e material promocional.",
+        description: "A seleção reaproveita itens do catálogo e a última precificação vinculada por EAN-13 ou código interno, evitando divergência entre gôndola e material promocional.",
     },
     {
-        title: "Sem preco valido, sem impressao",
-        description: "Itens sem rastreabilidade de preco continuam visiveis para manutencao, mas ficam bloqueados para emissao ate que uma precificacao consistente exista.",
+        title: "Sem preço válido, sem impressão",
+        description: "Itens sem rastreabilidade de preço continuam visíveis para manutenção, mas ficam bloqueados para emissão até que uma precificação consistente exista.",
     },
     {
         title: "ZPL e HTML no mesmo fluxo",
-        description: "A mesma selecao operacional gera impressao comum ou codigo Zebra ZPL, sem duplicar configuracao nem montar arquivos paralelos.",
+        description: "A mesma seleção operacional gera impressão comum ou código Zebra ZPL, sem duplicar configuração nem montar arquivos paralelos.",
     },
 ];

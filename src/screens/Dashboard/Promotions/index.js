@@ -114,14 +114,14 @@ export default function DashboardPromotions() {
                             <CatalogCard>
                                 <CatalogCardHeader>
                                     <CatalogCardEyebrow>Fila recebida</CatalogCardEyebrow>
-                                    <CatalogCardTitle>Cartazes prontos para impressao</CatalogCardTitle>
+                                    <CatalogCardTitle>Cartazes prontos para impressão</CatalogCardTitle>
                                     <CatalogCardText>
-                                        Admin e subadmin programam as campanhas e enviam os cartazes para o usuario responsavel pela impressao. Nesta tela o seu foco e apenas consultar a descricao da oferta, o periodo e imprimir o material recebido.
+                                        Admin e subadmin programam as campanhas e enviam os cartazes para o usuário responsável pela impressão. Nesta tela o seu foco é apenas consultar a descrição da oferta, o período e imprimir o material recebido.
                                     </CatalogCardText>
                                 </CatalogCardHeader>
 
                                 <InlineNotice>
-                                    Quando a vigencia termina, a promocao sai automaticamente desta area para todos os usuarios. O registro encerrado permanece apenas na visao administrativa de historico promocional.
+                                    Quando a vigência termina, a promoção sai automaticamente desta área para todos os usuários. O registro encerrado permanece apenas na visão administrativa de histórico promocional.
                                 </InlineNotice>
                             </CatalogCard>
                         ) : (
@@ -129,15 +129,15 @@ export default function DashboardPromotions() {
                                 <CatalogCard>
                                     <CatalogCardHeader>
                                         <CatalogCardEyebrow>Fila</CatalogCardEyebrow>
-                                        <CatalogCardTitle>Nova promocao programada</CatalogCardTitle>
+                                        <CatalogCardTitle>Nova promoção programada</CatalogCardTitle>
                                         <CatalogCardText>
-                                            Monte campanhas reaproveitando registros reais do historico, distribua os cartazes para os usuarios responsaveis e mantenha a operacao alinhada entre criacao, programacao e impressao.
+                                            Monte campanhas reaproveitando registros reais do histórico, distribua os cartazes para os usuários responsáveis e mantenha a operação alinhada entre criação, programação e impressão.
                                         </CatalogCardText>
                                     </CatalogCardHeader>
 
                                     {validation.errorList.length ? (
                                         <ErrorSummary>
-                                            <ErrorSummaryTitle>Pendencias da promocao</ErrorSummaryTitle>
+                                            <ErrorSummaryTitle>Pendências da promoção</ErrorSummaryTitle>
                                             {validation.errorList.map(item => (
                                                 <ErrorSummaryItem key={item}>{item}</ErrorSummaryItem>
                                             ))}
@@ -154,7 +154,7 @@ export default function DashboardPromotions() {
 
                                     <CatalogGrid>
                                         <CatalogField $full>
-                                            <CatalogLabel>Nome da promocao</CatalogLabel>
+                                            <CatalogLabel>Nome da promoção</CatalogLabel>
                                             <CatalogInput
                                                 value={form.name}
                                                 maxLength={80}
@@ -168,11 +168,11 @@ export default function DashboardPromotions() {
                                         </CatalogField>
 
                                         <CatalogField $full>
-                                            <CatalogLabel>Descricao da oferta programada</CatalogLabel>
+                                            <CatalogLabel>Descrição da oferta programada</CatalogLabel>
                                             <CatalogInput
                                                 value={form.description}
                                                 maxLength={200}
-                                                placeholder="Ex: Campanha liberada para reposicao entre sexta e domingo"
+                                                placeholder="Ex: Campanha liberada para reposição entre sexta e domingo"
                                                 onChange={event => applyPatch({ description: event.target.value })}
                                             />
                                             <FieldMeta>
@@ -224,7 +224,7 @@ export default function DashboardPromotions() {
                                         </CatalogField>
 
                                         <CatalogField>
-                                            <CatalogLabel>Orientacao base</CatalogLabel>
+                                            <CatalogLabel>Orientação base</CatalogLabel>
                                             <CatalogSelect
                                                 value={form.orientation}
                                                 onChange={event => applyPatch({ orientation: event.target.value })}
@@ -240,11 +240,11 @@ export default function DashboardPromotions() {
                                         </CatalogField>
 
                                         <CatalogField $full>
-                                            <CatalogLabel>Usuarios destinatarios</CatalogLabel>
+                                            <CatalogLabel>Usuários destinatários</CatalogLabel>
 
                                             {!assignableUsers.length ? (
                                                 <EmptyState>
-                                                    Nenhum usuario elegivel foi encontrado para receber a campanha. Revise o cadastro de usuarios antes de liberar a promocao.
+                                                    Nenhum usuário elegível foi encontrado para receber a campanha. Revise o cadastro de usuários antes de liberar a promoção.
                                                 </EmptyState>
                                             ) : (
                                                 <RecipientList>
@@ -268,25 +268,25 @@ export default function DashboardPromotions() {
                                     </CatalogGrid>
 
                                     <InlineNotice>
-                                        A promocao so fica visivel para os usuarios atribuidos, com descricao, periodo e formato definidos. Quando a vigencia expira, a campanha sai da fila operacional e permanece apenas no historico administrativo.
+                                        A promoção só fica visível para os usuários atribuídos, com descrição, período e formato definidos. Quando a vigência expira, a campanha sai da fila operacional e permanece apenas no histórico administrativo.
                                     </InlineNotice>
                                 </CatalogCard>
 
                                 <CatalogCard>
                                     <CatalogCardHeader>
-                                        <CatalogCardEyebrow>Selecao</CatalogCardEyebrow>
-                                        <CatalogCardTitle>Registros disponiveis do historico</CatalogCardTitle>
+                                        <CatalogCardEyebrow>Seleção</CatalogCardEyebrow>
+                                        <CatalogCardTitle>Registros disponíveis do histórico</CatalogCardTitle>
                                         <CatalogCardText>
-                                            Escolha quais cartazes entram na promocao. A selecao conversa diretamente com o modulo de Historico e evita duplicidade entre o que foi criado e o que sera enviado aos usuarios.
+                                            Escolha quais cartazes entram na promoção. A seleção conversa diretamente com o módulo de Histórico e evita duplicidade entre o que foi criado e o que será enviado aos usuários.
                                         </CatalogCardText>
                                     </CatalogCardHeader>
 
                                     <SelectionToolbar>
                                         <CatalogField>
-                                            <CatalogLabel>Buscar no historico</CatalogLabel>
+                                            <CatalogLabel>Buscar no histórico</CatalogLabel>
                                             <CatalogInput
                                                 value={selectionSearch}
-                                                placeholder="Buscar por titulo, oferta ou resumo"
+                                                placeholder="Buscar por título, oferta ou resumo"
                                                 onChange={event => setSelectionSearch(event.target.value)}
                                             />
                                             <FieldMeta>
@@ -307,14 +307,14 @@ export default function DashboardPromotions() {
                                             </CatalogSelect>
                                             <FieldMeta>
                                                 <FieldError />
-                                                <FieldCounter>{availableSources.length} disponivel(is)</FieldCounter>
+                                                <FieldCounter>{availableSources.length} disponível(is)</FieldCounter>
                                             </FieldMeta>
                                         </CatalogField>
                                     </SelectionToolbar>
 
                                     {!availableSources.length ? (
                                         <EmptyState>
-                                            Nenhum registro do historico foi encontrado com os filtros atuais. Gere cartazes ou ajuste a busca para compor a promocao.
+                                            Nenhum registro do histórico foi encontrado com os filtros atuais. Gere cartazes ou ajuste a busca para compor a promoção.
                                         </EmptyState>
                                     ) : (
                                         <SelectionList>
@@ -352,19 +352,19 @@ export default function DashboardPromotions() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>{canManage ? "Fila ativa" : "Fila recebida"}</CatalogCardEyebrow>
-                                <CatalogCardTitle>{canManage ? "Promocoes programadas" : "Cartazes enviados para voce"}</CatalogCardTitle>
+                                <CatalogCardTitle>{canManage ? "Promoções programadas" : "Cartazes enviados para você"}</CatalogCardTitle>
                                 <CatalogCardText>
                                     {canManage
-                                        ? "Acompanhe as campanhas preparadas a partir do historico, os usuarios destinatarios e o periodo em que cada cartaz deve permanecer disponivel."
-                                        : "Consulte as promocoes recebidas, confirme a descricao programada e imprima apenas o material liberado para o seu usuario."}
+                                        ? "Acompanhe as campanhas preparadas a partir do histórico, os usuários destinatários e o período em que cada cartaz deve permanecer disponível."
+                                        : "Consulte as promoções recebidas, confirme a descrição programada e imprima apenas o material liberado para o seu usuário."}
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!orders.length ? (
                                 <EmptyState>
                                     {canManage
-                                        ? "Nenhuma promocao foi criada ainda. Use o formulario acima para montar a primeira fila programada."
-                                        : "Nenhuma promocao esta atribuida ao seu usuario neste momento."}
+                                        ? "Nenhuma promoção foi criada ainda. Use o formulário acima para montar a primeira fila programada."
+                                        : "Nenhuma promoção está atribuída ao seu usuário neste momento."}
                                 </EmptyState>
                             ) : (
                                 <OrderList>
@@ -373,7 +373,7 @@ export default function DashboardPromotions() {
                                             <OrderHeader>
                                                 <div>
                                                     <OrderTitle>{order.name}</OrderTitle>
-                                                    <OrderText>{order.description || "Sem descricao adicional"}</OrderText>
+                                                    <OrderText>{order.description || "Sem descrição adicional"}</OrderText>
                                                     <SelectionMeta>
                                                         <MetaBadge $tone={getOrderStatusTone(order)}>{order.statusLabel}</MetaBadge>
                                                         <MetaBadge>{order.cardsLabel}</MetaBadge>
@@ -404,24 +404,24 @@ export default function DashboardPromotions() {
 
                                             <OrderDetails>
                                                 <OrderDetail>
-                                                    <OrderDetailLabel>Descricao programada</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.description || "Sem descricao adicional"}</OrderDetailValue>
+                                                    <OrderDetailLabel>Descrição programada</OrderDetailLabel>
+                                                    <OrderDetailValue>{order.description || "Sem descrição adicional"}</OrderDetailValue>
                                                 </OrderDetail>
                                                 <OrderDetail>
-                                                    <OrderDetailLabel>Vigencia</OrderDetailLabel>
+                                                    <OrderDetailLabel>Vigência</OrderDetailLabel>
                                                     <OrderDetailValue>{order.periodLabel}</OrderDetailValue>
                                                 </OrderDetail>
                                                 <OrderDetail>
-                                                    <OrderDetailLabel>{canManage ? "Destinatarios" : "Formato"}</OrderDetailLabel>
+                                                    <OrderDetailLabel>{canManage ? "Destinatários" : "Formato"}</OrderDetailLabel>
                                                     <OrderDetailValue>
                                                         {canManage
-                                                            ? (order.assignedUserNames.join(", ") || `${order.assignedUserIds.length} usuario(s)`)
+                                                            ? (order.assignedUserNames.join(", ") || `${order.assignedUserIds.length} usuário(s)`)
                                                             : (order.paperLabel || "--")}
                                                     </OrderDetailValue>
                                                 </OrderDetail>
                                                 <OrderDetail>
                                                     <OrderDetailLabel>{canManage ? "Origem" : "Origem dos cartazes"}</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.entryTitles.join(" - ") || "Sem titulos resolvidos"}</OrderDetailValue>
+                                                    <OrderDetailValue>{order.entryTitles.join(" - ") || "Sem títulos resolvidos"}</OrderDetailValue>
                                                 </OrderDetail>
                                             </OrderDetails>
                                         </OrderCard>
@@ -433,10 +433,10 @@ export default function DashboardPromotions() {
                         {canManage && archivedOrders.length ? (
                             <CatalogCard>
                                 <CatalogCardHeader>
-                                    <CatalogCardEyebrow>Historico administrativo</CatalogCardEyebrow>
-                                    <CatalogCardTitle>Promocoes encerradas</CatalogCardTitle>
+                                    <CatalogCardEyebrow>Histórico administrativo</CatalogCardEyebrow>
+                                    <CatalogCardTitle>Promoções encerradas</CatalogCardTitle>
                                     <CatalogCardText>
-                                        Quando a vigencia termina, a campanha deixa a fila operacional de todos os usuarios e permanece apenas nesta visao para admin e subadmin.
+                                        Quando a vigência termina, a campanha deixa a fila operacional de todos os usuários e permanece apenas nesta visão para admin e subadmin.
                                     </CatalogCardText>
                                 </CatalogCardHeader>
 
@@ -446,7 +446,7 @@ export default function DashboardPromotions() {
                                             <OrderHeader>
                                                 <div>
                                                     <OrderTitle>{order.name}</OrderTitle>
-                                                    <OrderText>{order.description || "Sem descricao adicional"}</OrderText>
+                                                    <OrderText>{order.description || "Sem descrição adicional"}</OrderText>
                                                     <SelectionMeta>
                                                         <MetaBadge>{order.statusLabel}</MetaBadge>
                                                         <MetaBadge>{order.cardsLabel}</MetaBadge>
@@ -466,20 +466,20 @@ export default function DashboardPromotions() {
 
                                             <OrderDetails>
                                                 <OrderDetail>
-                                                    <OrderDetailLabel>Descricao programada</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.description || "Sem descricao adicional"}</OrderDetailValue>
+                                                    <OrderDetailLabel>Descrição programada</OrderDetailLabel>
+                                                    <OrderDetailValue>{order.description || "Sem descrição adicional"}</OrderDetailValue>
                                                 </OrderDetail>
                                                 <OrderDetail>
-                                                    <OrderDetailLabel>Vigencia</OrderDetailLabel>
+                                                    <OrderDetailLabel>Vigência</OrderDetailLabel>
                                                     <OrderDetailValue>{order.periodLabel}</OrderDetailValue>
                                                 </OrderDetail>
                                                 <OrderDetail>
-                                                    <OrderDetailLabel>Destinatarios</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.assignedUserNames.join(", ") || `${order.assignedUserIds.length} usuario(s)`}</OrderDetailValue>
+                                                    <OrderDetailLabel>Destinatários</OrderDetailLabel>
+                                                    <OrderDetailValue>{order.assignedUserNames.join(", ") || `${order.assignedUserIds.length} usuário(s)`}</OrderDetailValue>
                                                 </OrderDetail>
                                                 <OrderDetail>
                                                     <OrderDetailLabel>Origem</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.entryTitles.join(" - ") || "Sem titulos resolvidos"}</OrderDetailValue>
+                                                    <OrderDetailValue>{order.entryTitles.join(" - ") || "Sem títulos resolvidos"}</OrderDetailValue>
                                                 </OrderDetail>
                                             </OrderDetails>
                                         </OrderCard>
@@ -492,7 +492,7 @@ export default function DashboardPromotions() {
                     <PromotionsSidebar>
                         <StatusCard $tone={statusCard.tone}>
                             <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Ativa" : "Atencao"}
+                                {statusCard.tone === "green" ? "Ativa" : "Atenção"}
                             </StatusBadge>
                             <StatusTitle>{statusCard.title}</StatusTitle>
                             <StatusText>{statusCard.description}</StatusText>
@@ -510,19 +510,19 @@ export default function DashboardPromotions() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Recentes</CatalogCardEyebrow>
-                                <CatalogCardTitle>{canManage ? "Ultimas promocoes" : "Ultimas recebidas"}</CatalogCardTitle>
+                                <CatalogCardTitle>{canManage ? "Últimas promoções" : "Últimas recebidas"}</CatalogCardTitle>
                                 <CatalogCardText>
                                     {canManage
                                         ? "Retome rapidamente as filas mais novas para imprimir ou reutilizar como base."
-                                        : "Consulte as ultimas campanhas atribuidas ao seu usuario sem depender de nova configuracao."}
+                                        : "Consulte as últimas campanhas atribuídas ao seu usuário sem depender de nova configuração."}
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!recentOrders.length ? (
                                 <EmptyState>
                                     {canManage
-                                        ? "As promocoes criadas recentemente aparecerao aqui."
-                                        : "As ultimas promocoes recebidas aparecerao aqui."}
+                                        ? "As promoções criadas recentemente aparecerão aqui."
+                                        : "As últimas promoções recebidas aparecerão aqui."}
                                 </EmptyState>
                             ) : (
                                 <ChecklistList>
@@ -541,7 +541,7 @@ export default function DashboardPromotions() {
                                 <CatalogCardEyebrow>Checklist</CatalogCardEyebrow>
                                 <CatalogCardTitle>Diretrizes da fila</CatalogCardTitle>
                                 <CatalogCardText>
-                                    O foco aqui e manter a organizacao da campanha ligada ao que ja foi produzido nos modulos anteriores.
+                                    O foco aqui é manter a organização da campanha ligada ao que já foi produzido nos módulos anteriores.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 

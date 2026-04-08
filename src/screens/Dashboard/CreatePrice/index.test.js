@@ -39,7 +39,7 @@ describe("Dashboard CreatePrice page", () => {
             </BrowserRouter>
         );
 
-        cy.contains("Criar Preco").should("exist");
+        cy.contains("Criar Preço").should("exist");
         cy.contains("Base da composicao").should("exist");
         cy.contains("Regra comercial do cartaz").should("exist");
         cy.contains("Checklist de qualidade").should("exist");

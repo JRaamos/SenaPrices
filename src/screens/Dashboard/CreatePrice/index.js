@@ -113,7 +113,7 @@ export default function DashboardCreatePrice() {
 
                             <StudioGrid>
                                 <StudioField $full>
-                                    <StudioLabel>Descricao principal</StudioLabel>
+                                    <StudioLabel>Descrição principal</StudioLabel>
                                     <StudioInput
                                         value={form.productName}
                                         maxLength={80}
@@ -127,7 +127,7 @@ export default function DashboardCreatePrice() {
                                 </StudioField>
 
                                 <StudioField $full>
-                                    <StudioLabel>Descricao complementar</StudioLabel>
+                                    <StudioLabel>Descrição complementar</StudioLabel>
                                     <StudioInput
                                         value={form.productSubtitle}
                                         maxLength={80}
@@ -573,7 +573,7 @@ export default function DashboardCreatePrice() {
                                 <StudioCardEyebrow>Boas praticas</StudioCardEyebrow>
                                 <StudioCardTitle>Checklist de qualidade</StudioCardTitle>
                                 <StudioCardText>
-                                    Diretrizes de mercado aplicadas para manter padrao profissional na comunicacao de preco.
+                                    Diretrizes de mercado aplicadas para manter padrão profissional na comunicação de preço.
                                 </StudioCardText>
                             </StudioCardHeader>
 
@@ -589,7 +589,7 @@ export default function DashboardCreatePrice() {
 
                         <StudioCard>
                             <StudioCardHeader>
-                                <StudioCardEyebrow>Historico local</StudioCardEyebrow>
+                                <StudioCardEyebrow>Histórico local</StudioCardEyebrow>
                                 <StudioCardTitle>Composicoes recentes</StudioCardTitle>
                                 <StudioCardText>
                                     Versoes validas salvas neste navegador com criptografia da base atual do projeto.
@@ -624,7 +624,7 @@ export default function DashboardCreatePrice() {
                                 <StudioCardEyebrow>Atalhos</StudioCardEyebrow>
                                 <StudioCardTitle>Produtividade da tela</StudioCardTitle>
                                 <StudioCardText>
-                                    Os atalhos reduzem friccao operacional e ajudam a manter o fluxo rapido durante a criacao de cartazes.
+                                    Os atalhos reduzem fricção operacional e ajudam a manter o fluxo rápido durante a criação de cartazes.
                                 </StudioCardText>
                             </StudioCardHeader>
 

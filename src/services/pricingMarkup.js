@@ -7,7 +7,7 @@ export function buildHistoryEntryPrintMarkup(entry) {
     const cards = buildCardsFromHistoryEntry(entry);
 
     return buildPricingDocumentMarkup({
-        title: entry?.title || "Historico SenaPrices",
+        title: entry?.title || "Histórico SenaPrices",
         subtitle: entry?.summaryLabel || entry?.offerTitle || "",
         cards,
     });
@@ -21,11 +21,11 @@ export function buildPromotionPrintMarkup(order, entries = []) {
     const formatLabel = [order?.paperSize, formatOrientation(order?.orientation)]
         .filter(Boolean)
         .join(" ");
-    const subtitleParts = [periodLabel ? `Vigencia ${periodLabel}` : "", formatLabel ? `Formato ${formatLabel}` : "", order?.description || ""]
+    const subtitleParts = [periodLabel ? `Vigência ${periodLabel}` : "", formatLabel ? `Formato ${formatLabel}` : "", order?.description || ""]
         .filter(Boolean);
 
     return buildPricingDocumentMarkup({
-        title: order?.name || "Promocao SenaPrices",
+        title: order?.name || "Promoção SenaPrices",
         subtitle: subtitleParts.join(" - "),
         cards,
     });
@@ -245,13 +245,13 @@ function renderCard(card = {}) {
     return `
         <article class="card">
             <span class="badge">${escapeHtml(card.offerTitle || "Oferta")}</span>
-            <h2 class="title">${escapeHtml(card.title || "Sem descricao")}</h2>
+            <h2 class="title">${escapeHtml(card.title || "Sem descrição")}</h2>
             ${card.subtitle ? `<p class="subtitle">${escapeHtml(card.subtitle)}</p>` : ""}
             <div class="price">${escapeHtml(card.primaryPrice || "R$ --,--")}</div>
             ${card.supportingPrice ? `<div class="support">${escapeHtml(card.supportingPrice)}</div>` : ""}
             ${card.specialLabel ? `<div class="special">${escapeHtml(card.specialLabel)}</div>` : ""}
             <div class="meta">
-                ${card.barcodeLabel ? renderMeta("Codigo", card.barcodeLabel) : ""}
+                ${card.barcodeLabel ? renderMeta("Código", card.barcodeLabel) : ""}
                 ${card.validityLabel ? renderMeta("Validade", card.validityLabel) : ""}
                 ${card.observation ? renderMeta("Observacao", card.observation) : ""}
             </div>

@@ -262,9 +262,9 @@ function renderLabelMarkup(item = {}, settings = DEFAULT_LABEL_SETTINGS) {
 
     return `
         <article class="label">
-            <div class="name">${escapeHtml(item.description1 || "Item sem descricao")}</div>
+            <div class="name">${escapeHtml(item.description1 || "Item sem descrição")}</div>
             ${subtitleParts.length ? `<div class="subtitle-row">${escapeHtml(subtitleParts.join(" - "))}</div>` : ""}
-            <div class="price">${escapeHtml(item.priceLabel || "Sem preco")}</div>
+            <div class="price">${escapeHtml(item.priceLabel || "Sem preço")}</div>
             ${item.secondaryPrice ? `<div class="meta">${escapeHtml(item.secondaryPrice)}</div>` : ""}
             ${item.offerLabel ? `<div class="meta">${escapeHtml(item.offerLabel)}</div>` : ""}
             ${(settings.showBarcode || codeParts.length)
@@ -291,7 +291,7 @@ function buildSingleLabelZpl(item = {}, settings = DEFAULT_LABEL_SETTINGS) {
     lines.push("^LH0,0");
     lines.push("^CI28");
 
-    wrapTextForZpl(normalizeZplText(item.description1 || "Item sem descricao"), widthDots > 700 ? 28 : 24, 2).forEach((line, index) => {
+    wrapTextForZpl(normalizeZplText(item.description1 || "Item sem descrição"), widthDots > 700 ? 28 : 24, 2).forEach((line, index) => {
         lines.push(`^FO${baseX},${currentY + (index * mmToDots(3.8, dpi))}^A0N,${widthDots > 700 ? 34 : 30},${widthDots > 700 ? 28 : 24}^FD${escapeZpl(line)}^FS`);
     });
     currentY += mmToDots(9.4, dpi);
@@ -307,7 +307,7 @@ function buildSingleLabelZpl(item = {}, settings = DEFAULT_LABEL_SETTINGS) {
         currentY += mmToDots(3.8, dpi);
     }
 
-    lines.push(`^FO${baseX},${currentY}^A0N,${widthDots > 700 ? 54 : 48},${widthDots > 700 ? 42 : 36}^FD${escapeZpl(normalizeZplText(item.priceLabel || "Sem preco"))}^FS`);
+    lines.push(`^FO${baseX},${currentY}^A0N,${widthDots > 700 ? 54 : 48},${widthDots > 700 ? 42 : 36}^FD${escapeZpl(normalizeZplText(item.priceLabel || "Sem preço"))}^FS`);
     currentY += mmToDots(8.6, dpi);
 
     if (item.secondaryPrice) {

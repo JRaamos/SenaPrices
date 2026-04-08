@@ -78,7 +78,7 @@ export default function useController() {
         title: "Importar",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Catalogo" },
+            { label: "Catálogo" },
             { label: "Importar" },
         ],
         actions: [
@@ -133,7 +133,7 @@ export default function useController() {
             setLastImportResult(null);
             toast.success(`${nextDataset.rows.length} linha(s) carregadas para revisao.`);
         } catch (error) {
-            toast.error(error?.message || "Nao foi possivel ler o arquivo informado.");
+            toast.error(error?.message || "Não foi possível ler o arquivo informado.");
         } finally {
             setLoading(false);
         }

@@ -159,7 +159,7 @@ export default function DashboardImport() {
                                 <CatalogCardEyebrow>Entrada</CatalogCardEyebrow>
                                 <CatalogCardTitle>Importacao da base de itens</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Esta tela alimenta a mesma base ja usada por cadastro, listagem e criacao de preco. Importe com revisao e estrategia de conflito bem definida.
+                                    Esta tela alimenta a mesma base já usada por cadastro, listagem e criação de preço. Importe com revisão e estratégia de conflito bem definida.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -235,7 +235,7 @@ export default function DashboardImport() {
                                     <ErrorSummaryTitle>Campos obrigatorios sem origem</ErrorSummaryTitle>
                                     {missingRequiredMappings.map(field => (
                                         <ErrorSummaryItem key={field.key}>
-                                            {field.label} ainda nao foi mapeado para nenhuma coluna do arquivo.
+                                            {field.label} ainda não foi mapeado para nenhuma coluna do arquivo.
                                         </ErrorSummaryItem>
                                     ))}
                                 </ErrorSummary>
@@ -327,7 +327,7 @@ export default function DashboardImport() {
                                     <ImportTableHeader>
                                         <ImportTableHeaderCell>Linha</ImportTableHeaderCell>
                                         <ImportTableHeaderCell>Acao</ImportTableHeaderCell>
-                                        <ImportTableHeaderCell>Descricao</ImportTableHeaderCell>
+                                        <ImportTableHeaderCell>Descrição</ImportTableHeaderCell>
                                         <ImportTableHeaderCell>Identificadores</ImportTableHeaderCell>
                                         <ImportTableHeaderCell>Resultado</ImportTableHeaderCell>
                                     </ImportTableHeader>

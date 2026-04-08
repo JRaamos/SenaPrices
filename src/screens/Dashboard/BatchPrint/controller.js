@@ -159,7 +159,7 @@ export default function useController() {
 
     const handleRestoreRecentJob = useCallback((job) => {
         if (!job?.selectedKeys?.length) {
-            toast.error("Este lote recente nao possui selecao restauravel.");
+            toast.error("Este lote recente não possui seleção restaurável.");
             return;
         }
 
@@ -167,12 +167,12 @@ export default function useController() {
         const nextSelectedKeys = job.selectedKeys.filter(item => availableKeys.has(item));
 
         if (!nextSelectedKeys.length) {
-            toast.error("Os registros deste lote nao estao mais disponiveis para restauracao.");
+            toast.error("Os registros deste lote não estão mais disponíveis para restauração.");
             return;
         }
 
         applyPatch({ selectedKeys: nextSelectedKeys });
-        toast.success("Selecao do lote restaurada a partir do historico recente.");
+        toast.success("Seleção do lote restaurada a partir do histórico recente.");
     }, [applyPatch, candidates]);
 
     const handlePrintBatch = useCallback(() => {
@@ -182,7 +182,7 @@ export default function useController() {
         }
 
         if (!uniqueSelectedEntries.length) {
-            toast.error("A selecao atual nao possui cartazes validos para impressao.");
+            toast.error("A seleção atual não possui cartazes válidos para impressão.");
             return;
         }
 
@@ -192,7 +192,7 @@ export default function useController() {
             const printWindow = window.open("", "_blank", "noopener,noreferrer,width=1180,height=820");
 
             if (!printWindow) {
-                toast.error("Nao foi possivel abrir a impressao em lote. Verifique o bloqueio de pop-ups.");
+                toast.error("Não foi possível abrir a impressão em lote. Verifique o bloqueio de pop-ups.");
                 setLoading(false);
                 return;
             }
@@ -238,7 +238,7 @@ export default function useController() {
             }, 250);
         } catch (error) {
             console.log("BatchPrintError", error);
-            toast.error("Nao foi possivel imprimir o lote selecionado.");
+            toast.error("Não foi possível imprimir o lote selecionado.");
             setLoading(false);
         }
     }, [
@@ -275,29 +275,29 @@ export default function useController() {
     }, [handlePrintBatch, handleToggleVisible, ready]);
 
     const header = useMemo(() => ({
-        title: "Impressao em Lote",
+        title: "Impressão em Lote",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Operacao" },
-            { label: "Impressao em Lote" },
+            { label: "Operação" },
+            { label: "Impressão em Lote" },
         ],
         actions: [
             {
-                label: "Historico",
+                label: "Histórico",
                 rounded: true,
                 outline: true,
                 color: "primary",
                 action: () => navigate("dashboard/history"),
             },
             {
-                label: "Promocoes",
+                label: "Promoções",
                 rounded: true,
                 outline: true,
                 color: "primary",
                 action: () => navigate("dashboard/promotions"),
             },
             {
-                label: "Criacao rapida",
+                label: "Criação rápida",
                 rounded: true,
                 color: "secondary",
                 action: () => navigate("dashboard/prices/quick"),
@@ -347,8 +347,8 @@ export default function useController() {
             return [
                 { label: "Perfil", value: currentUserRole },
                 { label: "Fontes visiveis", value: `${visibleCandidates.length}` },
-                { label: "Meu historico", value: `${historyCount}` },
-                { label: "Promocoes atribuidas", value: `${promotionCount}` },
+                { label: "Meu histórico", value: `${historyCount}` },
+                { label: "Promoções atribuidas", value: `${promotionCount}` },
                 { label: "Selecionadas", value: `${selectedCandidates.length}` },
                 { label: "Cartazes unicos", value: `${selectedCards}` },
             ];
@@ -357,8 +357,8 @@ export default function useController() {
         return [
             { label: "Perfil", value: currentUserRole },
             { label: "Fontes visiveis", value: `${visibleCandidates.length}` },
-            { label: "Historico", value: `${historyCount}` },
-            { label: "Promocoes ativas", value: `${promotionCount}` },
+            { label: "Histórico", value: `${historyCount}` },
+            { label: "Promoções ativas", value: `${promotionCount}` },
             { label: "Selecionadas", value: `${selectedCandidates.length}` },
             { label: "Cartazes unicos", value: `${selectedCards}` },
         ];

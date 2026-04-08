@@ -56,7 +56,7 @@ export function buildHistoryStatus({ entries = [], filteredEntries = [] }) {
         return {
             tone: "orange",
             title: "Nenhum resultado encontrado",
-            description: "Revise os filtros aplicados para recuperar os registros do historico operacional.",
+            description: "Revise os filtros aplicados para recuperar os registros do histórico operacional.",
         };
     }
 
@@ -65,14 +65,14 @@ export function buildHistoryStatus({ entries = [], filteredEntries = [] }) {
     if (pendingPrint) {
         return {
             tone: "orange",
-            title: "Historico com registros pendentes",
-            description: `${pendingPrint} registro(s) desta visao ainda nao possuem impressao confirmada.`,
+            title: "Histórico com registros pendentes",
+            description: `${pendingPrint} registro(s) desta visão ainda não possuem impressão confirmada.`,
         };
     }
 
     return {
         tone: "green",
-        title: "Historico consistente",
+        title: "Histórico consistente",
         description: "Todos os registros visiveis ja possuem rastreabilidade operacional completa.",
     };
 }
@@ -87,7 +87,7 @@ export function buildHistoryRow(entry) {
         sourceLabel: getSourceLabel(entry.source),
         statusLabel: entry.printedAt ? "Impresso" : "Salvo",
         savedLabel: formatDateTime(entry.savedAt),
-        printedLabel: entry.printedAt ? formatDateTime(entry.printedAt) : "Ainda nao impresso",
+        printedLabel: entry.printedAt ? formatDateTime(entry.printedAt) : "Ainda não impresso",
         relativeSavedAt: formatRelativeDate(entry.savedAt),
         relativePrintedAt: entry.printedAt ? formatRelativeDate(entry.printedAt) : "Pendente",
         cardsLabel: `${entry.totalCards} cartaz(es)`,
@@ -116,10 +116,10 @@ export function formatRelativeDate(value) {
 
 function getSourceLabel(source) {
     if (source === "quick") {
-        return "Criacao Rapida";
+        return "Criação Rápida";
     }
 
-    return "Criar Preco";
+    return "Criar Preço";
 }
 
 function getOrientationLabel(value) {

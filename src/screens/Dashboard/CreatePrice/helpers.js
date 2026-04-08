@@ -61,14 +61,14 @@ export function validateDraft(values) {
         if (!validMoment.isValid()) {
             errors.validUntil = "Informe uma data de validade valida.";
         } else if (validMoment.isBefore(moment().startOf("day"))) {
-            errors.validUntil = "A validade nao pode estar no passado.";
+            errors.validUntil = "A validade não pode estar no passado.";
         }
     }
 
     if (draft.priceType === "avista") {
         const cashPrice = parseCurrencyValue(draft.cashPrice);
         if (cashPrice === null) {
-            errors.cashPrice = "Informe um preco a vista valido.";
+            errors.cashPrice = "Informe um preço à vista válido.";
         }
     }
 
@@ -77,11 +77,11 @@ export function validateDraft(values) {
         const toPrice = parseCurrencyValue(draft.toPrice);
 
         if (fromPrice === null) {
-            errors.fromPrice = "Informe o preco original da oferta.";
+            errors.fromPrice = "Informe o preço original da oferta.";
         }
 
         if (toPrice === null) {
-            errors.toPrice = "Informe o preco promocional da oferta.";
+            errors.toPrice = "Informe o preço promocional da oferta.";
         }
 
         if (fromPrice !== null && toPrice !== null && toPrice >= fromPrice) {
@@ -144,7 +144,7 @@ export function buildPreview(draftValues) {
     const priceTypeMeta = PRICE_TYPE_OPTIONS.find(item => item.value === draft.priceType);
     const orientationMeta = ORIENTATION_OPTIONS.find(item => item.value === draft.orientation);
 
-    const title = draft.productName || "Descricao do produto";
+    const title = draft.productName || "Descrição do produto";
     const subtitleParts = [draft.productSubtitle, draft.sectionName, draft.unitLabel].filter(Boolean);
     const subtitle = subtitleParts.join(" - ");
 
@@ -395,12 +395,12 @@ export function parseCurrencyValue(value) {
 }
 
 export function formatLastSaved(value) {
-    if (!value) return "Ainda nao salvo";
+    if (!value) return "Ainda não salvo";
 
     const parsed = moment(value);
 
     if (!parsed.isValid()) {
-        return "Ainda nao salvo";
+        return "Ainda não salvo";
     }
 
     return `${parsed.format("HH:mm")} - ${parsed.fromNow()}`;

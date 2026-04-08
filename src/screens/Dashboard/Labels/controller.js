@@ -140,7 +140,7 @@ export default function useController() {
         if (!item?.id) return;
 
         if (!item.canSelect) {
-            toast.error("Este item ainda nao possui uma precificacao rastreavel para gerar etiqueta.");
+            toast.error("Este item ainda não possui uma precificação rastreável para gerar etiqueta.");
             return;
         }
 
@@ -195,7 +195,7 @@ export default function useController() {
 
     const handleClearSelection = useCallback(() => {
         setSelectedQuantities({});
-        toast.info("Selecao de etiquetas limpa com sucesso.");
+        toast.info("Seleção de etiquetas limpa com sucesso.");
     }, []);
 
     const registerRecentJob = useCallback((title) => {
@@ -212,7 +212,7 @@ export default function useController() {
 
     const handlePrint = useCallback(() => {
         if (!selectedItems.length) {
-            toast.error("Selecione ao menos um item com preco valido para imprimir etiquetas.");
+            toast.error("Selecione ao menos um item com preço válido para imprimir etiquetas.");
             return;
         }
 
@@ -222,7 +222,7 @@ export default function useController() {
             const printWindow = window.open("", "_blank", "noopener,noreferrer,width=1180,height=820");
 
             if (!printWindow) {
-                toast.error("Nao foi possivel abrir a impressao das etiquetas. Verifique o bloqueio de pop-ups.");
+                toast.error("Não foi possível abrir a impressão das etiquetas. Verifique o bloqueio de pop-ups.");
                 setLoading(false);
                 return;
             }
@@ -247,18 +247,18 @@ export default function useController() {
                 printWindow.print();
                 printWindow.close();
                 setLoading(false);
-                toast.success("Lote de etiquetas enviado para impressao.");
+                toast.success("Lote de etiquetas enviado para impressão.");
             }, 250);
         } catch (error) {
             console.log("LabelsPrintError", error);
-            toast.error("Nao foi possivel imprimir o lote de etiquetas.");
+            toast.error("Não foi possível imprimir o lote de etiquetas.");
             setLoading(false);
         }
     }, [registerRecentJob, selectedItems, settings, totalLabels, user]);
 
     const handleGenerateZpl = useCallback(() => {
         if (!selectedItems.length) {
-            toast.error("Selecione ao menos um item com preco valido para gerar ZPL.");
+            toast.error("Selecione ao menos um item com preço válido para gerar ZPL.");
             return;
         }
 
@@ -274,7 +274,7 @@ export default function useController() {
         setZplCode(nextCode);
         setShowZplModal(true);
         registerRecentJob(title);
-        toast.success("Codigo ZPL gerado com sucesso.");
+        toast.success("Código ZPL gerado com sucesso.");
     }, [registerRecentJob, selectedItems, settings]);
 
     const handleCloseZpl = useCallback(() => {
@@ -283,7 +283,7 @@ export default function useController() {
 
     const handleRestoreRecentJob = useCallback((job) => {
         if (!job?.selectedItemIds?.length) {
-            toast.error("Este lote recente nao possui itens restauraveis.");
+            toast.error("Este lote recente não possui itens restauráveis.");
             return;
         }
 
@@ -294,12 +294,12 @@ export default function useController() {
         );
 
         if (!Object.keys(restored).length) {
-            toast.error("Os itens deste lote nao estao mais disponiveis com preco valido.");
+            toast.error("Os itens deste lote não estão mais disponíveis com preço válido.");
             return;
         }
 
         setSelectedQuantities(restored);
-        toast.success("Selecao de etiquetas restaurada com sucesso.");
+        toast.success("Seleção de etiquetas restaurada com sucesso.");
     }, [rows, settings.defaultCopies]);
 
     const handleCopyZpl = useCallback(async () => {
@@ -309,10 +309,10 @@ export default function useController() {
 
         try {
             await navigator.clipboard.writeText(zplCode);
-            toast.success("Codigo ZPL copiado para a area de transferencia.");
+            toast.success("Código ZPL copiado para a área de transferência.");
         } catch (error) {
             console.log("CopyZplError", error);
-            toast.error("Nao foi possivel copiar o codigo ZPL automaticamente neste ambiente.");
+            toast.error("Não foi possível copiar o código ZPL automaticamente neste ambiente.");
         }
     }, [zplCode]);
 
@@ -359,7 +359,7 @@ export default function useController() {
         title: "Etiquetas",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Operacao" },
+            { label: "Operação" },
             { label: "Etiquetas" },
         ],
         actions: [
@@ -371,14 +371,14 @@ export default function useController() {
                 action: () => navigate("dashboard/items"),
             },
             {
-                label: "Criar preco",
+                label: "Criar preço",
                 rounded: true,
                 outline: true,
                 color: "primary",
                 action: () => navigate("dashboard/prices/create"),
             },
             {
-                label: "Historico",
+                label: "Histórico",
                 rounded: true,
                 color: "secondary",
                 action: () => navigate("dashboard/history"),
@@ -388,7 +388,7 @@ export default function useController() {
 
     const actions = useMemo(() => ([
         {
-            label: "Limpar selecao",
+            label: "Limpar seleção",
             color: "error",
             outline: true,
             rounded: true,
@@ -398,8 +398,8 @@ export default function useController() {
         {
             label: visibleRows.filter(item => item.canSelect).length
                 && visibleRows.filter(item => item.canSelect).every(item => Number(selectedQuantities[item.id]) > 0)
-                ? "Desmarcar visiveis"
-                : "Selecionar visiveis",
+                ? "Desmarcar visíveis"
+                : "Selecionar visíveis",
             color: "primary",
             outline: true,
             rounded: true,
@@ -437,9 +437,9 @@ export default function useController() {
         const missingPriceItems = visibleRows.length - pricedItems;
 
         return [
-            { label: "Itens visiveis", value: `${visibleRows.length}` },
-            { label: "Com preco", value: `${pricedItems}` },
-            { label: "Sem preco", value: `${missingPriceItems}` },
+            { label: "Itens visíveis", value: `${visibleRows.length}` },
+            { label: "Com preço", value: `${pricedItems}` },
+            { label: "Sem preço", value: `${missingPriceItems}` },
             { label: "Selecionados", value: `${selectedItems.length}` },
             { label: "Etiquetas", value: `${totalLabels}` },
             { label: "Formato", value: `${settings.widthMm}x${settings.heightMm} mm` },

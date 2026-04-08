@@ -82,7 +82,7 @@ export function validateQuickDraft(values) {
 
         if (draft.priceType === "avista") {
             if (parseCurrencyValue(row.cashPrice) === null) {
-                errors.push("Informe um preco a vista valido.");
+                errors.push("Informe um preço à vista válido.");
             }
         }
 
@@ -91,15 +91,15 @@ export function validateQuickDraft(values) {
             const toPrice = parseCurrencyValue(row.toPrice);
 
             if (fromPrice === null) {
-                errors.push("Informe o preco original da linha.");
+                errors.push("Informe o preço original da linha.");
             }
 
             if (toPrice === null) {
-                errors.push("Informe o preco promocional da linha.");
+                errors.push("Informe o preço promocional da linha.");
             }
 
             if (fromPrice !== null && toPrice !== null && toPrice >= fromPrice) {
-                errors.push("O preco promocional deve ser menor que o preco original.");
+                errors.push("O preço promocional deve ser menor que o preço original.");
             }
         }
 
@@ -141,7 +141,7 @@ export function validateQuickDraft(values) {
         if (!validMoment?.isValid()) {
             draftErrors.push("Informe uma data de validade valida.");
         } else if (validMoment.isBefore(moment().startOf("day"))) {
-            draftErrors.push("A validade nao pode estar no passado.");
+            draftErrors.push("A validade não pode estar no passado.");
         }
     }
 
@@ -153,7 +153,7 @@ export function validateQuickDraft(values) {
     }
 
     if (draft.rows.some(row => isDigitsOnly(row.query))) {
-        warningList.push("Linhas digitadas apenas com EAN imprimem um titulo tecnico; prefira descricao de produto quando possivel.");
+        warningList.push("Linhas digitadas apenas com EAN imprimem um título técnico; prefira descrição de produto quando possível.");
     }
 
     return {
@@ -257,7 +257,7 @@ export function buildBatchPrintMarkup(draftValues, validRows) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Impressao rapida - SenaPrices</title>
+    <title>Impressão rápida - SenaPrices</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -403,9 +403,9 @@ export function buildBatchPrintMarkup(draftValues, validRows) {
 }
 
 export function formatLastSaved(value) {
-    if (!value) return "Ainda nao salvo";
+    if (!value) return "Ainda não salvo";
     const parsed = moment(value);
-    if (!parsed.isValid()) return "Ainda nao salvo";
+    if (!parsed.isValid()) return "Ainda não salvo";
     return `${parsed.format("HH:mm")} - ${parsed.fromNow()}`;
 }
 
@@ -417,7 +417,7 @@ export function formatRecentDate(value) {
 }
 
 export function buildRowTitle(query) {
-    if (!query) return "Produto nao informado";
+    if (!query) return "Produto não informado";
     if (isDigitsOnly(query) && query.length === 13) {
         return `EAN ${query}`;
     }

@@ -141,7 +141,7 @@ export default function useController() {
         title: "Itens",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Catalogo" },
+            { label: "Catálogo" },
             { label: "Itens" },
         ],
         actions: [
@@ -182,7 +182,7 @@ export default function useController() {
             setModal({
                 type: "confirm",
                 title: "Trocar item em edicao?",
-                text: "Existem alteracoes locais ainda nao salvas. Se continuar, elas serao descartadas.",
+                text: "Existem alterações locais ainda não salvas. Se continuar, elas serão descartadas.",
                 action: changeSelection,
             });
             return;
@@ -231,7 +231,7 @@ export default function useController() {
             toast.success("Item atualizado com sucesso.");
             return updatedItem;
         } catch (error) {
-            toast.error(error?.message || "Nao foi possivel atualizar o item.");
+            toast.error(error?.message || "Não foi possível atualizar o item.");
             return false;
         } finally {
             setLoading(false);
@@ -254,7 +254,7 @@ export default function useController() {
             toast.success("Item duplicado com sucesso. Revise os identificadores antes de usar.");
             return duplicatedItem;
         } catch (error) {
-            toast.error(error?.message || "Nao foi possivel duplicar o item.");
+            toast.error(error?.message || "Não foi possível duplicar o item.");
             return false;
         } finally {
             setLoading(false);
@@ -296,12 +296,12 @@ export default function useController() {
 
     const handleCreatePriceFromItem = useCallback((item = selectedItem) => {
         if (!item) {
-            toast.error("Selecione um item para enviar para a criacao de preco.");
+            toast.error("Selecione um item para enviar para a criação de preço.");
             return;
         }
 
         saveCatalogPriceSeed(item);
-        toast.success("Item enviado para a criacao de preco.");
+        toast.success("Item enviado para a criação de preço.");
         navigate("dashboard/prices/create");
     }, [navigate, selectedItem]);
 
@@ -330,7 +330,7 @@ export default function useController() {
             action: () => handleDuplicateItem(selectedItem),
         },
         !selectedItem ? null : {
-            label: "Criar preco",
+            label: "Criar preço",
             color: "primary",
             outline: true,
             rounded: true,

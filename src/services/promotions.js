@@ -99,23 +99,23 @@ export function sanitizePromotionSeed(values = {}) {
 
 function assertPromotionOrder(order) {
     if (order.name.length < 3) {
-        throw new Error("Informe um nome de promocao com pelo menos 3 caracteres.");
+        throw new Error("Informe um nome de promoção com pelo menos 3 caracteres.");
     }
 
     if (!order.validFrom || !order.validTo) {
-        throw new Error("Informe o periodo de vigencia da promocao.");
+        throw new Error("Informe o período de vigência da promoção.");
     }
 
     if (order.validTo < order.validFrom) {
-        throw new Error("A data final da promocao nao pode ser anterior ao inicio.");
+        throw new Error("A data final da promoção não pode ser anterior ao início.");
     }
 
     if (!order.historyEntryIds.length) {
-        throw new Error("Selecione ao menos um registro do historico para compor a promocao.");
+        throw new Error("Selecione ao menos um registro do histórico para compor a promoção.");
     }
 
     if (!order.assignedUserIds.length) {
-        throw new Error("Selecione ao menos um usuario para receber a promocao.");
+        throw new Error("Selecione ao menos um usuário para receber a promoção.");
     }
 }
 

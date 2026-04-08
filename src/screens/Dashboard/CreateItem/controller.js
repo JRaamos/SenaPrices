@@ -108,7 +108,7 @@ export default function useController() {
 
             if (openCreatePrice) {
                 saveCatalogPriceSeed(createdItem);
-                toast.success("Item cadastrado e enviado para a criacao de preco.");
+                toast.success("Item cadastrado e enviado para a criação de preço.");
                 navigate("dashboard/prices/create");
             } else {
                 toast.success("Item cadastrado com sucesso.");
@@ -116,7 +116,7 @@ export default function useController() {
 
             return createdItem;
         } catch (error) {
-            toast.error(error?.message || "Nao foi possivel salvar o item.");
+            toast.error(error?.message || "Não foi possível salvar o item.");
             return false;
         } finally {
             setLoading(false);
@@ -151,7 +151,7 @@ export default function useController() {
         title: "Criar Item",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Catalogo" },
+            { label: "Catálogo" },
             { label: "Criar Item" },
         ],
         actions: [
@@ -172,7 +172,7 @@ export default function useController() {
                 action: () => navigate("dashboard/items/import"),
             },
             {
-                label: "Criar preco",
+                label: "Criar preço",
                 icon: "products",
                 rounded: true,
                 color: "primary",
@@ -199,7 +199,7 @@ export default function useController() {
             action: () => handleSave(false),
         },
         {
-            label: "Salvar e criar preco",
+            label: "Salvar e criar preço",
             color: "primary",
             rounded: true,
             loadable: true,

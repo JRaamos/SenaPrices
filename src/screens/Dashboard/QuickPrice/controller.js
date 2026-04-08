@@ -89,7 +89,7 @@ export default function useController() {
 
     const addRow = useCallback(() => {
         if (draft.rows.length >= QUICK_PRICE_LIMITS.rowsMax) {
-            toast.info(`O lote rapido aceita ate ${QUICK_PRICE_LIMITS.rowsMax} linhas por vez.`);
+            toast.info(`O lote rápido aceita até ${QUICK_PRICE_LIMITS.rowsMax} linhas por vez.`);
             return;
         }
 
@@ -138,7 +138,7 @@ export default function useController() {
         } = options;
 
         if (!validation.isValid) {
-            toast.error("Revise todas as linhas antes de salvar o lote rapido.");
+            toast.error("Revise todas as linhas antes de salvar o lote rápido.");
             return false;
         }
 
@@ -158,8 +158,8 @@ export default function useController() {
                 priceType: snapshot.priceType,
                 paperSize: snapshot.draft.paperSize,
                 orientation: snapshot.draft.orientation,
-                title: snapshot.offerTitle || `Lote rapido com ${snapshot.totalRows} cartaz(es)`,
-                offerTitle: snapshot.offerTitle || "Criacao Rapida",
+                title: snapshot.offerTitle || `Lote rápido com ${snapshot.totalRows} cartaz(es)`,
+                offerTitle: snapshot.offerTitle || "Criação Rápida",
                 summaryLabel: `${snapshot.totalRows} cartaz(es) - ${snapshot.draft.paperSize} ${orientationLabel}`,
                 records: validation.validRows.map(row => {
                     const preview = buildRowPreview(draft, row);
@@ -183,7 +183,7 @@ export default function useController() {
         }
 
         if (showToast) {
-            toast.success(`${validation.validRows.length} linha(s) salvas no historico rapido.`);
+            toast.success(`${validation.validRows.length} linha(s) salvas no histórico rápido.`);
         }
 
         return snapshot;
@@ -210,7 +210,7 @@ export default function useController() {
             const printWindow = window.open("", "_blank", "noopener,noreferrer,width=1100,height=760");
 
             if (!printWindow) {
-                toast.error("Nao foi possivel abrir a impressao. Verifique se o navegador bloqueou pop-ups.");
+                toast.error("Não foi possível abrir a impressão. Verifique se o navegador bloqueou pop-ups.");
                 setLoading(false);
                 return;
             }
@@ -232,8 +232,8 @@ export default function useController() {
                 priceType: snapshot.priceType,
                 paperSize: snapshot.draft.paperSize,
                 orientation: snapshot.draft.orientation,
-                title: snapshot.offerTitle || `Lote rapido com ${snapshot.totalRows} cartaz(es)`,
-                offerTitle: snapshot.offerTitle || "Criacao Rapida",
+                title: snapshot.offerTitle || `Lote rápido com ${snapshot.totalRows} cartaz(es)`,
+                offerTitle: snapshot.offerTitle || "Criação Rápida",
                 summaryLabel: `${snapshot.totalRows} cartaz(es) - ${snapshot.draft.paperSize} ${orientationLabel}`,
                 records: validation.validRows.map(row => {
                     const preview = buildRowPreview(draft, row);
@@ -273,7 +273,7 @@ export default function useController() {
         const nextDraft = sanitizeQuickDraft(snapshot.draft);
         setDraft(nextDraft);
         setActiveRowId(nextDraft?.rows?.[0]?.id || null);
-        toast.success("Lote rapido restaurado com sucesso.");
+        toast.success("Lote rápido restaurado com sucesso.");
     }, []);
 
     const handleClearDraft = useCallback(() => {
@@ -286,14 +286,14 @@ export default function useController() {
         setDraft(nextDraft);
         setActiveRowId(nextDraft.rows[0].id);
         setLastSavedAt(null);
-        toast.success("Rascunho rapido limpo com sucesso.");
+        toast.success("Rascunho rápido limpo com sucesso.");
     }, []);
 
     const confirmClearDraft = useCallback(() => {
         setModal({
             type: "confirm",
-            title: "Deseja limpar este lote rapido?",
-            text: "As linhas atuais serao removidas do rascunho local. O historico salvo continua disponivel para restauracao.",
+            title: "Deseja limpar este lote rápido?",
+            text: "As linhas atuais serão removidas do rascunho local. O histórico salvo continua disponível para restauração.",
             action: handleClearDraft,
         });
     }, [handleClearDraft, setModal]);
@@ -328,15 +328,15 @@ export default function useController() {
     }, [addRow, handlePrintBatch, handleSaveBatch, ready]);
 
     const header = useMemo(() => ({
-        title: "Criacao Rapida",
+        title: "Criação Rápida",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Operacao" },
-            { label: "Criacao Rapida" },
+            { label: "Operação" },
+            { label: "Criação Rápida" },
         ],
         actions: [
             {
-                label: "Criar preco",
+                label: "Criar preço",
                 rounded: true,
                 outline: true,
                 color: "primary",
@@ -349,7 +349,7 @@ export default function useController() {
                 action: () => navigate("dashboard"),
             },
             {
-                label: "Historico",
+                label: "Histórico",
                 rounded: true,
                 outline: true,
                 color: "primary",
@@ -416,7 +416,7 @@ export default function useController() {
     const recentItems = useMemo(() => (
         recentBatches.map(item => ({
             ...item,
-            helper: `${item.totalRows} linha(s) - ${item.offerTitle || "Lote rapido"}`,
+            helper: `${item.totalRows} linha(s) - ${item.offerTitle || "Lote rápido"}`,
             relativeDate: formatRecentDate(item.createdAt),
         }))
     ), [recentBatches]);
@@ -424,7 +424,7 @@ export default function useController() {
     const shortcuts = useMemo(() => ([
         {
             label: "Ctrl + S",
-            description: "Salva o lote rapido quando todas as linhas estiverem consistentes.",
+            description: "Salva o lote rápido quando todas as linhas estiverem consistentes.",
         },
         {
             label: "Ctrl + P",
@@ -432,7 +432,7 @@ export default function useController() {
         },
         {
             label: "Ctrl + Enter",
-            description: "Adiciona uma nova linha de trabalho ao lote rapido.",
+            description: "Adiciona uma nova linha de trabalho ao lote rápido.",
         },
     ]), []);
 

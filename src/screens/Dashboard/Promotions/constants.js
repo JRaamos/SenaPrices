@@ -22,21 +22,21 @@ export const PROMOTION_ORIENTATION_OPTIONS = [
 
 export const PROMOTION_SOURCE_OPTIONS = [
     { value: "", label: "Todas as fontes" },
-    { value: "manual", label: "Criar Preco" },
-    { value: "quick", label: "Criacao Rapida" },
+    { value: "manual", label: "Criar Preço" },
+    { value: "quick", label: "Criação Rápida" },
 ];
 
 export const PROMOTION_GUIDELINES = [
     {
-        title: "Monte a fila a partir do historico real",
-        description: "Promocoes devem reaproveitar registros que ja passaram pelos fluxos de criacao e revisao, evitando cartazes divergentes.",
+        title: "Monte a fila a partir do histórico real",
+        description: "Promoções devem reaproveitar registros que já passaram pelos fluxos de criação e revisão, evitando cartazes divergentes.",
     },
     {
-        title: "Use vigencia clara",
-        description: "Definir inicio e fim da promocao reduz risco de material antigo permanecer ativo na operacao.",
+        title: "Use vigência clara",
+        description: "Definir início e fim da promoção reduz risco de material antigo permanecer ativo na operação.",
     },
     {
         title: "Imprima a partir da fila",
-        description: "Ao concentrar a execucao na fila, o sistema preserva rastreabilidade para futuras etapas de lote, auditoria e manutencao.",
+        description: "Ao concentrar a execução na fila, o sistema preserva rastreabilidade para futuras etapas de lote, auditoria e manutenção.",
     },
 ];

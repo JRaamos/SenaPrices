@@ -1,9 +1,9 @@
 export const IMPORT_TARGET_FIELDS = [
     { key: "internalCode", label: "Codigo interno", required: false },
     { key: "ean13", label: "EAN-13", required: false },
-    { key: "description1", label: "Descricao principal", required: true },
-    { key: "description2", label: "Descricao complementar", required: false },
-    { key: "description3", label: "Descricao adicional", required: false },
+    { key: "description1", label: "Descrição principal", required: true },
+    { key: "description2", label: "Descrição complementar", required: false },
+    { key: "description3", label: "Descrição adicional", required: false },
     { key: "section", label: "Secao", required: false },
     { key: "unit", label: "Unidade", required: false },
 ];
@@ -47,7 +47,7 @@ export const IMPORT_GUIDELINES = [
     },
     {
         title: "Importe para a mesma base",
-        description: "A carga desta tela alimenta diretamente o catalogo que ja sustenta cadastro, listagem e criacao de preco.",
+        description: "A carga desta tela alimenta diretamente o catálogo que já sustenta cadastro, listagem e criação de preço.",
     },
 ];
 

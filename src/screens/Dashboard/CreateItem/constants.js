@@ -36,7 +36,7 @@ export const ITEM_GUIDELINES = [
         description: "Evite duplicidade de EAN ou codigo interno para preservar rastreabilidade entre cadastro e operacao.",
     },
     {
-        title: "Descricao pronta para cartaz",
+        title: "Descrição pronta para cartaz",
         description: "Mantenha a descricao principal curta e reserve os complementos para dados que realmente ajudam a leitura.",
     },
     {

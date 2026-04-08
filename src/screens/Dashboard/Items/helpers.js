@@ -71,8 +71,8 @@ export function buildCatalogStatus({ items, filteredItems, isEditorDirty }) {
     if (!items.length) {
         return {
             tone: "orange",
-            title: "Catalogo em formacao",
-            description: "Ainda nao existem itens cadastrados nesta base. Comece pela fundacao do catalogo.",
+            title: "Catálogo em formação",
+            description: "Ainda não existem itens cadastrados nesta base. Comece pela fundação do catálogo.",
         };
     }
 
@@ -80,13 +80,13 @@ export function buildCatalogStatus({ items, filteredItems, isEditorDirty }) {
         return {
             tone: "orange",
             title: "Edicao pendente",
-            description: "Existem alteracoes locais ainda nao persistidas para o item selecionado.",
+            description: "Existem alterações locais ainda não persistidas para o item selecionado.",
         };
     }
 
     return {
         tone: "green",
-        title: "Catalogo operacional",
+        title: "Catálogo operacional",
         description: `${filteredItems.length} item(ns) disponiveis na visao atual com a mesma base usada na precificacao.`,
     };
 }

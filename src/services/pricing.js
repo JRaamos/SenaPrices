@@ -50,7 +50,7 @@ export function recordPricingOperation(values = {}) {
         priceType: values.priceType,
         paperSize: values.paperSize,
         orientation: values.orientation,
-        title: values.title || nextRecords[0]?.title || "Operacao sem titulo",
+        title: values.title || nextRecords[0]?.title || "Operação sem título",
         offerTitle: values.offerTitle || nextRecords[0]?.offerTitle || "",
         summaryLabel: values.summaryLabel || "",
         totalCards: nextRecords.length,

@@ -94,7 +94,7 @@ export default function DashboardBatchPrint() {
                                 <CatalogCardEyebrow>Consulta</CatalogCardEyebrow>
                                 <CatalogCardTitle>Fila unificada de impressao</CatalogCardTitle>
                                 <CatalogCardText>
-                                    A tela consolida fontes reais de Historico e Promocoes para montar lotes sem duplicar cadastro, sem recriar cartazes e com rastreabilidade preservada.
+                                    A tela consolida fontes reais de Histórico e Promoções para montar lotes sem duplicar cadastro, sem recriar cartazes e com rastreabilidade preservada.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -103,7 +103,7 @@ export default function DashboardBatchPrint() {
                                     <CatalogLabel>Buscar no lote</CatalogLabel>
                                     <CatalogInput
                                         value={draft.search}
-                                        placeholder="Buscar por titulo, descricao, periodo ou origem"
+                                        placeholder="Buscar por título, descrição, período ou origem"
                                         onChange={event => applyPatch({ search: event.target.value })}
                                     />
                                     <FieldMeta>
@@ -158,8 +158,8 @@ export default function DashboardBatchPrint() {
 
                             <InlineNotice>
                                 {canManage
-                                    ? "Admin e subadmin podem montar o lote com historico operacional e promocoes ativas. O sistema deduplica registros repetidos antes da impressao para evitar cartazes em dobro."
-                                    : "O usuario operacional ve apenas o proprio historico e as promocoes atribuidas ao seu usuario. Registros expirados ou nao autorizados nao entram na fila."}
+                                    ? "Admin e subadmin podem montar o lote com histórico operacional e promoções ativas. O sistema deduplica registros repetidos antes da impressão para evitar cartazes em dobro."
+                                    : "O usuário operacional vê apenas o próprio histórico e as promoções atribuídas ao seu usuário. Registros expirados ou não autorizados não entram na fila."}
                             </InlineNotice>
                         </CatalogCard>
 
@@ -174,7 +174,7 @@ export default function DashboardBatchPrint() {
 
                             {!candidates.length ? (
                                 <EmptyState>
-                                    Nenhum registro disponivel nesta visao. Gere cartazes no Historico ou aguarde novas promocoes atribuidas para alimentar a fila de impressao.
+                                    Nenhum registro disponível nesta visão. Gere cartazes no Histórico ou aguarde novas promoções atribuídas para alimentar a fila de impressão.
                                 </EmptyState>
                             ) : (
                                 <BatchList>

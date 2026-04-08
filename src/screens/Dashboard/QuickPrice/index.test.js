@@ -39,7 +39,7 @@ describe("Dashboard QuickPrice page", () => {
             </BrowserRouter>
         );
 
-        cy.contains("Criacao Rapida").should("exist");
+        cy.contains("Criação Rápida").should("exist");
         cy.contains("Lote rapido de cartazes").should("exist");
         cy.contains("Checklist de operacao").should("exist");
 

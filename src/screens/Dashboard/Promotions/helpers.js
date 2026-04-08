@@ -43,33 +43,33 @@ export function validatePromotionDraft(values, historyEntries = [], canManage = 
     const errors = {};
 
     if (draft.name.length < 3) {
-        errors.name = "Informe um nome para a promocao com pelo menos 3 caracteres.";
+        errors.name = "Informe um nome para a promoção com pelo menos 3 caracteres.";
     }
 
     if (!draft.validTo) {
-        errors.validTo = "Informe a data final da promocao.";
+        errors.validTo = "Informe a data final da promoção.";
     }
 
     if (draft.validFrom && draft.validTo && draft.validTo < draft.validFrom) {
-        errors.validTo = "A data final nao pode ser anterior ao inicio da promocao.";
+        errors.validTo = "A data final não pode ser anterior ao início da promoção.";
     }
 
     if (!draft.selectedEntryIds.length) {
-        errors.selectedEntryIds = "Selecione ao menos um registro do historico.";
+        errors.selectedEntryIds = "Selecione ao menos um registro do histórico.";
     }
 
     if (canManage && !draft.assignedUserIds.length) {
-        errors.assignedUserIds = "Selecione ao menos um usuario destinatario.";
+        errors.assignedUserIds = "Selecione ao menos um usuário destinatário.";
     }
 
     const missingEntries = draft.selectedEntryIds.filter(id => !historyEntries.find(item => item.id === id));
     if (missingEntries.length) {
-        errors.selectedEntryIds = "Um ou mais registros selecionados nao estao mais disponiveis no historico.";
+        errors.selectedEntryIds = "Um ou mais registros selecionados não estão mais disponíveis no histórico.";
     }
 
     const warnings = [];
     if (!draft.description) {
-        warnings.push("Adicionar uma descricao curta ajuda a equipe a identificar a promocao com mais rapidez.");
+        warnings.push("Adicionar uma descrição curta ajuda a equipe a identificar a promoção com mais rapidez.");
     }
 
     const errorList = Object.values(errors);
@@ -127,8 +127,8 @@ export function buildPromotionSeedDraft(currentDraft, seed, historyEntries = [])
     const nextName = safeSeed.name
         || safeDraft.name
         || (selectedEntries.length === 1
-            ? `Promocao ${firstEntry.title}`
-            : `Promocao com ${totalCards} cartaz(es)`);
+            ? `Promoção ${firstEntry.title}`
+            : `Promoção com ${totalCards} cartaz(es)`);
 
     return sanitizePromotionDraft({
         ...safeDraft,
@@ -156,27 +156,27 @@ export function buildPromotionStatus({
     if (!orders.length && !validation?.draft?.selectedEntryIds?.length) {
         return {
             tone: "orange",
-            title: canManage ? "Fila de promocoes vazia" : "Nenhuma promocao recebida",
+            title: canManage ? "Fila de promoções vazia" : "Nenhuma promoção recebida",
             description: canManage
-                ? "Selecione registros do historico para comecar a organizar campanhas e impressao futura."
-                : "Quando admin ou subadmin enviar novas campanhas para voce, elas aparecerao aqui prontas para impressao.",
+                ? "Selecione registros do histórico para começar a organizar campanhas e impressão futura."
+                : "Quando admin ou subadmin enviar novas campanhas para você, elas aparecerão aqui prontas para impressão.",
         };
     }
 
     if (validation && !validation.isValid && validation.draft.selectedEntryIds.length) {
         return {
             tone: "orange",
-            title: "Promocao em revisao",
-            description: validation.errorList[0] || "Revise os dados da promocao antes de enviar para a fila.",
+            title: "Promoção em revisão",
+            description: validation.errorList[0] || "Revise os dados da promoção antes de enviar para a fila.",
         };
     }
 
     return {
         tone: "green",
-        title: canManage ? "Fila promocional ativa" : "Promocoes disponiveis",
+        title: canManage ? "Fila promocional ativa" : "Promoções disponíveis",
         description: canManage
-            ? `${activeOrders.length} promocao(oes) ativa(s) atualmente na base.`
-            : `${orders.length} promocao(oes) atribuida(s) ao seu usuario no momento.`,
+            ? `${activeOrders.length} promoção(ões) ativa(s) atualmente na base.`
+            : `${orders.length} promoção(ões) atribuída(s) ao seu usuário no momento.`,
     };
 }
 
@@ -209,7 +209,7 @@ export function decoratePromotionOrder(order, historyEntries = []) {
         sourceLabel: relatedEntries.length === 1
             ? getSourceLabel(relatedEntries[0].source)
             : `${relatedEntries.length} origens`,
-        periodLabel: [formatDate(safeOrder.validFrom), formatDate(safeOrder.validTo)].filter(Boolean).join(" ate "),
+        periodLabel: [formatDate(safeOrder.validFrom), formatDate(safeOrder.validTo)].filter(Boolean).join(" até "),
         paperLabel: [safeOrder.paperSize, getOrientationLabel(safeOrder.orientation)].filter(Boolean).join(" "),
         relatedEntries,
     };
@@ -235,10 +235,10 @@ export function formatRelativeDate(value) {
 
 function getSourceLabel(source) {
     if (source === "quick") {
-        return "Criacao Rapida";
+        return "Criação Rápida";
     }
 
-    return "Criar Preco";
+    return "Criar Preço";
 }
 
 function getOrientationLabel(value) {

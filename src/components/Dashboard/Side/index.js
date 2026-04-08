@@ -1,91 +1,91 @@
-import React, { useContext } from "react";  
+import React, { useCallback, useContext, useMemo } from "react";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-import {  
-
+import {
     DashboardMenuContainer,
     DashboardMenu,
     DashboardMenuHeader,
     DashboardMenuHeaderIcon,
-
     DashboardMenuHeaderUserContent,
-    DashboardMenuHeaderUserImage, 
+    DashboardMenuHeaderUserImage,
     DashboardMenuContent,
     DashboardMenuFooter,
-    
     DashboardVersionContent,
-    DashboardVersionText, 
+    DashboardVersionText,
+} from "./styled";
 
-} from "./styled"; 
-
-import { DoLogout } from "services/authentication";
 import { CoreContext } from "context/CoreContext";
 import DashboardSideCollapse from "../SideCollapse";
+import { DoLogout } from "services/authentication";
+import { canManagePromotions } from "services/users";
 
-export default function DashboardSide({ fluid }){ 
+export default function DashboardSide({ fluid }) {
     const n = useNavigate();
-    const navigate = to => n(`/${ to }`); 
+    const navigate = useCallback((to) => n(`/${to}`), [n]);
 
-    const { side, setSide } = useContext(CoreContext)
-    
-    const verifyClose = e => {
-        if(!e.target.closest('.menu-contant')){
-            setSide(false)
+    const { side, setSide, user } = useContext(CoreContext);
+    const canManage = canManagePromotions(user);
+
+    const verifyClose = event => {
+        if (!event.target.closest(".menu-contant")) {
+            setSide(false);
         }
-    }
+    };
 
-    const exit = async () => {
-        await DoLogout()
-        navigate('login')
-    }
+    const exit = useCallback(async () => {
+        await DoLogout();
+        navigate("login");
+    }, [navigate]);
 
-    const menuOptions = [
-        { label: 'Home', icon: 'home', path: 'dashboard', border: true },
-        { label: 'Criar Preco', icon: 'products', path: 'dashboard/prices/create' },
-        { label: 'Criacao Rapida', icon: 'products', path: 'dashboard/prices/quick' },
-        { label: 'Impressao em Lote', icon: 'products', path: 'dashboard/prices/batch' },
-        { label: 'Historico', icon: 'products', path: 'dashboard/history' },
-        { label: 'Promocoes', icon: 'products', path: 'dashboard/promotions' },
-        { label: 'Etiquetas', icon: 'products', path: 'dashboard/labels' },
-        { label: 'Itens', icon: 'products', path: 'dashboard/items' },
-        { label: 'Criar Item', icon: 'products', path: 'dashboard/items/create' },
-        { label: 'Importar', icon: 'products', path: 'dashboard/items/import' },
-        { label: 'Suporte', icon: 'proposal', path: 'dashboard/support' },
-    ]
+    const menuOptions = useMemo(() => ([
+        { label: "Home", icon: "home", path: "dashboard", border: true },
+        { label: "Criar Preço", icon: "products", path: "dashboard/prices/create" },
+        { label: "Criação Rápida", icon: "products", path: "dashboard/prices/quick" },
+        { label: "Impressão em Lote", icon: "products", path: "dashboard/prices/batch" },
+        { label: "Histórico", icon: "products", path: "dashboard/history" },
+        { label: "Promoções", icon: "products", path: "dashboard/promotions" },
+        { label: "Etiquetas", icon: "products", path: "dashboard/labels" },
+        ...(canManage ? [
+            { label: "Itens", icon: "products", path: "dashboard/items" },
+            { label: "Criar Item", icon: "products", path: "dashboard/items/create" },
+            { label: "Importar", icon: "products", path: "dashboard/items/import" },
+            { label: "Relatórios", icon: "training", path: "dashboard/reports" },
+        ] : []),
+        { label: "Suporte", icon: "proposal", path: "dashboard/support" },
+    ]), [canManage]);
 
-    const footerOptions = [
+    const footerOptions = useMemo(() => ([
         {
-            label: 'Minha Conta',
-            icon: 'user',
+            label: "Minha Conta",
+            icon: "user",
             children: [
-                { label: "Meu Perfil", path: `dashboard/me` },
-                { label: "Senha e segurança", path: `dashboard/me/password` },
-            ]
+                { label: "Meu Perfil", path: "dashboard/me" },
+                { label: "Senha e segurança", path: "dashboard/me/password" },
+            ],
         },
-        // { label: 'Fale conosco', icon: 'contact', action:() => window.open("mailto:contato@company.com") },
-        { label: 'Sair', icon: 'exit', action: exit },
-    ];
+        { label: "Sair", icon: "exit", action: exit },
+    ]), [exit]);
 
-    return ( 
-        <>  
-            {
-                !side && !fluid ? null :
+    return (
+        <>
+            {!side && !fluid ? null : (
                 <DashboardMenuContainer fluid={fluid} opened={side} onClick={verifyClose}>
                     <DashboardMenu fluid={fluid} opened={side}>
-                        {
-                            fluid ? null : 
+                        {fluid ? null : (
                             <DashboardMenuHeader onClick={() => setSide(false)}>
-                                <DashboardMenuHeaderIcon src={'/icons/close-white.svg'} />
-                                {/* fechar */}
-                            </DashboardMenuHeader> 
-                        }
+                                <DashboardMenuHeaderIcon src="/icons/close-white.svg" />
+                            </DashboardMenuHeader>
+                        )}
+
                         <DashboardMenuHeaderUserContent fluid={fluid}>
-                            <DashboardMenuHeaderUserImage opened={side} /> 
-                        </DashboardMenuHeaderUserContent> 
+                            <DashboardMenuHeaderUserImage opened={side} />
+                        </DashboardMenuHeaderUserContent>
+
                         <DashboardMenuContent>
                             <DashboardSideCollapse options={menuOptions} fluid={fluid} />
                         </DashboardMenuContent>
+
                         <DashboardMenuFooter>
                             <DashboardSideCollapse options={footerOptions} fluid={fluid} />
                             <DashboardVersionContent>
@@ -95,7 +95,7 @@ export default function DashboardSide({ fluid }){
                         </DashboardMenuFooter>
                     </DashboardMenu>
                 </DashboardMenuContainer>
-            } 
+            )}
         </>
     );
 }

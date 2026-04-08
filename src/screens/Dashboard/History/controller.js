@@ -52,15 +52,15 @@ export default function useController() {
     ), [entries, filters, search]);
 
     const header = useMemo(() => ({
-        title: "Historico",
+        title: "Histórico",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Operacao" },
-            { label: "Historico" },
+            { label: "Operação" },
+            { label: "Histórico" },
         ],
         actions: [
             {
-                label: "Criar preco",
+                label: "Criar preço",
                 icon: "products",
                 rounded: true,
                 outline: true,
@@ -68,14 +68,14 @@ export default function useController() {
                 action: () => navigate("dashboard/prices/create"),
             },
             {
-                label: "Criacao rapida",
+                label: "Criação rapida",
                 icon: "products",
                 rounded: true,
                 color: "secondary",
                 action: () => navigate("dashboard/prices/quick"),
             },
             {
-                label: "Promocoes",
+                label: "Promoções",
                 icon: "products",
                 rounded: true,
                 outline: true,
@@ -87,7 +87,7 @@ export default function useController() {
 
     const actions = useMemo(() => ([
         {
-            label: "Atualizar historico",
+            label: "Atualizar histórico",
             color: "primary",
             outline: true,
             rounded: true,
@@ -95,14 +95,14 @@ export default function useController() {
             action: refreshHistory,
         },
         {
-            label: "Criar preco",
+            label: "Criar preço",
             color: "primary",
             outline: true,
             rounded: true,
             action: () => navigate("dashboard/prices/create"),
         },
         {
-            label: "Criacao rapida",
+            label: "Criação rapida",
             color: "primary",
             rounded: true,
             action: () => navigate("dashboard/prices/quick"),
@@ -119,8 +119,8 @@ export default function useController() {
             { label: "Registros", value: `${entries.length}` },
             { label: "Cartazes rastreados", value: `${totalCards}` },
             { label: "Impressos", value: `${printedEntries}` },
-            { label: "Lotes rapidos", value: `${quickEntries}` },
-            { label: "Na visao atual", value: `${visibleEntries.length}` },
+            { label: "Lotes rápidos", value: `${quickEntries}` },
+            { label: "Na visão atual", value: `${visibleEntries.length}` },
         ];
     }, [entries, user, visibleEntries.length]);
 
@@ -147,25 +147,25 @@ export default function useController() {
 
     const handleRestoreEntry = useCallback((entry) => {
         if (!entry?.restoreDraft) {
-            toast.error("Este registro nao possui um rascunho restauravel.");
+            toast.error("Este registro não possui um rascunho restaurável.");
             return;
         }
 
         if (entry.restoreTarget === "quick") {
             saveQuickPriceDraft(entry.restoreDraft);
-            toast.success("Lote enviado de volta para a Criacao Rapida.");
+            toast.success("Lote enviado de volta para a Criação Rápida.");
             navigate("dashboard/prices/quick");
             return;
         }
 
         savePriceStudioDraft(entry.restoreDraft);
-        toast.success("Composicao enviada de volta para Criar Preco.");
+        toast.success("Composicao enviada de volta para Criar Preço.");
         navigate("dashboard/prices/create");
     }, [navigate]);
 
     const handlePrintEntry = useCallback((entry) => {
         if (!entry?.restoreDraft) {
-            toast.error("Este registro nao possui dados suficientes para reimpressao.");
+            toast.error("Este registro não possui dados suficientes para reimpressão.");
             return;
         }
 
@@ -175,7 +175,7 @@ export default function useController() {
             const printWindow = window.open("", "_blank", "noopener,noreferrer,width=1080,height=760");
 
             if (!printWindow) {
-                toast.error("Nao foi possivel abrir a reimpressao. Verifique o bloqueio de pop-ups.");
+                toast.error("Não foi possível abrir a reimpressão. Verifique o bloqueio de pop-ups.");
                 setLoading(false);
                 return;
             }
@@ -195,7 +195,7 @@ export default function useController() {
             }, 250);
         } catch (error) {
             console.log("HistoryPrintError", error);
-            toast.error("Nao foi possivel reimprimir este registro.");
+            toast.error("Não foi possível reimprimir este registro.");
             setLoading(false);
         }
     }, [refreshHistory]);
@@ -205,7 +205,7 @@ export default function useController() {
 
         deletePrintHistoryEntry(entry.id);
         refreshHistory();
-        toast.success("Registro removido do historico.");
+        toast.success("Registro removido do histórico.");
     }, [refreshHistory]);
 
     const handleDeleteEntry = useCallback((entry) => {
@@ -214,22 +214,22 @@ export default function useController() {
         setModal({
             type: "confirm",
             title: "Deseja remover este registro?",
-            text: "A exclusao afeta apenas o historico operacional desta base local. Use somente quando a remocao for realmente necessaria.",
+            text: "A exclusão afeta apenas o histórico operacional desta base local. Use somente quando a remoção for realmente necessária.",
             action: () => performDeleteEntry(entry),
         });
     }, [performDeleteEntry, setModal]);
 
     const handleSendToPromotions = useCallback((entry) => {
         if (!entry?.id) {
-            toast.error("Nao foi possivel enviar este registro para promocoes.");
+            toast.error("Não foi possível enviar este registro para promoções.");
             return;
         }
 
         savePromotionSeed({
             historyEntryIds: [entry.id],
-            name: entry.offerTitle ? `Promocao ${entry.offerTitle}` : `Promocao ${entry.title}`,
+            name: entry.offerTitle ? `Promoção ${entry.offerTitle}` : `Promoção ${entry.title}`,
         });
-        toast.success("Registro enviado para a fila de promocoes.");
+        toast.success("Registro enviado para a fila de promoções.");
         navigate("dashboard/promotions");
     }, [navigate]);
 

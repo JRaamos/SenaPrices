@@ -122,9 +122,9 @@ export default function DashboardLabels() {
                         <ModalCard>
                             <ModalHeader>
                                 <div>
-                                    <ModalTitle>Codigo ZPL pronto para Zebra</ModalTitle>
+                                    <ModalTitle>Código ZPL pronto para Zebra</ModalTitle>
                                     <ModalText>
-                                        Use este conteudo para enviar as etiquetas diretamente para a impressora Zebra sem conversao intermediaria.
+                                        Use este conteúdo para enviar as etiquetas diretamente para a impressora Zebra sem conversão intermediária.
                                     </ModalText>
                                 </div>
 
@@ -147,10 +147,10 @@ export default function DashboardLabels() {
                     <LabelsMain>
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Selecao</CatalogCardEyebrow>
-                                <CatalogCardTitle>Etiquetas ligadas ao catalogo e ao preco</CatalogCardTitle>
+                                <CatalogCardEyebrow>Seleção</CatalogCardEyebrow>
+                                <CatalogCardTitle>Etiquetas ligadas ao catálogo e ao preço</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Esta tela usa a base real de itens e a ultima precificacao vinculada por EAN-13 ou codigo interno. O objetivo e emitir etiqueta sem quebrar a consistencia entre cartaz, gondola e operacao.
+                                    Esta tela usa a base real de itens e a última precificação vinculada por EAN-13 ou código interno. O objetivo é emitir etiqueta sem quebrar a consistência entre cartaz, gôndola e operação.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -159,22 +159,22 @@ export default function DashboardLabels() {
                                     <CatalogLabel>Buscar item</CatalogLabel>
                                     <CatalogInput
                                         value={filters.search}
-                                        placeholder="Buscar por descricao, secao, codigo ou EAN"
+                                        placeholder="Buscar por descrição, seção, código ou EAN"
                                         onChange={event => applyFiltersPatch({ search: event.target.value })}
                                     />
                                     <FieldMeta>
                                         <FieldError />
-                                        <FieldCounter>{rows.length} item(ns) na visao</FieldCounter>
+                                        <FieldCounter>{rows.length} item(ns) na visão</FieldCounter>
                                     </FieldMeta>
                                 </CatalogField>
 
                                 <CatalogField>
-                                    <CatalogLabel>Secao</CatalogLabel>
+                                    <CatalogLabel>Seção</CatalogLabel>
                                     <CatalogSelect
                                         value={filters.section}
                                         onChange={event => applyFiltersPatch({ section: event.target.value })}
                                     >
-                                        <option value="">Todas as secoes</option>
+                                        <option value="">Todas as seções</option>
                                         {sectionOptions.map(item => (
                                             <option key={item.value} value={item.value}>{item.label}</option>
                                         ))}
@@ -187,16 +187,16 @@ export default function DashboardLabels() {
                             </FiltersGrid>
 
                             <InlineNotice>
-                                Itens sem preco continuam visiveis para manutencao, mas nao entram na emissao ate existir uma precificacao rastreavel. Isso evita etiqueta sem base comercial confiavel.
+                                Itens sem preço continuam visíveis para manutenção, mas não entram na emissão até existir uma precificação rastreável. Isso evita etiqueta sem base comercial confiável.
                             </InlineNotice>
                         </CatalogCard>
 
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Configuracao</CatalogCardEyebrow>
-                                <CatalogCardTitle>Preset, resolucao e campos da etiqueta</CatalogCardTitle>
+                                <CatalogCardEyebrow>Configuração</CatalogCardEyebrow>
+                                <CatalogCardTitle>Preset, resolução e campos da etiqueta</CatalogCardTitle>
                                 <CatalogCardText>
-                                    A configuracao fica persistida na base local criptografada e ja prepara o terreno para a futura centralizacao em Definicoes.
+                                    A configuração fica persistida na base local criptografada e já prepara o terreno para a futura centralização em Definições.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -218,7 +218,7 @@ export default function DashboardLabels() {
                                 </CatalogField>
 
                                 <CatalogField>
-                                    <CatalogLabel>Resolucao Zebra</CatalogLabel>
+                                    <CatalogLabel>Resolução Zebra</CatalogLabel>
                                     <CatalogSelect
                                         value={settings.dpi}
                                         onChange={event => applySettingsPatch({ dpi: Number(event.target.value) })}
@@ -245,7 +245,7 @@ export default function DashboardLabels() {
                                     />
                                     <FieldMeta>
                                         <FieldError />
-                                        <FieldCounter>{settings.preset === "custom" ? "Editavel" : "Definido pelo preset"}</FieldCounter>
+                                        <FieldCounter>{settings.preset === "custom" ? "Editável" : "Definido pelo preset"}</FieldCounter>
                                     </FieldMeta>
                                 </CatalogField>
 
@@ -261,12 +261,12 @@ export default function DashboardLabels() {
                                     />
                                     <FieldMeta>
                                         <FieldError />
-                                        <FieldCounter>{settings.preset === "custom" ? "Editavel" : "Definido pelo preset"}</FieldCounter>
+                                        <FieldCounter>{settings.preset === "custom" ? "Editável" : "Definido pelo preset"}</FieldCounter>
                                     </FieldMeta>
                                 </CatalogField>
 
                                 <CatalogField>
-                                    <CatalogLabel>Copias padrao</CatalogLabel>
+                                    <CatalogLabel>Cópias padrão</CatalogLabel>
                                     <CatalogInput
                                         type="number"
                                         min="1"
@@ -288,8 +288,8 @@ export default function DashboardLabels() {
                                         onChange={event => applySettingsPatch({ showDescription2: event.target.checked })}
                                     />
                                     <ToggleText>
-                                        <strong>Descricao complementar</strong>
-                                        Exibe a segunda linha de descricao quando o item tiver complemento operacional relevante.
+                                        <strong>Descrição complementar</strong>
+                                        Exibe a segunda linha de descrição quando o item tiver complemento operacional relevante.
                                     </ToggleText>
                                 </ToggleItem>
 
@@ -299,8 +299,8 @@ export default function DashboardLabels() {
                                         onChange={event => applySettingsPatch({ showSection: event.target.checked })}
                                     />
                                     <ToggleText>
-                                        <strong>Secao do item</strong>
-                                        Ajuda a equipe a conferir rapidamente em qual area da loja a etiqueta sera aplicada.
+                                        <strong>Seção do item</strong>
+                                        Ajuda a equipe a conferir rapidamente em qual área da loja a etiqueta será aplicada.
                                     </ToggleText>
                                 </ToggleItem>
 
@@ -311,7 +311,7 @@ export default function DashboardLabels() {
                                     />
                                     <ToggleText>
                                         <strong>Unidade de venda</strong>
-                                        Mantem contexto de peso, volume ou unidade diretamente na etiqueta de gondola.
+                                        Mantém contexto de peso, volume ou unidade diretamente na etiqueta de gôndola.
                                     </ToggleText>
                                 </ToggleItem>
 
@@ -321,8 +321,8 @@ export default function DashboardLabels() {
                                         onChange={event => applySettingsPatch({ showBarcode: event.target.checked })}
                                     />
                                     <ToggleText>
-                                        <strong>Codigo de barras EAN-13</strong>
-                                        Emite o EAN na etiqueta para leitura por scanner em impressoras Zebra compativeis.
+                                        <strong>Código de barras EAN-13</strong>
+                                        Emite o EAN na etiqueta para leitura por scanner em impressoras Zebra compatíveis.
                                     </ToggleText>
                                 </ToggleItem>
 
@@ -332,8 +332,8 @@ export default function DashboardLabels() {
                                         onChange={event => applySettingsPatch({ showEan: event.target.checked })}
                                     />
                                     <ToggleText>
-                                        <strong>Numero do EAN</strong>
-                                        Mostra o codigo numerico junto da etiqueta quando o processo operacional exige conferencia manual.
+                                        <strong>Número do EAN</strong>
+                                        Mostra o código numérico junto da etiqueta quando o processo operacional exige conferência manual.
                                     </ToggleText>
                                 </ToggleItem>
 
@@ -343,8 +343,8 @@ export default function DashboardLabels() {
                                         onChange={event => applySettingsPatch({ showInternalCode: event.target.checked })}
                                     />
                                     <ToggleText>
-                                        <strong>Codigo interno</strong>
-                                        Exibe o identificador interno do catalogo quando a equipe opera tambem por referencia de cadastro.
+                                        <strong>Código interno</strong>
+                                        Exibe o identificador interno do catálogo quando a equipe opera também por referência de cadastro.
                                     </ToggleText>
                                 </ToggleItem>
                             </ToggleGrid>
@@ -353,15 +353,15 @@ export default function DashboardLabels() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Itens</CatalogCardEyebrow>
-                                <CatalogCardTitle>Catalogo pronto para emissao</CatalogCardTitle>
+                                <CatalogCardTitle>Catálogo pronto para emissão</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Selecione apenas itens com preco rastreavel. A quantidade de copias pode ser ajustada por item sem quebrar a configuracao geral do lote.
+                                    Selecione apenas itens com preço rastreável. A quantidade de cópias pode ser ajustada por item sem quebrar a configuração geral do lote.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!rows.length ? (
                                 <EmptyState>
-                                    Nenhum item encontrado nesta visao. Ajuste a busca ou cadastre itens para iniciar a emissao de etiquetas.
+                                    Nenhum item encontrado nesta visão. Ajuste a busca ou cadastre itens para iniciar a emissão de etiquetas.
                                 </EmptyState>
                             ) : (
                                 <ItemList>
@@ -414,7 +414,7 @@ export default function DashboardLabels() {
                     <LabelsSidebar>
                         <StatusCard $tone={statusCard.tone}>
                             <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Pronto" : "Atencao"}
+                                {statusCard.tone === "green" ? "Pronto" : "Atenção"}
                             </StatusBadge>
                             <StatusTitle>{statusCard.title}</StatusTitle>
                             <StatusText>{statusCard.description}</StatusText>
@@ -432,15 +432,15 @@ export default function DashboardLabels() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Preview</CatalogCardEyebrow>
-                                <CatalogCardTitle>Etiqueta fisica esperada</CatalogCardTitle>
+                                <CatalogCardTitle>Etiqueta física esperada</CatalogCardTitle>
                                 <CatalogCardText>
-                                    A pre-visualizacao usa a mesma configuracao salva para dar seguranca antes da emissao em HTML ou ZPL.
+                                    A pré-visualização usa a mesma configuração salva para dar segurança antes da emissão em HTML ou ZPL.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!previewItems.length ? (
                                 <EmptyState>
-                                    Selecione itens validos para ver a etiqueta antes de imprimir.
+                                    Selecione itens válidos para ver a etiqueta antes de imprimir.
                                 </EmptyState>
                             ) : (
                                 <PreviewGrid>
@@ -472,14 +472,14 @@ export default function DashboardLabels() {
 
                             {selectedItems.length ? (
                                 <InlineNotice>
-                                    Use o atalho `Ctrl + P` para imprimir o lote atual ou `Ctrl + Shift + A` para selecionar todos os itens visiveis com preco valido.
+                                    Use o atalho `Ctrl + P` para imprimir o lote atual ou `Ctrl + Shift + A` para selecionar todos os itens visíveis com preço válido.
                                 </InlineNotice>
                             ) : null}
 
                             <ActionButton $tone="primary" onClick={handleToggleVisible}>
                                 {allVisibleSelected && visibleSelectableCount
-                                    ? "Desmarcar visiveis"
-                                    : "Selecionar visiveis"}
+                                    ? "Desmarcar visíveis"
+                                    : "Selecionar visíveis"}
                             </ActionButton>
                             <ActionButton onClick={handleGenerateZpl}>
                                 Gerar ZPL do lote
@@ -489,15 +489,15 @@ export default function DashboardLabels() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Recentes</CatalogCardEyebrow>
-                                <CatalogCardTitle>Ultimos lotes de etiquetas</CatalogCardTitle>
+                                <CatalogCardTitle>Últimos lotes de etiquetas</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Reaproveite selecoes anteriores quando a loja repetir a mesma troca de precos ou a mesma campanha.
+                                    Reaproveite seleções anteriores quando a loja repetir a mesma troca de preços ou a mesma campanha.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!recentJobs.length ? (
                                 <EmptyState>
-                                    Os lotes recentes aparecerao aqui depois da primeira emissao.
+                                    Os lotes recentes aparecerão aqui depois da primeira emissão.
                                 </EmptyState>
                             ) : (
                                 <RecentList>
@@ -523,9 +523,9 @@ export default function DashboardLabels() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Checklist</CatalogCardEyebrow>
-                                <CatalogCardTitle>Diretrizes da emissao</CatalogCardTitle>
+                                <CatalogCardTitle>Diretrizes da emissão</CatalogCardTitle>
                                 <CatalogCardText>
-                                    A emissao de etiquetas foi desenhada para acompanhar o ritmo do varejo sem abrir brecha entre cadastro, preco e gondola.
+                                    A emissão de etiquetas foi desenhada para acompanhar o ritmo do varejo sem abrir brecha entre cadastro, preço e gôndola.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 

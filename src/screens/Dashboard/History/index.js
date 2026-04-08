@@ -87,7 +87,7 @@ export default function DashboardHistory() {
                                 <CatalogCardEyebrow>Consulta</CatalogCardEyebrow>
                                 <CatalogCardTitle>Rastro operacional da precificacao</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Esta tela concentra os registros produzidos por Criar Preco e Criacao Rapida, permitindo restaurar, reimprimir e auditar a base ja usada nas operacoes atuais.
+                                    Esta tela concentra os registros produzidos por Criar Preço e Criação Rápida, permitindo restaurar, reimprimir e auditar a base ja usada nas operacoes atuais.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -150,7 +150,7 @@ export default function DashboardHistory() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Registros</CatalogCardEyebrow>
-                                <CatalogCardTitle>Historico consolidado</CatalogCardTitle>
+                                <CatalogCardTitle>Histórico consolidado</CatalogCardTitle>
                                 <CatalogCardText>
                                     Cada linha abaixo pode voltar para o fluxo original ou ser reimpressa sem precisar remontar o cartaz do zero.
                                 </CatalogCardText>
@@ -158,7 +158,7 @@ export default function DashboardHistory() {
 
                             {!entries.length ? (
                                 <EmptyState>
-                                    Nenhum registro encontrado nesta visao. Salve ou imprima um cartaz para iniciar o historico compartilhado da operacao.
+                                    Nenhum registro encontrado nesta visão. Salve ou imprima um cartaz para iniciar o histórico compartilhado da operação.
                                 </EmptyState>
                             ) : (
                                 <HistoryList>
@@ -177,7 +177,7 @@ export default function DashboardHistory() {
 
                                                 <HistoryActions>
                                                     <HistoryActionButton onClick={() => handleSendToPromotions(entry)}>
-                                                        Promocoes
+                                                        Promoções
                                                     </HistoryActionButton>
                                                     <HistoryActionButton onClick={() => handleRestoreEntry(entry)}>
                                                         Restaurar
@@ -248,7 +248,7 @@ export default function DashboardHistory() {
 
                             {!recentEntries.length ? (
                                 <EmptyState>
-                                    Os registros recentes aparecerao aqui assim que o historico for alimentado.
+                                    Os registros recentes aparecerão aqui assim que o histórico for alimentado.
                                 </EmptyState>
                             ) : (
                                 <ChecklistList>
@@ -269,7 +269,7 @@ export default function DashboardHistory() {
                                 <CatalogCardEyebrow>Checklist</CatalogCardEyebrow>
                                 <CatalogCardTitle>Diretrizes da trilha</CatalogCardTitle>
                                 <CatalogCardText>
-                                    O historico foi desenhado para sustentar manutencao, auditoria e os modulos que ainda vamos conectar.
+                                    O histórico foi desenhado para sustentar manutenção, auditoria e os módulos que ainda vamos conectar.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 

@@ -72,12 +72,12 @@ describe("Dashboard History page", () => {
             </BrowserRouter>
         );
 
-        cy.contains("Historico").should("exist");
+        cy.contains("Histórico").should("exist");
         cy.contains("Cafe Pilao 500g").should("exist");
-        cy.contains("Criar Preco").should("exist");
+        cy.contains("Criar Preço").should("exist");
         cy.contains("Rastro operacional da precificacao").should("exist");
 
-        cy.get('select').eq(0).select("Criar Preco");
+        cy.get('select').eq(0).select("Criar Preço");
         cy.contains("Cafe Pilao 500g").should("exist");
     });
 });
