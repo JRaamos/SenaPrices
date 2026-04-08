@@ -96,6 +96,9 @@ export default function DashboardQuickPrice() {
         priceTypeOptions,
         paperSizeOptions,
         orientationOptions,
+        pdvPolicy,
+        rowSuggestions,
+        rowLockedFields,
         applyPatch,
         updateRow,
         addRow,
@@ -211,7 +214,11 @@ export default function DashboardQuickPrice() {
                             </SetupGrid>
 
                             <DraftNotice>
-                                Esta versão trabalha com entrada manual segura e não depende de catálogo externo. Use descrição curta para nome do produto ou EAN-13 completo quando estiver operando com código.
+                                {pdvPolicy.integrationEnabled
+                                    ? pdvPolicy.canSeeSuggestedPrice
+                                        ? `A política de ${pdvPolicy.sourceLabel} está ativa. Quando o produto ou EAN coincidir com um registro rastreável, o campo principal é pré-preenchido automaticamente${pdvPolicy.locksUserPriceEditing ? " e permanece protegido para este perfil." : "."}`
+                                        : "A integração PDV está ativa, mas o preço sugerido não fica visível para este perfil pela política atual."
+                                    : "Esta versão trabalha com entrada manual segura. Use descrição curta para nome do produto ou EAN-13 completo quando estiver operando com código."}
                             </DraftNotice>
                         </QuickCard>
 
@@ -229,6 +236,8 @@ export default function DashboardQuickPrice() {
                                     const rowErrors = validation.rowErrors[row.id] || [];
                                     const isActive = activeRowId === row.id;
                                     const isValid = rowErrors.length === 0;
+                                    const rowSuggestion = rowSuggestions[row.id];
+                                    const lockedFields = rowLockedFields[row.id] || [];
 
                                     return (
                                         <RowCard
@@ -283,6 +292,7 @@ export default function DashboardQuickPrice() {
                                                             <QuickInput
                                                                 value={row.cashPrice}
                                                                 inputMode="decimal"
+                                                                disabled={lockedFields.includes("cashPrice")}
                                                                 placeholder="Ex: 12,99"
                                                                 onFocus={() => setActiveRowId(row.id)}
                                                                 onChange={event => updateRow(row.id, { cashPrice: event.target.value })}
@@ -322,6 +332,7 @@ export default function DashboardQuickPrice() {
                                                                 <QuickInput
                                                                     value={row.toPrice}
                                                                     inputMode="decimal"
+                                                                    disabled={lockedFields.includes("toPrice")}
                                                                     placeholder="Ex: 12,99"
                                                                     onFocus={() => setActiveRowId(row.id)}
                                                                     onChange={event => updateRow(row.id, { toPrice: event.target.value })}
@@ -362,6 +373,7 @@ export default function DashboardQuickPrice() {
                                                                 <QuickInput
                                                                     value={row.clubPrice}
                                                                     inputMode="decimal"
+                                                                    disabled={lockedFields.includes("clubPrice")}
                                                                     placeholder="Ex: 15,90"
                                                                     onFocus={() => setActiveRowId(row.id)}
                                                                     onChange={event => updateRow(row.id, { clubPrice: event.target.value })}
@@ -402,6 +414,7 @@ export default function DashboardQuickPrice() {
                                                                 <QuickInput
                                                                     value={row.specialPrice}
                                                                     inputMode="decimal"
+                                                                    disabled={lockedFields.includes("specialPrice")}
                                                                     placeholder="Ex: 10,00"
                                                                     onFocus={() => setActiveRowId(row.id)}
                                                                     onChange={event => updateRow(row.id, { specialPrice: event.target.value })}
@@ -424,7 +437,11 @@ export default function DashboardQuickPrice() {
 
                                             <RowActions>
                                                 <QuickCardText>
-                                                    {rowErrors.length ? rowErrors.join(" ") : "Linha pronta para entrar no lote."}
+                                                    {rowErrors.length
+                                                        ? rowErrors.join(" ")
+                                                        : rowSuggestion
+                                                            ? `${rowSuggestion.priceLabel} sugerido pelo ${pdvPolicy.sourceLabel}. ${rowSuggestion.lockSuggestedField ? "Campo principal protegido para este perfil." : "Ajuste manual permitido."}`
+                                                            : "Linha pronta para entrar no lote."}
                                                 </QuickCardText>
                                                 <div>
                                                     <RowActionButton

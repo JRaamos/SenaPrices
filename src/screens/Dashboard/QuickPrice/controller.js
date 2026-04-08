@@ -1,8 +1,12 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { CoreContext } from "context/CoreContext";
+import {
+    getPdvPolicy,
+    resolvePdvSuggestionForQuery,
+} from "services/pdv";
 import { recordPricingOperation } from "services/pricing";
 
 import {
@@ -46,6 +50,7 @@ export default function useController() {
     const [lastSavedAt, setLastSavedAt] = useState(null);
     const [ready, setReady] = useState(false);
     const [loading, setLoading] = useState(false);
+    const appliedPdvSuggestionsRef = useRef({});
 
     useEffect(() => {
         const storedDraft = readQuickPriceDraft();
@@ -103,6 +108,8 @@ export default function useController() {
     }, [draft.rows.length]);
 
     const removeRow = useCallback((rowId) => {
+        delete appliedPdvSuggestionsRef.current[rowId];
+
         setDraft(prev => {
             const nextRows = prev.rows.filter(row => row.id !== rowId);
             const safeRows = nextRows.length ? nextRows : [createQuickRow()];
@@ -121,6 +128,80 @@ export default function useController() {
     }, [draft.rows]);
 
     const validation = useMemo(() => validateQuickDraft(draft), [draft]);
+    const pdvPolicy = useMemo(() => getPdvPolicy(user), [user]);
+    const rowSuggestions = useMemo(() => (
+        draft.rows.reduce((accumulator, row) => {
+            const suggestion = resolvePdvSuggestionForQuery(row.query, user, draft.priceType);
+
+            if (suggestion) {
+                accumulator[row.id] = suggestion;
+            }
+
+            return accumulator;
+        }, {})
+    ), [draft.priceType, draft.rows, user]);
+    const rowLockedFields = useMemo(() => (
+        draft.rows.reduce((accumulator, row) => {
+            const suggestion = rowSuggestions[row.id];
+
+            accumulator[row.id] = suggestion?.lockSuggestedField
+                ? Object.keys(suggestion.draftPatch || {})
+                : [];
+
+            return accumulator;
+        }, {})
+    ), [draft.rows, rowSuggestions]);
+
+    useEffect(() => {
+        if (!ready) return;
+
+        const rowPatchMap = {};
+
+        draft.rows.forEach(row => {
+            const suggestion = rowSuggestions[row.id];
+            const suggestedField = Object.keys(suggestion?.draftPatch || {})[0];
+
+            if (!suggestion || !suggestedField || row[suggestedField]) {
+                return;
+            }
+
+            const signature = [
+                draft.priceType,
+                row.id,
+                row.query,
+                suggestion.numericValue,
+                suggestedField,
+            ].join("|");
+
+            if (appliedPdvSuggestionsRef.current[row.id] === signature) {
+                return;
+            }
+
+            rowPatchMap[row.id] = {
+                patch: suggestion.draftPatch,
+                signature,
+            };
+        });
+
+        const patchIds = Object.keys(rowPatchMap);
+
+        if (!patchIds.length) {
+            return;
+        }
+
+        setDraft(previous => sanitizeQuickDraft({
+            ...previous,
+            rows: previous.rows.map(row => (
+                rowPatchMap[row.id]
+                    ? { ...row, ...rowPatchMap[row.id].patch }
+                    : row
+            )),
+        }));
+
+        patchIds.forEach(rowId => {
+            appliedPdvSuggestionsRef.current[rowId] = rowPatchMap[rowId].signature;
+        });
+    }, [draft.priceType, draft.rows, ready, rowSuggestions]);
 
     const activeRow = useMemo(() => {
         return draft.rows.find(row => row.id === activeRowId) || draft.rows[0] || null;
@@ -466,6 +547,9 @@ export default function useController() {
         priceTypeOptions: PRICE_TYPE_OPTIONS,
         paperSizeOptions: PAPER_SIZE_OPTIONS,
         orientationOptions: ORIENTATION_OPTIONS,
+        pdvPolicy,
+        rowSuggestions,
+        rowLockedFields,
         applyPatch,
         updateRow,
         addRow,

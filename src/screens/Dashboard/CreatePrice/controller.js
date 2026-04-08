@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,10 @@ import {
     clearCatalogPriceSeed,
     readCatalogPriceSeed,
 } from "services/catalog";
+import {
+    getPdvPolicy,
+    resolvePdvSuggestionForCatalogItem,
+} from "services/pdv";
 import { recordPricingOperation } from "services/pricing";
 
 import {
@@ -47,6 +51,7 @@ export default function useController() {
     const [lastSavedAt, setLastSavedAt] = useState(null);
     const [ready, setReady] = useState(false);
     const [loading, setLoading] = useState(false);
+    const appliedPdvSignatureRef = useRef("");
 
     useEffect(() => {
         const priceSeed = readCatalogPriceSeed();
@@ -85,6 +90,59 @@ export default function useController() {
 
     const validation = useMemo(() => validateDraft(form), [form]);
     const preview = useMemo(() => buildPreview(form), [form]);
+    const pdvPolicy = useMemo(() => getPdvPolicy(user), [user]);
+    const pdvSuggestion = useMemo(() => resolvePdvSuggestionForCatalogItem({
+        internalCode: form.internalCode,
+        ean13: form.eanCode,
+        description1: form.productName,
+    }, user, form.priceType), [
+        form.eanCode,
+        form.internalCode,
+        form.priceType,
+        form.productName,
+        user,
+    ]);
+    const pdvLockedFields = useMemo(() => (
+        pdvSuggestion?.lockSuggestedField ? Object.keys(pdvSuggestion.draftPatch || {}) : []
+    ), [pdvSuggestion]);
+    const pdvSuggestedField = useMemo(() => (
+        Object.keys(pdvSuggestion?.draftPatch || {})[0] || ""
+    ), [pdvSuggestion]);
+    const pdvSuggestedFieldValue = pdvSuggestedField ? form[pdvSuggestedField] : "";
+
+    useEffect(() => {
+        if (!ready || !pdvSuggestion || !pdvSuggestedField || pdvSuggestedFieldValue) {
+            return;
+        }
+
+        const signature = [
+            form.priceType,
+            form.productName,
+            form.internalCode,
+            form.eanCode,
+            pdvSuggestion.numericValue,
+            pdvSuggestedField,
+        ].join("|");
+
+        if (appliedPdvSignatureRef.current === signature) {
+            return;
+        }
+
+        setForm(previous => sanitizeDraft({
+            ...previous,
+            ...pdvSuggestion.draftPatch,
+        }));
+        appliedPdvSignatureRef.current = signature;
+    }, [
+        form.eanCode,
+        form.internalCode,
+        form.priceType,
+        form.productName,
+        pdvSuggestedField,
+        pdvSuggestedFieldValue,
+        pdvSuggestion,
+        ready,
+    ]);
 
     const handleSaveSnapshot = useCallback((options = {}) => {
         const {
@@ -388,6 +446,9 @@ export default function useController() {
         orientationOptions: ORIENTATION_OPTIONS,
         unitOptions: UNIT_OPTIONS,
         specialLayoutOptions: SPECIAL_LAYOUT_OPTIONS,
+        pdvPolicy,
+        pdvSuggestion,
+        pdvLockedFields,
         applyPatch,
         handleRestoreComposition,
     };

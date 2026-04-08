@@ -9,13 +9,6 @@ import { canManagePromotions, normalizeUserRole } from "services/users";
 
 const ROADMAP_MODULES = [
     {
-        key: "pdv",
-        title: "Integração PDV",
-        description: "Conexão futura com base externa para abastecer catálogo, precificação e sincronização automática.",
-        status: "Planejado",
-        icon: "/icons/products.svg",
-    },
-    {
         key: "settings",
         title: "Definições",
         description: "Centralização das configurações de impressão, identidade visual, usuários e parâmetros operacionais.",
@@ -119,6 +112,14 @@ export default function useController() {
                 description: "Emita etiquetas de gôndola a partir do catálogo e da última precificação rastreável do item.",
                 buttonLabel: "Abrir etiquetas",
                 action: () => navigate("dashboard/labels"),
+            },
+            {
+                key: "pdv",
+                icon: "/icons/products.svg",
+                title: "Integração PDV",
+                description: "Consulte a política da origem externa e valide como o preço sugerido abastece cartazes sem perder governança.",
+                buttonLabel: "Abrir integração",
+                action: () => navigate("dashboard/integration"),
             },
             {
                 key: "history",
@@ -261,6 +262,10 @@ export default function useController() {
             description: "A emissão de etiquetas agora reaproveita catálogo e última precificação válida, reduzindo divergência entre gôndola e cartaz.",
         },
         {
+            title: "Integração PDV governada",
+            description: "A origem externa agora possui política de validação, visibilidade por perfil e reaproveitamento de preço nos fluxos ativos.",
+        },
+        {
             title: "Leitura gerencial disponível",
             description: "Relatórios já consolidam histórico, promoções, lotes e etiquetas para apoiar gestão e auditoria operacional.",
         },
@@ -314,6 +319,15 @@ export default function useController() {
                 icon: "/icons/products.svg",
                 actionLabel: "Abrir etiquetas",
                 action: () => navigate("dashboard/labels"),
+            },
+            {
+                key: "pdv",
+                title: "Integração PDV",
+                description: "Governança da origem externa para sugerir preço, validar conexão e proteger a edição conforme o perfil operacional.",
+                status: "Ativo",
+                icon: "/icons/products.svg",
+                actionLabel: "Abrir integração",
+                action: () => navigate("dashboard/integration"),
             },
             {
                 key: "promotions",
@@ -388,9 +402,7 @@ export default function useController() {
                 actionLabel: "Importar itens",
                 action: () => navigate("dashboard/items/import"),
             },
-            baseCards[3],
-            baseCards[4],
-            baseCards[5],
+            ...baseCards.slice(3, 7),
             {
                 key: "reports",
                 title: "Relatórios",
@@ -400,9 +412,7 @@ export default function useController() {
                 actionLabel: "Abrir relatórios",
                 action: () => navigate("dashboard/reports"),
             },
-            baseCards[6],
-            baseCards[7],
-            baseCards[8],
+            ...baseCards.slice(7),
         ];
     }, [canManage, navigate]);
 

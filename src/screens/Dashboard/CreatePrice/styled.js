@@ -74,6 +74,17 @@ export const StudioCardText = styled.p.attrs({
     line-height: 22px;
 `;
 
+export const InlineNotice = styled.div.attrs({
+})`
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid ${props => props.theme.palette.colors.mystic};
+    background: rgba(248, 250, 252, 0.92);
+    color: ${props => props.theme.palette.colors.slate};
+    font-size: 13px;
+    line-height: 20px;
+`;
+
 export const StudioGrid = styled.div.attrs({
 })`
     display: grid;

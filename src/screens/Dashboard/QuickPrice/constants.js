@@ -50,7 +50,7 @@ export const QUICK_PRICE_GUIDELINES = [
         description: "Revise todas as linhas validas antes de imprimir o lote para evitar desperdicio operacional.",
     },
     {
-        title: "Sem promessas falsas de integracao",
-        description: "Nesta etapa, a tela assume entrada manual segura e nao depende de catalogo ou PDV nao implementados.",
+        title: "PDV com governança clara",
+        description: "Quando a integração estiver ativa, confirme se o perfil pode apenas consumir o preço sugerido ou também ajustar o valor manualmente.",
     },
 ];

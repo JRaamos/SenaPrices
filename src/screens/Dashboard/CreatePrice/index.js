@@ -20,6 +20,7 @@ import {
     FieldError,
     FieldMeta,
     InlineGrid,
+    InlineNotice,
     PreviewBadge,
     PreviewCard,
     PreviewMetaItem,
@@ -90,6 +91,9 @@ export default function DashboardCreatePrice() {
         orientationOptions,
         unitOptions,
         specialLayoutOptions,
+        pdvPolicy,
+        pdvSuggestion,
+        pdvLockedFields,
         applyPatch,
         handleRestoreComposition,
     } = useController();
@@ -224,6 +228,18 @@ export default function DashboardCreatePrice() {
                                 ))}
                             </PriceTypeGrid>
 
+                            {pdvPolicy.integrationEnabled ? (
+                                <InlineNotice>
+                                    {pdvSuggestion
+                                        ? `${pdvSuggestion.priceLabel} sugerido pelo ${pdvPolicy.sourceLabel}. ${pdvSuggestion.lockSuggestedField
+                                            ? "O campo principal fica protegido para este perfil."
+                                            : "Você pode ajustar manualmente se necessário."}`
+                                        : pdvPolicy.canSeeSuggestedPrice
+                                            ? "Quando houver preço rastreável por EAN-13, código interno ou item já precificado, o sistema pré-preenche o campo principal para acelerar a operação."
+                                            : "A integração PDV está ativa, mas a política atual não exibe preço sugerido para este perfil."}
+                                </InlineNotice>
+                            ) : null}
+
                             {form.priceType === "avista" ? (
                                 <InlineGrid>
                                     <StudioField $full>
@@ -231,12 +247,13 @@ export default function DashboardCreatePrice() {
                                         <StudioInput
                                             value={form.cashPrice}
                                             inputMode="decimal"
+                                            disabled={pdvLockedFields.includes("cashPrice")}
                                             placeholder="Ex: 12,99"
                                             onChange={event => applyPatch({ cashPrice: event.target.value })}
                                         />
                                         <FieldMeta>
                                             <FieldError>{validation.errors.cashPrice || ""}</FieldError>
-                                            <FieldCounter>Use virgula para centavos</FieldCounter>
+                                            <FieldCounter>{pdvLockedFields.includes("cashPrice") ? "Protegido pela política PDV" : "Use vírgula para centavos"}</FieldCounter>
                                         </FieldMeta>
                                     </StudioField>
                                 </InlineGrid>
@@ -263,6 +280,7 @@ export default function DashboardCreatePrice() {
                                         <StudioInput
                                             value={form.toPrice}
                                             inputMode="decimal"
+                                            disabled={pdvLockedFields.includes("toPrice")}
                                             placeholder="Ex: 12,99"
                                             onChange={event => applyPatch({ toPrice: event.target.value })}
                                         />
@@ -295,6 +313,7 @@ export default function DashboardCreatePrice() {
                                         <StudioInput
                                             value={form.clubPrice}
                                             inputMode="decimal"
+                                            disabled={pdvLockedFields.includes("clubPrice")}
                                             placeholder="Ex: 15,90"
                                             onChange={event => applyPatch({ clubPrice: event.target.value })}
                                         />
@@ -341,6 +360,7 @@ export default function DashboardCreatePrice() {
                                         <StudioInput
                                             value={form.specialPrice}
                                             inputMode="decimal"
+                                            disabled={pdvLockedFields.includes("specialPrice")}
                                             placeholder="Ex: 10,00"
                                             onChange={event => applyPatch({ specialPrice: event.target.value })}
                                         />

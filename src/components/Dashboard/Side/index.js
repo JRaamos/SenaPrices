@@ -46,6 +46,7 @@ export default function DashboardSide({ fluid }) {
         { label: "Histórico", icon: "products", path: "dashboard/history" },
         { label: "Promoções", icon: "products", path: "dashboard/promotions" },
         { label: "Etiquetas", icon: "products", path: "dashboard/labels" },
+        { label: "Integração PDV", icon: "products", path: "dashboard/integration" },
         ...(canManage ? [
             { label: "Itens", icon: "products", path: "dashboard/items" },
             { label: "Criar Item", icon: "products", path: "dashboard/items/create" },
