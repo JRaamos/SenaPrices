@@ -45,6 +45,7 @@ export default function DashboardSide({ fluid }){
         { label: 'Criar Preco', icon: 'products', path: 'dashboard/prices/create' },
         { label: 'Criacao Rapida', icon: 'products', path: 'dashboard/prices/quick' },
         { label: 'Historico', icon: 'products', path: 'dashboard/history' },
+        { label: 'Promocoes', icon: 'products', path: 'dashboard/promotions' },
         { label: 'Itens', icon: 'products', path: 'dashboard/items' },
         { label: 'Criar Item', icon: 'products', path: 'dashboard/items/create' },
         { label: 'Importar', icon: 'products', path: 'dashboard/items/import' },

@@ -23,8 +23,8 @@ const ROADMAP_MODULES = [
     },
     {
         key: "promotions",
-        title: "Promocoes",
-        description: "Fila operacional para cartazes separados, impressao posterior e organizacao de campanhas.",
+        title: "Impressao em Lote",
+        description: "Execucao agrupada de cartazes selecionados para ganhar escala em operacoes maiores.",
         status: "Planejado",
         icon: "/icons/products.svg",
     },
@@ -155,6 +155,14 @@ export default function useController() {
             action: () => navigate("dashboard/history"),
         },
         {
+            key: "promotions",
+            icon: "/icons/products.svg",
+            title: "Promocoes",
+            description: "Monte campanhas programadas reaproveitando registros reais do historico operacional.",
+            buttonLabel: "Abrir promocoes",
+            action: () => navigate("dashboard/promotions"),
+        },
+        {
             key: "support-list",
             icon: "/icons/proposal.svg",
             title: "Fila de suporte",
@@ -215,6 +223,10 @@ export default function useController() {
             title: "Historico operacional ativo",
             description: "Criar Preco e Criacao Rapida agora registram rastreabilidade compartilhada para restauracao e reimpressao.",
         },
+        {
+            title: "Fila promocional conectada",
+            description: "Promocoes agora reaproveitam selecao real do historico para organizar campanhas e impressao futura.",
+        },
     ]), []);
 
     const recentTickets = useMemo(() => supportRows.slice(0, 3), [supportRows]);
@@ -273,6 +285,15 @@ export default function useController() {
             icon: "/icons/products.svg",
             actionLabel: "Abrir historico",
             action: () => navigate("dashboard/history"),
+        },
+        {
+            key: "promotions",
+            title: "Promocoes",
+            description: "Fila programada de campanhas montada sobre registros reais do historico compartilhado.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Abrir promocoes",
+            action: () => navigate("dashboard/promotions"),
         },
         {
             key: "account",

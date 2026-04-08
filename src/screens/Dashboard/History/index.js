@@ -71,6 +71,7 @@ export default function DashboardHistory() {
         handleRestoreEntry,
         handlePrintEntry,
         handleDeleteEntry,
+        handleSendToPromotions,
     } = useController();
 
     return (
@@ -175,6 +176,9 @@ export default function DashboardHistory() {
                                                 </HistoryHeaderMain>
 
                                                 <HistoryActions>
+                                                    <HistoryActionButton onClick={() => handleSendToPromotions(entry)}>
+                                                        Promocoes
+                                                    </HistoryActionButton>
                                                     <HistoryActionButton onClick={() => handleRestoreEntry(entry)}>
                                                         Restaurar
                                                     </HistoryActionButton>

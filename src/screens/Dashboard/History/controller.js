@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { CoreContext } from "context/CoreContext";
+import { savePromotionSeed } from "services/promotions";
 import {
     deletePrintHistoryEntry,
     markPrintHistoryEntryPrinted,
@@ -72,6 +73,14 @@ export default function useController() {
                 rounded: true,
                 color: "secondary",
                 action: () => navigate("dashboard/prices/quick"),
+            },
+            {
+                label: "Promocoes",
+                icon: "products",
+                rounded: true,
+                outline: true,
+                color: "primary",
+                action: () => navigate("dashboard/promotions"),
             },
         ],
     }), [navigate]);
@@ -210,6 +219,20 @@ export default function useController() {
         });
     }, [performDeleteEntry, setModal]);
 
+    const handleSendToPromotions = useCallback((entry) => {
+        if (!entry?.id) {
+            toast.error("Nao foi possivel enviar este registro para promocoes.");
+            return;
+        }
+
+        savePromotionSeed({
+            historyEntryIds: [entry.id],
+            name: entry.offerTitle ? `Promocao ${entry.offerTitle}` : `Promocao ${entry.title}`,
+        });
+        toast.success("Registro enviado para a fila de promocoes.");
+        navigate("dashboard/promotions");
+    }, [navigate]);
+
     return {
         loading,
         header,
@@ -229,5 +252,6 @@ export default function useController() {
         handleRestoreEntry,
         handlePrintEntry,
         handleDeleteEntry,
+        handleSendToPromotions,
     };
 }

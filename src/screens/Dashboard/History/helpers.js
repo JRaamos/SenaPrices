@@ -1,7 +1,5 @@
 import moment from "moment";
-
-import { buildPreview, buildPrintMarkup } from "../CreatePrice/helpers";
-import { buildBatchPrintMarkup, sanitizeQuickDraft } from "../QuickPrice/helpers";
+import { buildHistoryEntryPrintMarkup } from "services/pricingMarkup";
 
 import { DEFAULT_HISTORY_FILTERS } from "./constants";
 
@@ -80,13 +78,7 @@ export function buildHistoryStatus({ entries = [], filteredEntries = [] }) {
 }
 
 export function buildHistoryPrintMarkup(entry) {
-    if (entry.restoreTarget === "quick") {
-        const draft = sanitizeQuickDraft(entry.restoreDraft);
-        return buildBatchPrintMarkup(draft, draft.rows || []);
-    }
-
-    const preview = buildPreview(entry.restoreDraft);
-    return buildPrintMarkup(preview);
+    return buildHistoryEntryPrintMarkup(entry);
 }
 
 export function buildHistoryRow(entry) {
