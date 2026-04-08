@@ -8,6 +8,7 @@ import {
     resolvePdvSuggestionForQuery,
 } from "services/pdv";
 import { recordPricingOperation } from "services/pricing";
+import { getQuickPriceDefaults } from "services/settings";
 
 import {
     ORIENTATION_OPTIONS,
@@ -360,6 +361,7 @@ export default function useController() {
     const handleClearDraft = useCallback(() => {
         const nextDraft = sanitizeQuickDraft({
             ...QUICK_PRICE_DEFAULT_DRAFT,
+            ...getQuickPriceDefaults(),
             rows: [createQuickRow()],
         });
 

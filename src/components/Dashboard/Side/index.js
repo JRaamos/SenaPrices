@@ -51,6 +51,7 @@ export default function DashboardSide({ fluid }) {
             { label: "Itens", icon: "products", path: "dashboard/items" },
             { label: "Criar Item", icon: "products", path: "dashboard/items/create" },
             { label: "Importar", icon: "products", path: "dashboard/items/import" },
+            { label: "Definições", icon: "training", path: "dashboard/settings" },
             { label: "Relatórios", icon: "training", path: "dashboard/reports" },
         ] : []),
         { label: "Suporte", icon: "proposal", path: "dashboard/support" },

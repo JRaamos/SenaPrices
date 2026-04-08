@@ -49,6 +49,130 @@ export function readCatalogSections() {
         .sort((left, right) => left.name.localeCompare(right.name, "pt-BR"));
 }
 
+export function createCatalogSection(values, user) {
+    const draft = sanitizeCatalogSection(values);
+    const sections = readCatalogSections();
+
+    if (!draft.name || draft.name.length < 2) {
+        throw new Error("Informe um nome de seção com pelo menos 2 caracteres.");
+    }
+
+    const duplicated = sections.find(item => normalizeComparisonValue(item.name) === normalizeComparisonValue(draft.name));
+    if (duplicated) {
+        return duplicated;
+    }
+
+    const now = new Date().toISOString();
+    const section = {
+        ...draft,
+        id: createId(),
+        documentId: createDocumentId("catalog-section"),
+        createdAt: now,
+        updatedAt: now,
+        createdBy: user?.documentId || user?.id || null,
+        updatedBy: user?.documentId || user?.id || null,
+    };
+
+    SaveObject(SECTIONS_KEY, [...sections, section]);
+    return section;
+}
+
+export function updateCatalogSection(id, values, user) {
+    const sections = readCatalogSections();
+    const current = sections.find(item => item.id === id || item.documentId === id);
+
+    if (!current) {
+        throw new Error("Seção não encontrada para atualização.");
+    }
+
+    const nextName = sanitizeText(values?.name, 40);
+    if (!nextName || nextName.length < 2) {
+        throw new Error("Informe um nome de seção com pelo menos 2 caracteres.");
+    }
+
+    const duplicated = sections.find(item => (
+        item.id !== current.id
+        && normalizeComparisonValue(item.name) === normalizeComparisonValue(nextName)
+    ));
+
+    if (duplicated) {
+        throw new Error("Já existe uma seção com este nome.");
+    }
+
+    const nextSection = {
+        ...current,
+        name: nextName,
+        updatedAt: new Date().toISOString(),
+        updatedBy: user?.documentId || user?.id || null,
+    };
+
+    SaveObject(SECTIONS_KEY, sections.map(item => (
+        item.id === current.id ? nextSection : item
+    )));
+
+    if (current.name !== nextName) {
+        const items = readCatalogItems();
+        SaveObject(ITEMS_KEY, items.map(item => (
+            normalizeComparisonValue(item.section) === normalizeComparisonValue(current.name)
+                ? {
+                    ...item,
+                    section: nextName,
+                    updatedAt: new Date().toISOString(),
+                    updatedBy: user?.documentId || user?.id || item.updatedBy || null,
+                }
+                : item
+        )));
+    }
+
+    return nextSection;
+}
+
+export function deleteCatalogSection(id, options = {}, user = null) {
+    const sections = readCatalogSections();
+    const current = sections.find(item => item.id === id || item.documentId === id);
+
+    if (!current) {
+        throw new Error("Seção não encontrada para exclusão.");
+    }
+
+    const replacementName = sanitizeText(options?.replaceWith, 40);
+    const usageCount = readCatalogItems().filter(item => (
+        normalizeComparisonValue(item.section) === normalizeComparisonValue(current.name)
+    )).length;
+
+    if (usageCount > 0 && !replacementName) {
+        throw new Error("Há itens vinculados a esta seção. Renomeie a seção ou informe uma substituição antes de excluir.");
+    }
+
+    const items = readCatalogItems();
+    SaveObject(ITEMS_KEY, items.map(item => (
+        normalizeComparisonValue(item.section) === normalizeComparisonValue(current.name)
+            ? {
+                ...item,
+                section: replacementName,
+                updatedAt: new Date().toISOString(),
+                updatedBy: user?.documentId || user?.id || item.updatedBy || null,
+            }
+            : item
+    )));
+
+    const nextSections = sections.filter(item => item.id !== current.id);
+    SaveObject(SECTIONS_KEY, nextSections);
+    return nextSections;
+}
+
+export function readCatalogSectionUsage() {
+    const sections = readCatalogSections();
+    const items = readCatalogItems();
+
+    return sections.map(section => ({
+        ...section,
+        usageCount: items.filter(item => (
+            normalizeComparisonValue(item.section) === normalizeComparisonValue(section.name)
+        )).length,
+    }));
+}
+
 export function createCatalogItem(values, user) {
     const draft = sanitizeCatalogItem(values);
     const catalogItems = readCatalogItems();
@@ -259,18 +383,7 @@ function ensureCatalogSection(sectionName, user) {
         return existing;
     }
 
-    const now = new Date().toISOString();
-    const section = {
-        id: createId(),
-        documentId: createDocumentId("catalog-section"),
-        name: safeName,
-        createdAt: now,
-        updatedAt: now,
-        createdBy: user?.documentId || user?.id || null,
-    };
-
-    SaveObject(SECTIONS_KEY, [...sections, section]);
-    return section;
+    return createCatalogSection({ name: safeName }, user);
 }
 
 function assertCatalogItemPayload(item) {

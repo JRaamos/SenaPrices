@@ -13,6 +13,7 @@ import {
     resolvePdvSuggestionForCatalogItem,
 } from "services/pdv";
 import { recordPricingOperation } from "services/pricing";
+import { getCreatePriceDefaults } from "services/settings";
 
 import {
     DEFAULT_FORM_VALUES,
@@ -55,10 +56,12 @@ export default function useController() {
 
     useEffect(() => {
         const priceSeed = readCatalogPriceSeed();
+        const settingsDefaults = getCreatePriceDefaults();
 
         if (priceSeed) {
             setForm(sanitizeDraft({
                 ...DEFAULT_FORM_VALUES,
+                ...settingsDefaults,
                 ...buildPriceDraftFromCatalogItem(priceSeed),
             }));
             clearCatalogPriceSeed();
@@ -289,7 +292,10 @@ export default function useController() {
 
     const handleClearDraft = useCallback(() => {
         clearPriceStudioDraft();
-        setForm(DEFAULT_FORM_VALUES);
+        setForm(sanitizeDraft({
+            ...DEFAULT_FORM_VALUES,
+            ...getCreatePriceDefaults(),
+        }));
         setLastSavedAt(null);
         toast.success("Rascunho limpo com sucesso.");
     }, []);

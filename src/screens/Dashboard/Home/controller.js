@@ -9,13 +9,6 @@ import { canManagePromotions, normalizeUserRole } from "services/users";
 
 const ROADMAP_MODULES = [
     {
-        key: "settings",
-        title: "Definições",
-        description: "Centralização das configurações de impressão, identidade visual, usuários e parâmetros operacionais.",
-        status: "Planejado",
-        icon: "/icons/training.svg",
-    },
-    {
         key: "commercial",
         title: "Assinaturas e landing",
         description: "Fluxo comercial com temas sazonais, planos, checkout e governança da plataforma.",
@@ -201,6 +194,14 @@ export default function useController() {
                 buttonLabel: "Abrir importação",
                 action: () => navigate("dashboard/items/import"),
             },
+            {
+                key: "settings",
+                icon: "/icons/training.svg",
+                title: "Definições",
+                description: "Padronize impressão, seções, etiquetas e leitura de acessos a partir de uma única central.",
+                buttonLabel: "Abrir definições",
+                action: () => navigate("dashboard/settings"),
+            },
             ...baseActions.slice(1, 6),
             {
                 key: "reports",
@@ -247,23 +248,27 @@ export default function useController() {
         },
         {
             title: "Histórico operacional ativo",
-            description: "Criar Preço e Criação Rápida agora registram rastreabilidade compartilhada para restauração e reimpressão.",
+            description: "Criar Preço e Criação Rápida registram rastreabilidade compartilhada para restauração e reimpressão.",
         },
         {
             title: "Fila promocional conectada",
-            description: "Promoções agora reaproveitam seleção real do histórico para organizar campanhas e impressão futura.",
+            description: "Promoções reaproveitam seleção real do histórico para organizar campanhas e impressão futura.",
         },
         {
             title: "Impressão em lote ativa",
-            description: "Histórico e Promoções agora alimentam a mesma fila operacional de impressão agrupada com controle por perfil.",
+            description: "Histórico e Promoções alimentam a mesma fila operacional de impressão agrupada com controle por perfil.",
         },
         {
             title: "Etiquetas conectadas ao catálogo",
-            description: "A emissão de etiquetas agora reaproveita catálogo e última precificação válida, reduzindo divergência entre gôndola e cartaz.",
+            description: "A emissão de etiquetas reaproveita catálogo e última precificação válida, reduzindo divergência entre gôndola e cartaz.",
         },
         {
             title: "Integração PDV governada",
-            description: "A origem externa agora possui política de validação, visibilidade por perfil e reaproveitamento de preço nos fluxos ativos.",
+            description: "A origem externa possui política de validação, visibilidade por perfil e reaproveitamento de preço nos fluxos ativos.",
+        },
+        {
+            title: "Definições centralizadas",
+            description: "A governança de impressão, seções, etiquetas e acessos já foi consolidada em uma central única para admin e subadmin.",
         },
         {
             title: "Leitura gerencial disponível",
@@ -401,6 +406,15 @@ export default function useController() {
                 icon: "/icons/products.svg",
                 actionLabel: "Importar itens",
                 action: () => navigate("dashboard/items/import"),
+            },
+            {
+                key: "settings",
+                title: "Definições",
+                description: "Central operacional para governar defaults de impressão, seções, etiquetas e acessos.",
+                status: "Ativo",
+                icon: "/icons/training.svg",
+                actionLabel: "Abrir definições",
+                action: () => navigate("dashboard/settings"),
             },
             ...baseCards.slice(3, 7),
             {

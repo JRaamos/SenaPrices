@@ -26,6 +26,7 @@ import DashboardPDVIntegration from "screens/Dashboard/PDVIntegration";
 import DashboardPromotions from "screens/Dashboard/Promotions";
 import DashboardQuickPrice from "screens/Dashboard/QuickPrice";
 import DashboardReports from "screens/Dashboard/Reports";
+import DashboardSettings from "screens/Dashboard/Settings";
 import DashboardMe from 'screens/Dashboard/Me' 
 import DashboardSupport from "screens/Dashboard/Support";
 import DashboardSupportForm from "screens/Dashboard/SupportForm";
@@ -52,6 +53,7 @@ export default function AppRouter() {
             <Route path="/dashboard/labels" exact element={<DashboardLabels />} />
             <Route path="/dashboard/integration" exact element={<DashboardPDVIntegration />} />
             <Route path="/dashboard/reports" exact element={<DashboardReports />} />
+            <Route path="/dashboard/settings" exact element={<DashboardSettings />} />
             <Route path="/dashboard/items/create" exact element={<DashboardCreateItem />} />
             <Route path="/dashboard/items/import" exact element={<DashboardImport />} />
             <Route path="/dashboard/items" exact element={<DashboardItems />} />

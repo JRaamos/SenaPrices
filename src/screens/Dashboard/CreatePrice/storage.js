@@ -1,4 +1,5 @@
 import { ReadObject, SaveObject } from "services/storage";
+import { getCreatePriceDefaults } from "services/settings";
 
 import { DEFAULT_FORM_VALUES, PRICE_STUDIO_LIMITS } from "./constants";
 import { sanitizeDraft } from "./helpers";
@@ -8,14 +9,19 @@ const RECENT_KEY = "price-studio-recent";
 
 export function readPriceStudioDraft() {
     const draft = ReadObject(DRAFT_KEY);
+    const settingsDefaults = getCreatePriceDefaults();
 
     if (!draft || typeof draft !== "object") {
         return {
             ...DEFAULT_FORM_VALUES,
+            ...settingsDefaults,
         };
     }
 
-    return sanitizeDraft(draft);
+    return sanitizeDraft({
+        ...settingsDefaults,
+        ...draft,
+    });
 }
 
 export function savePriceStudioDraft(values) {
@@ -23,7 +29,10 @@ export function savePriceStudioDraft(values) {
 }
 
 export function clearPriceStudioDraft() {
-    return SaveObject(DRAFT_KEY, DEFAULT_FORM_VALUES);
+    return SaveObject(DRAFT_KEY, {
+        ...DEFAULT_FORM_VALUES,
+        ...getCreatePriceDefaults(),
+    });
 }
 
 export function readRecentCompositions() {

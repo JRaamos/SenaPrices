@@ -1,4 +1,5 @@
 import { ReadObject, SaveObject } from "services/storage";
+import { getQuickPriceDefaults } from "services/settings";
 
 import { QUICK_PRICE_DEFAULT_DRAFT, QUICK_PRICE_LIMITS } from "./constants";
 import { sanitizeQuickDraft } from "./helpers";
@@ -8,12 +9,19 @@ const RECENT_KEY = "quick-price-recent";
 
 export function readQuickPriceDraft() {
     const draft = ReadObject(DRAFT_KEY);
+    const settingsDefaults = getQuickPriceDefaults();
 
     if (!draft || typeof draft !== "object") {
-        return sanitizeQuickDraft(QUICK_PRICE_DEFAULT_DRAFT);
+        return sanitizeQuickDraft({
+            ...QUICK_PRICE_DEFAULT_DRAFT,
+            ...settingsDefaults,
+        });
     }
 
-    return sanitizeQuickDraft(draft);
+    return sanitizeQuickDraft({
+        ...settingsDefaults,
+        ...draft,
+    });
 }
 
 export function saveQuickPriceDraft(values) {
@@ -21,7 +29,10 @@ export function saveQuickPriceDraft(values) {
 }
 
 export function clearQuickPriceDraft() {
-    return SaveObject(DRAFT_KEY, QUICK_PRICE_DEFAULT_DRAFT);
+    return SaveObject(DRAFT_KEY, {
+        ...QUICK_PRICE_DEFAULT_DRAFT,
+        ...getQuickPriceDefaults(),
+    });
 }
 
 export function readRecentQuickBatches() {
