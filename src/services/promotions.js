@@ -57,6 +57,9 @@ export function sanitizePromotionOrder(values = {}) {
     const historyEntryIds = Array.isArray(values?.historyEntryIds)
         ? values.historyEntryIds.map(item => `${item || ""}`.trim()).filter(Boolean)
         : [];
+    const assignedUserIds = Array.isArray(values?.assignedUserIds)
+        ? values.assignedUserIds.map(item => `${item || ""}`.trim()).filter(Boolean)
+        : [];
 
     return {
         id: `${values?.id || ""}`,
@@ -68,6 +71,10 @@ export function sanitizePromotionOrder(values = {}) {
         paperSize: sanitizeText(values?.paperSize, 12),
         orientation: sanitizeText(values?.orientation, 24),
         historyEntryIds,
+        assignedUserIds,
+        assignedUserNames: Array.isArray(values?.assignedUserNames)
+            ? values.assignedUserNames.map(item => sanitizeText(item, 80)).filter(Boolean)
+            : [],
         totalCards: Number.isInteger(values?.totalCards) ? values.totalCards : historyEntryIds.length,
         entryTitles: Array.isArray(values?.entryTitles)
             ? values.entryTitles.map(item => sanitizeText(item, 120)).filter(Boolean)
@@ -84,6 +91,9 @@ export function sanitizePromotionSeed(values = {}) {
             : [],
         name: sanitizeText(values?.name, 80),
         description: sanitizeText(values?.description, 200),
+        assignedUserIds: Array.isArray(values?.assignedUserIds)
+            ? values.assignedUserIds.map(item => `${item || ""}`.trim()).filter(Boolean)
+            : [],
     };
 }
 
@@ -102,6 +112,10 @@ function assertPromotionOrder(order) {
 
     if (!order.historyEntryIds.length) {
         throw new Error("Selecione ao menos um registro do historico para compor a promocao.");
+    }
+
+    if (!order.assignedUserIds.length) {
+        throw new Error("Selecione ao menos um usuario para receber a promocao.");
     }
 }
 

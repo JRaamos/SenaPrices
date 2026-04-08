@@ -19,15 +19,26 @@ export function sanitizePromotionDraft(values = {}) {
         description: sanitizeText(next.description, 200),
         validFrom: sanitizeDate(next.validFrom) || PROMOTION_DEFAULT_FORM_VALUES.validFrom,
         validTo: sanitizeDate(next.validTo),
-        paperSize: pickAllowed(next.paperSize, PROMOTION_PAPER_SIZE_OPTIONS.map(item => item.value), PROMOTION_DEFAULT_FORM_VALUES.paperSize),
-        orientation: pickAllowed(next.orientation, PROMOTION_ORIENTATION_OPTIONS.map(item => item.value), PROMOTION_DEFAULT_FORM_VALUES.orientation),
+        paperSize: pickAllowed(
+            next.paperSize,
+            PROMOTION_PAPER_SIZE_OPTIONS.map(item => item.value),
+            PROMOTION_DEFAULT_FORM_VALUES.paperSize,
+        ),
+        orientation: pickAllowed(
+            next.orientation,
+            PROMOTION_ORIENTATION_OPTIONS.map(item => item.value),
+            PROMOTION_DEFAULT_FORM_VALUES.orientation,
+        ),
         selectedEntryIds: Array.isArray(next.selectedEntryIds)
             ? next.selectedEntryIds.map(item => `${item || ""}`.trim()).filter(Boolean)
+            : [],
+        assignedUserIds: Array.isArray(next.assignedUserIds)
+            ? next.assignedUserIds.map(item => `${item || ""}`.trim()).filter(Boolean)
             : [],
     };
 }
 
-export function validatePromotionDraft(values, historyEntries = []) {
+export function validatePromotionDraft(values, historyEntries = [], canManage = true) {
     const draft = sanitizePromotionDraft(values);
     const errors = {};
 
@@ -45,6 +56,10 @@ export function validatePromotionDraft(values, historyEntries = []) {
 
     if (!draft.selectedEntryIds.length) {
         errors.selectedEntryIds = "Selecione ao menos um registro do historico.";
+    }
+
+    if (canManage && !draft.assignedUserIds.length) {
+        errors.assignedUserIds = "Selecione ao menos um usuario destinatario.";
     }
 
     const missingEntries = draft.selectedEntryIds.filter(id => !historyEntries.find(item => item.id === id));
@@ -125,15 +140,26 @@ export function buildPromotionSeedDraft(currentDraft, seed, historyEntries = [])
             ...safeDraft.selectedEntryIds,
             ...safeSeed.historyEntryIds,
         ])),
+        assignedUserIds: Array.from(new Set([
+            ...safeDraft.assignedUserIds,
+            ...(safeSeed.assignedUserIds || []),
+        ])),
     });
 }
 
-export function buildPromotionStatus({ orders = [], activeOrders = [], validation }) {
+export function buildPromotionStatus({
+    orders = [],
+    activeOrders = [],
+    validation,
+    canManage = true,
+}) {
     if (!orders.length && !validation?.draft?.selectedEntryIds?.length) {
         return {
             tone: "orange",
-            title: "Fila de promocoes vazia",
-            description: "Selecione registros do historico para começar a organizar campanhas e impressao futura.",
+            title: canManage ? "Fila de promocoes vazia" : "Nenhuma promocao recebida",
+            description: canManage
+                ? "Selecione registros do historico para comecar a organizar campanhas e impressao futura."
+                : "Quando admin ou subadmin enviar novas campanhas para voce, elas aparecerao aqui prontas para impressao.",
         };
     }
 
@@ -147,8 +173,10 @@ export function buildPromotionStatus({ orders = [], activeOrders = [], validatio
 
     return {
         tone: "green",
-        title: "Fila promocional ativa",
-        description: `${activeOrders.length} promocao(oes) ativa(s) atualmente na base.`,
+        title: canManage ? "Fila promocional ativa" : "Promocoes disponiveis",
+        description: canManage
+            ? `${activeOrders.length} promocao(oes) ativa(s) atualmente na base.`
+            : `${orders.length} promocao(oes) atribuida(s) ao seu usuario no momento.`,
     };
 }
 
@@ -170,11 +198,13 @@ export function decoratePromotionOrder(order, historyEntries = []) {
     const relatedEntries = resolvePromotionEntries(safeOrder.historyEntryIds, historyEntries);
     const today = new Date().toISOString().slice(0, 10);
     const isExpired = !!safeOrder.validTo && safeOrder.validTo < today;
+    const isUpcoming = !!safeOrder.validFrom && safeOrder.validFrom > today;
 
     return {
         ...safeOrder,
         isExpired,
-        statusLabel: isExpired ? "Encerrada" : "Ativa",
+        isUpcoming,
+        statusLabel: isExpired ? "Encerrada" : isUpcoming ? "Programada" : "Ativa",
         cardsLabel: `${relatedEntries.reduce((result, item) => result + (item.totalCards || 0), 0) || safeOrder.totalCards} cartaz(es)`,
         sourceLabel: relatedEntries.length === 1
             ? getSourceLabel(relatedEntries[0].source)

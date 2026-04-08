@@ -16,6 +16,12 @@ import {
     readPrintHistory,
 } from "services/pricing";
 import { buildPromotionPrintMarkup } from "services/pricingMarkup";
+import {
+    canManagePromotions,
+    getUserIdentity,
+    normalizeUserRole,
+    readUsersDirectory,
+} from "services/users";
 
 import {
     PROMOTION_GUIDELINES,
@@ -44,10 +50,14 @@ export default function useController() {
     const navigate = useCallback((to) => n(`/${to}`), [n]);
 
     const { setModal, user } = useContext(CoreContext);
+    const currentUserId = getUserIdentity(user);
+    const currentUserRole = normalizeUserRole(user);
+    const canManage = canManagePromotions(user);
 
     const [loading, setLoading] = useState(false);
     const [historyEntries, setHistoryEntries] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [usersDirectory, setUsersDirectory] = useState([]);
     const [form, setForm] = useState(readPromotionDraft());
     const [selectionSearch, setSelectionSearch] = useState("");
     const [selectionSource, setSelectionSource] = useState("");
@@ -64,15 +74,49 @@ export default function useController() {
         };
     }, []);
 
-    useEffect(() => {
-        const nextState = refreshState();
-        const seed = readPromotionSeed();
-        const seededDraft = buildPromotionSeedDraft(readPromotionDraft(), seed, nextState.historyEntries);
+    const loadUsersDirectory = useCallback(async () => {
+        if (!canManage) {
+            setUsersDirectory([]);
+            return [];
+        }
 
-        setForm(seededDraft);
-        clearPromotionSeed();
-        setReady(true);
-    }, [refreshState]);
+        const users = await readUsersDirectory();
+        const assignableUsers = users.filter(item => item.role === "user");
+        setUsersDirectory(assignableUsers);
+        return assignableUsers;
+    }, [canManage]);
+
+    useEffect(() => {
+        let active = true;
+
+        const init = async () => {
+            const nextState = refreshState();
+            const seed = readPromotionSeed();
+            const directory = await loadUsersDirectory();
+            const baseDraft = buildPromotionSeedDraft(readPromotionDraft(), seed, nextState.historyEntries);
+            const fallbackAssignedIds = canManage
+                ? baseDraft.assignedUserIds
+                : [currentUserId].filter(Boolean);
+            const sanitizedDraft = sanitizePromotionDraft({
+                ...baseDraft,
+                assignedUserIds: fallbackAssignedIds.filter(id => (
+                    !canManage || directory.some(item => item.id === id)
+                )),
+            });
+
+            if (!active) return;
+
+            setForm(sanitizedDraft);
+            clearPromotionSeed();
+            setReady(true);
+        };
+
+        init();
+
+        return () => {
+            active = false;
+        };
+    }, [canManage, currentUserId, loadUsersDirectory, refreshState]);
 
     useEffect(() => {
         if (!ready) return;
@@ -92,8 +136,8 @@ export default function useController() {
     }, []);
 
     const validation = useMemo(() => (
-        validatePromotionDraft(form, historyEntries)
-    ), [form, historyEntries]);
+        validatePromotionDraft(form, historyEntries, canManage)
+    ), [canManage, form, historyEntries]);
 
     const selectedEntries = useMemo(() => (
         resolvePromotionEntries(validation.draft.selectedEntryIds, historyEntries)
@@ -112,6 +156,18 @@ export default function useController() {
         decoratedOrders.filter(order => !order.isExpired)
     ), [decoratedOrders]);
 
+    const archivedOrders = useMemo(() => (
+        decoratedOrders.filter(order => order.isExpired)
+    ), [decoratedOrders]);
+
+    const visibleOrders = useMemo(() => {
+        if (canManage) {
+            return activeOrders;
+        }
+
+        return activeOrders.filter(order => order.assignedUserIds.includes(currentUserId));
+    }, [activeOrders, canManage, currentUserId]);
+
     const header = useMemo(() => ({
         title: "Promocoes",
         breadcrumbs: [
@@ -128,22 +184,34 @@ export default function useController() {
                 color: "primary",
                 action: () => navigate("dashboard/history"),
             },
-            {
+            !canManage ? null : {
                 label: "Criar preco",
                 icon: "products",
                 rounded: true,
                 color: "secondary",
                 action: () => navigate("dashboard/prices/create"),
             },
+            !canManage ? null : {
+                label: "Importar",
+                icon: "products",
+                rounded: true,
+                outline: true,
+                color: "primary",
+                action: () => navigate("dashboard/items/import"),
+            },
         ],
-    }), [navigate]);
+    }), [canManage, navigate]);
 
     const clearForm = useCallback(() => {
+        if (!canManage) {
+            return;
+        }
+
         clearPromotionDraft();
         clearPromotionSeed();
         setForm(readPromotionDraft());
         toast.success("Formulario de promocao limpo com sucesso.");
-    }, []);
+    }, [canManage]);
 
     const confirmClearForm = useCallback(() => {
         setModal({
@@ -155,14 +223,35 @@ export default function useController() {
     }, [clearForm, setModal]);
 
     const handleToggleEntry = useCallback((entryId) => {
+        if (!canManage) {
+            return;
+        }
+
         applyPatch(prev => ({
             selectedEntryIds: prev.selectedEntryIds.includes(entryId)
                 ? prev.selectedEntryIds.filter(item => item !== entryId)
                 : [...prev.selectedEntryIds, entryId],
         }));
-    }, [applyPatch]);
+    }, [applyPatch, canManage]);
+
+    const handleToggleAssignedUser = useCallback((userId) => {
+        if (!canManage) {
+            return;
+        }
+
+        applyPatch(prev => ({
+            assignedUserIds: prev.assignedUserIds.includes(userId)
+                ? prev.assignedUserIds.filter(item => item !== userId)
+                : [...prev.assignedUserIds, userId],
+        }));
+    }, [applyPatch, canManage]);
 
     const handleCreateOrder = useCallback(() => {
+        if (!canManage) {
+            toast.error("Somente admin e subadmin podem criar promocoes programadas.");
+            return;
+        }
+
         if (!validation.isValid) {
             toast.error(validation.errorList[0] || "Revise os dados da promocao antes de enviar para a fila.");
             return;
@@ -172,10 +261,12 @@ export default function useController() {
 
         try {
             const totalCards = selectedEntries.reduce((result, item) => result + (item.totalCards || 0), 0);
+            const assignedUsers = usersDirectory.filter(item => validation.draft.assignedUserIds.includes(item.id));
             createPromotionOrder({
                 ...validation.draft,
                 totalCards,
                 entryTitles: selectedEntries.map(item => item.title).filter(Boolean),
+                assignedUserNames: assignedUsers.map(item => item.name),
             }, user);
 
             refreshState();
@@ -188,9 +279,13 @@ export default function useController() {
         } finally {
             setLoading(false);
         }
-    }, [refreshState, selectedEntries, user, validation]);
+    }, [canManage, refreshState, selectedEntries, user, usersDirectory, validation]);
 
     const handleUseOrderAsTemplate = useCallback((order) => {
+        if (!canManage) {
+            return;
+        }
+
         const safeOrder = sanitizePromotionOrder(order);
         applyPatch({
             name: safeOrder.name,
@@ -200,11 +295,17 @@ export default function useController() {
             paperSize: safeOrder.paperSize,
             orientation: safeOrder.orientation,
             selectedEntryIds: safeOrder.historyEntryIds,
+            assignedUserIds: safeOrder.assignedUserIds,
         });
         toast.info("Promocao carregada como base no formulario.");
-    }, [applyPatch]);
+    }, [applyPatch, canManage]);
 
     const handlePrintOrder = useCallback((order) => {
+        if (!canManage && !order?.assignedUserIds?.includes(currentUserId)) {
+            toast.error("Esta promocao nao esta atribuida ao seu usuario.");
+            return;
+        }
+
         const relatedEntries = resolvePromotionEntries(order.historyEntryIds, readPrintHistory());
 
         if (!relatedEntries.length) {
@@ -243,7 +344,7 @@ export default function useController() {
             toast.error("Nao foi possivel imprimir a promocao.");
             setLoading(false);
         }
-    }, [refreshState]);
+    }, [canManage, currentUserId, refreshState]);
 
     const performDeleteOrder = useCallback((order) => {
         if (!order) return;
@@ -254,6 +355,11 @@ export default function useController() {
     }, [refreshState]);
 
     const handleDeleteOrder = useCallback((order) => {
+        if (!canManage) {
+            toast.error("Somente admin e subadmin podem remover promocoes.");
+            return;
+        }
+
         if (!order) return;
 
         setModal({
@@ -262,10 +368,10 @@ export default function useController() {
             text: "A remocao afeta apenas a fila promocional. Os registros originais do historico permanecem preservados.",
             action: () => performDeleteOrder(order),
         });
-    }, [performDeleteOrder, setModal]);
+    }, [canManage, performDeleteOrder, setModal]);
 
     const actions = useMemo(() => ([
-        {
+        !canManage ? null : {
             label: "Limpar formulario",
             color: "error",
             outline: true,
@@ -278,47 +384,77 @@ export default function useController() {
             color: "primary",
             outline: true,
             rounded: true,
-            action: refreshState,
+            action: async () => {
+                refreshState();
+                if (canManage) {
+                    await loadUsersDirectory();
+                }
+            },
         },
-        {
+        !canManage ? null : {
             label: "Criar promocao",
             color: "primary",
             rounded: true,
             loadable: true,
             action: handleCreateOrder,
         },
-    ]), [confirmClearForm, handleCreateOrder, refreshState]);
+    ].filter(Boolean)), [canManage, confirmClearForm, handleCreateOrder, loadUsersDirectory, refreshState]);
 
     const summaryItems = useMemo(() => {
         const selectedCards = selectedEntries.reduce((result, item) => result + (item.totalCards || 0), 0);
+        const queueCards = visibleOrders.reduce((result, item) => result + (item.totalCards || 0), 0);
+
+        if (!canManage) {
+            return [
+                { label: "Perfil", value: "user" },
+                { label: "Recebidas por voce", value: `${visibleOrders.length}` },
+                { label: "Cartazes na fila", value: `${queueCards}` },
+                { label: "Prontas para imprimir", value: `${visibleOrders.length}` },
+            ];
+        }
 
         return [
-            { label: "Promocoes na fila", value: `${decoratedOrders.length}` },
+            { label: "Perfil", value: currentUserRole },
             { label: "Ativas", value: `${activeOrders.length}` },
+            { label: "Encerradas", value: `${archivedOrders.length}` },
+            { label: "Usuarios elegiveis", value: `${usersDirectory.length}` },
             { label: "Selecionados no formulario", value: `${selectedEntries.length}` },
             { label: "Cartazes da selecao", value: `${selectedCards}` },
         ];
-    }, [activeOrders.length, decoratedOrders.length, selectedEntries]);
+    }, [
+        activeOrders.length,
+        archivedOrders.length,
+        canManage,
+        currentUserRole,
+        selectedEntries,
+        usersDirectory.length,
+        visibleOrders,
+    ]);
 
     const statusCard = useMemo(() => (
         buildPromotionStatus({
-            orders: decoratedOrders,
-            activeOrders,
+            orders: visibleOrders,
+            activeOrders: canManage ? activeOrders : visibleOrders,
             validation,
+            canManage,
         })
-    ), [activeOrders, decoratedOrders, validation]);
+    ), [activeOrders, canManage, validation, visibleOrders]);
 
     return {
         loading,
+        canManage,
+        currentUserRole,
         header,
         actions,
         form: validation.draft,
         validation,
         statusCard,
         summaryItems,
-        recentOrders: decoratedOrders.slice(0, 4),
-        orders: decoratedOrders,
+        recentOrders: (canManage ? activeOrders : visibleOrders).slice(0, 4),
+        orders: visibleOrders,
+        archivedOrders,
         availableSources: visibleSources,
+        assignableUsers: usersDirectory,
         sourceOptions: PROMOTION_SOURCE_OPTIONS,
         paperSizeOptions: PROMOTION_PAPER_SIZE_OPTIONS,
         orientationOptions: PROMOTION_ORIENTATION_OPTIONS,
@@ -329,6 +465,7 @@ export default function useController() {
         setSelectionSource,
         applyPatch,
         handleToggleEntry,
+        handleToggleAssignedUser,
         handleCreateOrder,
         handleUseOrderAsTemplate,
         handlePrintOrder,

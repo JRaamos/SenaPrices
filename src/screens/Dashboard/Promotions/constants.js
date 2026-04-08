@@ -6,6 +6,7 @@ export const PROMOTION_DEFAULT_FORM_VALUES = {
     paperSize: "A5",
     orientation: "portrait",
     selectedEntryIds: [],
+    assignedUserIds: [],
 };
 
 export const PROMOTION_PAPER_SIZE_OPTIONS = [

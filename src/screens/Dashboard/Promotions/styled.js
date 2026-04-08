@@ -149,6 +149,33 @@ export const SelectionMarker = styled.div.attrs({
     flex-shrink: 0;
 `;
 
+export const RecipientList = styled.div.attrs({
+})`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+`;
+
+export const RecipientButton = styled.button.attrs({
+    type: "button",
+})`
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid ${props => props.$selected ? "rgba(59,130,246,0.24)" : props.theme.palette.colors.mystic};
+    background: ${props => props.$selected ? "rgba(59,130,246,0.08)" : "rgba(248,250,252,0.92)"};
+    color: ${props => props.$selected ? props.theme.palette.primary.main : props.theme.palette.colors.slate};
+    font-size: 12px;
+    font-weight: ${props => props.$selected ? 700 : 600};
+    line-height: 18px;
+    cursor: pointer;
+
+    &:focus-visible{
+        outline: 3px solid rgba(59,130,246,0.16);
+        outline-offset: 2px;
+    }
+`;
+
 export const OrderList = styled.div.attrs({
 })`
     display: grid;
