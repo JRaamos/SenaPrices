@@ -8,30 +8,30 @@ import { optionsSupport } from "utils/options";
 
 const ROADMAP_MODULES = [
     {
-        key: "labels",
-        title: "Etiquetas",
-        description: "Geracao de etiquetas para gondola e fluxos de impressao especificos.",
-        status: "Planejado",
-        icon: "/icons/training.svg",
-    },
-    {
-        key: "labels-print",
-        title: "Fluxos de Etiquetas",
-        description: "Execucao dedicada para etiquetas de gondola, formatos especificos e saidas de impressao segmentadas.",
-        status: "Planejado",
-        icon: "/icons/products.svg",
-    },
-    {
         key: "reports",
         title: "Relatorios",
-        description: "Visao analitica de uso, produtividade e historico operacional do sistema.",
+        description: "Visao analitica de uso, produtividade, operacao de loja e auditoria por periodo.",
         status: "Planejado",
         icon: "/icons/training.svg",
     },
     {
         key: "pdv",
         title: "Integracao PDV",
-        description: "Conexao futura com base externa para abastecer precificacao e operacao de loja.",
+        description: "Conexao futura com base externa para abastecer catalogo, precificacao e sincronizacao automatica.",
+        status: "Planejado",
+        icon: "/icons/products.svg",
+    },
+    {
+        key: "settings",
+        title: "Definicoes",
+        description: "Centralizacao das configuracoes de impressao, identidade visual, usuarios e parametros operacionais.",
+        status: "Planejado",
+        icon: "/icons/training.svg",
+    },
+    {
+        key: "commercial",
+        title: "Assinaturas e landing",
+        description: "Fluxo comercial com temas sazonais, planos, checkout e governanca da plataforma.",
         status: "Planejado",
         icon: "/icons/products.svg",
     },
@@ -148,6 +148,14 @@ export default function useController() {
             action: () => navigate("dashboard/prices/batch"),
         },
         {
+            key: "labels",
+            icon: "/icons/products.svg",
+            title: "Etiquetas",
+            description: "Emita etiquetas de gondola a partir do catalogo e da ultima precificacao rastreavel do item.",
+            buttonLabel: "Abrir etiquetas",
+            action: () => navigate("dashboard/labels"),
+        },
+        {
             key: "history",
             icon: "/icons/products.svg",
             title: "Historico",
@@ -232,6 +240,10 @@ export default function useController() {
             title: "Impressao em lote ativa",
             description: "Historico e Promocoes agora alimentam a mesma fila operacional de impressao agrupada com controle por perfil.",
         },
+        {
+            title: "Etiquetas conectadas ao catalogo",
+            description: "A emissao de etiquetas agora reaproveita catalogo e ultima precificacao valida, reduzindo divergencia entre gondola e cartaz.",
+        },
     ]), []);
 
     const recentTickets = useMemo(() => supportRows.slice(0, 3), [supportRows]);
@@ -299,6 +311,15 @@ export default function useController() {
             icon: "/icons/products.svg",
             actionLabel: "Abrir historico",
             action: () => navigate("dashboard/history"),
+        },
+        {
+            key: "labels",
+            title: "Etiquetas",
+            description: "Geracao de etiquetas HTML e Zebra ZPL com base no catalogo e na ultima precificacao rastreavel do item.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Abrir etiquetas",
+            action: () => navigate("dashboard/labels"),
         },
         {
             key: "promotions",

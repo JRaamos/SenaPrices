@@ -21,6 +21,7 @@ import DashboardBatchPrint from "screens/Dashboard/BatchPrint";
 import DashboardHistory from "screens/Dashboard/History";
 import DashboardImport from "screens/Dashboard/Import";
 import DashboardItems from "screens/Dashboard/Items";
+import DashboardLabels from "screens/Dashboard/Labels";
 import DashboardPromotions from "screens/Dashboard/Promotions";
 import DashboardQuickPrice from "screens/Dashboard/QuickPrice";
 import DashboardMe from 'screens/Dashboard/Me' 
@@ -46,6 +47,7 @@ export default function AppRouter() {
             <Route path="/dashboard/prices/batch" exact element={<DashboardBatchPrint />} />
             <Route path="/dashboard/history" exact element={<DashboardHistory />} />
             <Route path="/dashboard/promotions" exact element={<DashboardPromotions />} />
+            <Route path="/dashboard/labels" exact element={<DashboardLabels />} />
             <Route path="/dashboard/items/create" exact element={<DashboardCreateItem />} />
             <Route path="/dashboard/items/import" exact element={<DashboardImport />} />
             <Route path="/dashboard/items" exact element={<DashboardItems />} />

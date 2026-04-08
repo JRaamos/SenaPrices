@@ -47,6 +47,7 @@ export default function DashboardSide({ fluid }){
         { label: 'Impressao em Lote', icon: 'products', path: 'dashboard/prices/batch' },
         { label: 'Historico', icon: 'products', path: 'dashboard/history' },
         { label: 'Promocoes', icon: 'products', path: 'dashboard/promotions' },
+        { label: 'Etiquetas', icon: 'products', path: 'dashboard/labels' },
         { label: 'Itens', icon: 'products', path: 'dashboard/items' },
         { label: 'Criar Item', icon: 'products', path: 'dashboard/items/create' },
         { label: 'Importar', icon: 'products', path: 'dashboard/items/import' },
