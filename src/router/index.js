@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import Landpage from 'screens/Landpage' 
+import CheckoutSuccess from "screens/CheckoutSuccess";
 import NotFound from 'screens/NotFound' 
 
 import Login from 'screens/Authentication/Login' 
@@ -38,6 +39,7 @@ export default function AppRouter() {
         <div>
           <Routes>
             <Route path="/" exact element={<Landpage />} /> 
+            <Route path="/checkout/success" exact element={<CheckoutSuccess />} />
             
             <Route path="/login" exact element={<Login />} /> 
             <Route path="/register" exact element={<Register />} /> 
