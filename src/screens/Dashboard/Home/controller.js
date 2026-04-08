@@ -115,6 +115,14 @@ export default function useController() {
             action: () => navigate("dashboard/support/create"),
         },
         {
+            key: "create-item",
+            icon: "/icons/products.svg",
+            title: "Criar item",
+            description: "Cadastre a base do catalogo para sustentar precificacao, busca e evolucao dos demais modulos.",
+            buttonLabel: "Abrir cadastro",
+            action: () => navigate("dashboard/items/create"),
+        },
+        {
             key: "quick-price",
             icon: "/icons/products.svg",
             title: "Criacao Rapida",
@@ -175,6 +183,10 @@ export default function useController() {
             title: "Operacao de precificacao ativa",
             description: "A base ja possui criacao de cartaz unitario e criacao rapida em lote com validacao e impressao.",
         },
+        {
+            title: "Base de catalogo iniciada",
+            description: "O cadastro estruturado de itens agora comeca a alimentar o restante da evolucao funcional do sistema.",
+        },
     ]), []);
 
     const recentTickets = useMemo(() => supportRows.slice(0, 3), [supportRows]);
@@ -197,6 +209,15 @@ export default function useController() {
             icon: "/icons/products.svg",
             actionLabel: "Abrir modo rapido",
             action: () => navigate("dashboard/prices/quick"),
+        },
+        {
+            key: "create-item",
+            title: "Criar Item",
+            description: "Fundacao do catalogo com identificadores unicos e base reaproveitavel para os modulos seguintes.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Cadastrar item",
+            action: () => navigate("dashboard/items/create"),
         },
         {
             key: "account",

@@ -1,4 +1,5 @@
 import moment from "moment";
+import { validateEan13 } from "utils/barcode";
 
 import { formatCurrency, parseCurrencyValue } from "../CreatePrice/helpers";
 import {
@@ -73,6 +74,10 @@ export function validateQuickDraft(values) {
 
         if (isDigitsOnly(row.query) && row.query.length !== 13) {
             errors.push("Quando usar apenas numeros, informe um EAN com 13 digitos.");
+        }
+
+        if (isDigitsOnly(row.query) && row.query.length === 13 && !validateEan13(row.query)) {
+            errors.push("O EAN informado na linha e invalido.");
         }
 
         if (draft.priceType === "avista") {

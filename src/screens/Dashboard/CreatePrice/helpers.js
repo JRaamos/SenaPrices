@@ -1,4 +1,5 @@
 import moment from "moment";
+import { sanitizeBarcodeDigits, validateEan13 } from "utils/barcode";
 
 import {
     DEFAULT_FORM_VALUES,
@@ -23,7 +24,7 @@ export function sanitizeDraft(values = {}) {
         sectionName: sanitizeText(next.sectionName, PRICE_STUDIO_LIMITS.sectionName),
         unitLabel: pickAllowed(next.unitLabel, UNIT_OPTIONS.map(item => item.value), DEFAULT_FORM_VALUES.unitLabel),
         internalCode: sanitizeCode(next.internalCode, PRICE_STUDIO_LIMITS.internalCode),
-        eanCode: sanitizeDigits(next.eanCode, PRICE_STUDIO_LIMITS.eanCode),
+        eanCode: sanitizeBarcodeDigits(next.eanCode, PRICE_STUDIO_LIMITS.eanCode),
         cashPrice: sanitizeCurrency(next.cashPrice),
         fromPrice: sanitizeCurrency(next.fromPrice),
         toPrice: sanitizeCurrency(next.toPrice),
@@ -51,8 +52,8 @@ export function validateDraft(values) {
         errors.productName = "Informe uma descricao principal com pelo menos 3 caracteres.";
     }
 
-    if (draft.eanCode && draft.eanCode.length !== 13) {
-        errors.eanCode = "Use um EAN com exatamente 13 digitos.";
+    if (draft.eanCode && !validateEan13(draft.eanCode)) {
+        errors.eanCode = "Use um EAN-13 valido com digito verificador correto.";
     }
 
     if (draft.validUntil) {
@@ -423,10 +424,6 @@ function sanitizeCode(value, limit) {
         .toUpperCase()
         .replace(/[^A-Z0-9\-_/]/g, "")
         .slice(0, limit);
-}
-
-function sanitizeDigits(value, limit) {
-    return `${value || ""}`.replace(/\D/g, "").slice(0, limit);
 }
 
 function sanitizeCurrency(value) {

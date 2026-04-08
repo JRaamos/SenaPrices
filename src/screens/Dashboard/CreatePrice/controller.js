@@ -3,6 +3,11 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { CoreContext } from "context/CoreContext";
+import {
+    buildPriceDraftFromCatalogItem,
+    clearCatalogPriceSeed,
+    readCatalogPriceSeed,
+} from "services/catalog";
 
 import {
     DEFAULT_FORM_VALUES,
@@ -43,7 +48,18 @@ export default function useController() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setForm(readPriceStudioDraft());
+        const priceSeed = readCatalogPriceSeed();
+
+        if (priceSeed) {
+            setForm(sanitizeDraft({
+                ...DEFAULT_FORM_VALUES,
+                ...buildPriceDraftFromCatalogItem(priceSeed),
+            }));
+            clearCatalogPriceSeed();
+        } else {
+            setForm(readPriceStudioDraft());
+        }
+
         setRecentCompositions(readRecentCompositions());
         setReady(true);
     }, []);
