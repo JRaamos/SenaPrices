@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { CoreContext } from "context/CoreContext";
+import { recordPricingOperation } from "services/pricing";
 
 import {
     ORIENTATION_OPTIONS,
@@ -130,7 +131,12 @@ export default function useController() {
         return buildRowPreview(draft, activeRow);
     }, [activeRow, draft]);
 
-    const handleSaveBatch = useCallback((showToast = true) => {
+    const handleSaveBatch = useCallback((options = {}) => {
+        const {
+            showToast = true,
+            persistHistory = true,
+        } = options;
+
         if (!validation.isValid) {
             toast.error("Revise todas as linhas antes de salvar o lote rapido.");
             return false;
@@ -139,6 +145,42 @@ export default function useController() {
         const snapshot = buildBatchSnapshot(draft, validation.validRows, user);
         const nextRecent = appendRecentQuickBatch(snapshot);
         setRecentBatches(nextRecent);
+
+        if (persistHistory) {
+            const orientationLabel = ORIENTATION_OPTIONS.find(item => item.value === snapshot.draft.orientation)?.label || snapshot.draft.orientation;
+
+            recordPricingOperation({
+                source: "quick",
+                restoreTarget: "quick",
+                restoreDraft: snapshot.draft,
+                createdBy: user?.email || user?.documentId || user?.id || "usuario@local",
+                savedAt: snapshot.createdAt,
+                priceType: snapshot.priceType,
+                paperSize: snapshot.draft.paperSize,
+                orientation: snapshot.draft.orientation,
+                title: snapshot.offerTitle || `Lote rapido com ${snapshot.totalRows} cartaz(es)`,
+                offerTitle: snapshot.offerTitle || "Criacao Rapida",
+                summaryLabel: `${snapshot.totalRows} cartaz(es) - ${snapshot.draft.paperSize} ${orientationLabel}`,
+                records: validation.validRows.map(row => {
+                    const preview = buildRowPreview(draft, row);
+
+                    return {
+                        title: preview.title,
+                        subtitle: preview.subtitle,
+                        offerTitle: preview.offerTitle,
+                        primaryPrice: preview.primaryPrice,
+                        supportingPrice: preview.supportingPrice,
+                        specialLabel: preview.specialLabel,
+                        barcodeLabel: preview.barcodeLabel,
+                        validityLabel: preview.validityLabel,
+                        observation: preview.observation,
+                        priceType: snapshot.priceType,
+                        paperSize: snapshot.draft.paperSize,
+                        orientation: snapshot.draft.orientation,
+                    };
+                }),
+            });
+        }
 
         if (showToast) {
             toast.success(`${validation.validRows.length} linha(s) salvas no historico rapido.`);
@@ -153,7 +195,15 @@ export default function useController() {
             return;
         }
 
-        handleSaveBatch(false);
+        const snapshot = handleSaveBatch({
+            showToast: false,
+            persistHistory: false,
+        });
+
+        if (!snapshot) {
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -170,6 +220,41 @@ export default function useController() {
             printWindow.document.close();
             printWindow.focus();
 
+            const orientationLabel = ORIENTATION_OPTIONS.find(item => item.value === snapshot.draft.orientation)?.label || snapshot.draft.orientation;
+
+            recordPricingOperation({
+                source: "quick",
+                restoreTarget: "quick",
+                restoreDraft: snapshot.draft,
+                createdBy: user?.email || user?.documentId || user?.id || "usuario@local",
+                savedAt: snapshot.createdAt,
+                printedAt: new Date().toISOString(),
+                priceType: snapshot.priceType,
+                paperSize: snapshot.draft.paperSize,
+                orientation: snapshot.draft.orientation,
+                title: snapshot.offerTitle || `Lote rapido com ${snapshot.totalRows} cartaz(es)`,
+                offerTitle: snapshot.offerTitle || "Criacao Rapida",
+                summaryLabel: `${snapshot.totalRows} cartaz(es) - ${snapshot.draft.paperSize} ${orientationLabel}`,
+                records: validation.validRows.map(row => {
+                    const preview = buildRowPreview(draft, row);
+
+                    return {
+                        title: preview.title,
+                        subtitle: preview.subtitle,
+                        offerTitle: preview.offerTitle,
+                        primaryPrice: preview.primaryPrice,
+                        supportingPrice: preview.supportingPrice,
+                        specialLabel: preview.specialLabel,
+                        barcodeLabel: preview.barcodeLabel,
+                        validityLabel: preview.validityLabel,
+                        observation: preview.observation,
+                        priceType: snapshot.priceType,
+                        paperSize: snapshot.draft.paperSize,
+                        orientation: snapshot.draft.orientation,
+                    };
+                }),
+            });
+
             window.setTimeout(() => {
                 printWindow.print();
                 printWindow.close();
@@ -180,7 +265,7 @@ export default function useController() {
             toast.error("A impressao do lote falhou. Tente novamente.");
             setLoading(false);
         }
-    }, [draft, handleSaveBatch, validation.isValid, validation.validRows]);
+    }, [draft, handleSaveBatch, user, validation.isValid, validation.validRows]);
 
     const handleRestoreBatch = useCallback((snapshot) => {
         if (!snapshot?.draft) return;
@@ -262,6 +347,13 @@ export default function useController() {
                 rounded: true,
                 color: "secondary",
                 action: () => navigate("dashboard"),
+            },
+            {
+                label: "Historico",
+                rounded: true,
+                outline: true,
+                color: "primary",
+                action: () => navigate("dashboard/history"),
             },
         ],
     }), [navigate]);

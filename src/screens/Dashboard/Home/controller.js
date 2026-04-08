@@ -36,9 +36,9 @@ const ROADMAP_MODULES = [
         icon: "/icons/training.svg",
     },
     {
-        key: "print-history",
-        title: "Historico de Impressao",
-        description: "Rastreabilidade de cartazes gerados, fontes de impressao e revisao operacional.",
+        key: "pdv",
+        title: "Integracao PDV",
+        description: "Conexao futura com base externa para abastecer precificacao e operacao de loja.",
         status: "Planejado",
         icon: "/icons/products.svg",
     },
@@ -147,6 +147,14 @@ export default function useController() {
             action: () => navigate("dashboard/prices/quick"),
         },
         {
+            key: "history",
+            icon: "/icons/products.svg",
+            title: "Historico",
+            description: "Consulte os registros compartilhados de salvamento e impressao para restaurar ou reimprimir sem retrabalho.",
+            buttonLabel: "Abrir historico",
+            action: () => navigate("dashboard/history"),
+        },
+        {
             key: "support-list",
             icon: "/icons/proposal.svg",
             title: "Fila de suporte",
@@ -203,6 +211,10 @@ export default function useController() {
             title: "Base de catalogo conectada",
             description: "Cadastro, listagem, importacao e criacao de preco agora compartilham a mesma base local de itens.",
         },
+        {
+            title: "Historico operacional ativo",
+            description: "Criar Preco e Criacao Rapida agora registram rastreabilidade compartilhada para restauracao e reimpressao.",
+        },
     ]), []);
 
     const recentTickets = useMemo(() => supportRows.slice(0, 3), [supportRows]);
@@ -252,6 +264,15 @@ export default function useController() {
             icon: "/icons/products.svg",
             actionLabel: "Importar itens",
             action: () => navigate("dashboard/items/import"),
+        },
+        {
+            key: "history",
+            title: "Historico",
+            description: "Rastro compartilhado das operacoes de precificacao, com reimpressao e restauracao por registro.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Abrir historico",
+            action: () => navigate("dashboard/history"),
         },
         {
             key: "account",

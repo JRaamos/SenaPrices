@@ -8,6 +8,7 @@ import {
     clearCatalogPriceSeed,
     readCatalogPriceSeed,
 } from "services/catalog";
+import { recordPricingOperation } from "services/pricing";
 
 import {
     DEFAULT_FORM_VALUES,
@@ -85,7 +86,12 @@ export default function useController() {
     const validation = useMemo(() => validateDraft(form), [form]);
     const preview = useMemo(() => buildPreview(form), [form]);
 
-    const handleSaveSnapshot = useCallback((showToast = true) => {
+    const handleSaveSnapshot = useCallback((options = {}) => {
+        const {
+            showToast = true,
+            persistHistory = true,
+        } = options;
+
         if (!validation.isValid) {
             toast.error(validation.errorList[0] || "Revise os campos obrigatorios antes de salvar.");
             return false;
@@ -95,12 +101,48 @@ export default function useController() {
         const nextRecent = appendRecentComposition(snapshot);
         setRecentCompositions(nextRecent);
 
+        if (persistHistory) {
+            recordPricingOperation({
+                source: "manual",
+                restoreTarget: "manual",
+                restoreDraft: snapshot.draft,
+                createdBy: user?.email || user?.documentId || user?.id || "usuario@local",
+                savedAt: snapshot.createdAt,
+                priceType: snapshot.priceType,
+                paperSize: snapshot.draft.paperSize,
+                orientation: snapshot.draft.orientation,
+                title: snapshot.title,
+                offerTitle: preview.offerTitle,
+                summaryLabel: `${preview.primaryPrice} - ${preview.paperLabel}`,
+                records: [
+                    {
+                        title: preview.title,
+                        subtitle: preview.subtitle,
+                        offerTitle: preview.offerTitle,
+                        primaryPrice: preview.primaryPrice,
+                        supportingPrice: preview.supportingPrice,
+                        specialLabel: preview.specialLabel,
+                        barcodeLabel: preview.barcodeLabel,
+                        validityLabel: preview.validityLabel,
+                        observation: preview.observation,
+                        internalCode: snapshot.draft.internalCode,
+                        eanCode: snapshot.draft.eanCode,
+                        sectionName: snapshot.draft.sectionName,
+                        unitLabel: snapshot.draft.unitLabel,
+                        priceType: snapshot.priceType,
+                        paperSize: snapshot.draft.paperSize,
+                        orientation: snapshot.draft.orientation,
+                    },
+                ],
+            });
+        }
+
         if (showToast) {
             toast.success("Composicao salva localmente com sucesso.");
         }
 
         return snapshot;
-    }, [form, user, validation.errorList, validation.isValid]);
+    }, [form, preview, user, validation.errorList, validation.isValid]);
 
     const handlePrint = useCallback(() => {
         if (!validation.isValid) {
@@ -108,7 +150,15 @@ export default function useController() {
             return;
         }
 
-        handleSaveSnapshot(false);
+        const snapshot = handleSaveSnapshot({
+            showToast: false,
+            persistHistory: false,
+        });
+
+        if (!snapshot) {
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -125,6 +175,41 @@ export default function useController() {
             printWindow.document.close();
             printWindow.focus();
 
+            recordPricingOperation({
+                source: "manual",
+                restoreTarget: "manual",
+                restoreDraft: snapshot.draft,
+                createdBy: user?.email || user?.documentId || user?.id || "usuario@local",
+                savedAt: snapshot.createdAt,
+                printedAt: new Date().toISOString(),
+                priceType: snapshot.priceType,
+                paperSize: snapshot.draft.paperSize,
+                orientation: snapshot.draft.orientation,
+                title: snapshot.title,
+                offerTitle: preview.offerTitle,
+                summaryLabel: `${preview.primaryPrice} - ${preview.paperLabel}`,
+                records: [
+                    {
+                        title: preview.title,
+                        subtitle: preview.subtitle,
+                        offerTitle: preview.offerTitle,
+                        primaryPrice: preview.primaryPrice,
+                        supportingPrice: preview.supportingPrice,
+                        specialLabel: preview.specialLabel,
+                        barcodeLabel: preview.barcodeLabel,
+                        validityLabel: preview.validityLabel,
+                        observation: preview.observation,
+                        internalCode: snapshot.draft.internalCode,
+                        eanCode: snapshot.draft.eanCode,
+                        sectionName: snapshot.draft.sectionName,
+                        unitLabel: snapshot.draft.unitLabel,
+                        priceType: snapshot.priceType,
+                        paperSize: snapshot.draft.paperSize,
+                        orientation: snapshot.draft.orientation,
+                    },
+                ],
+            });
+
             window.setTimeout(() => {
                 printWindow.print();
                 printWindow.close();
@@ -135,7 +220,7 @@ export default function useController() {
             toast.error("A impressao falhou. Tente novamente em alguns instantes.");
             setLoading(false);
         }
-    }, [handleSaveSnapshot, preview, validation.errorList, validation.isValid]);
+    }, [handleSaveSnapshot, preview, user, validation.errorList, validation.isValid]);
 
     const handleRestoreComposition = useCallback((snapshot) => {
         if (!snapshot?.draft) return;
@@ -200,6 +285,14 @@ export default function useController() {
                 outline: true,
                 color: "primary",
                 action: () => navigate("dashboard"),
+            },
+            {
+                label: "Historico",
+                icon: "products",
+                rounded: true,
+                outline: true,
+                color: "primary",
+                action: () => navigate("dashboard/history"),
             },
             {
                 label: "Suporte",
