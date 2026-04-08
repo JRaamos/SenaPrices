@@ -2,26 +2,37 @@
 import jsPDF from "jspdf";
 import { toPng } from "html-to-image";
 
+const escapeCSVValue = (value) => {
+    const safeValue = `${value ?? ""}`;
+
+    if (/[",\n;]/.test(safeValue)) {
+        return `"${safeValue.replace(/"/g, "\"\"")}"`;
+    }
+
+    return safeValue;
+};
+
 const convertToCSV = (columns, rows) => {
-    const header = columns.map(column => column.title).join(",");
-    const csvRows = rows.map(row => {
-        return columns.map(column => row[column.ref] || "").join(",");
-    });
+    const header = columns.map(column => escapeCSVValue(column.title)).join(",");
+    const csvRows = rows.map(row => (
+        columns.map(column => escapeCSVValue(row[column.ref])).join(",")
+    ));
 
     return [header, ...csvRows].join("\n");
 };
 
-export const downloadCSV = (columns, rows) => {
+export const downloadCSV = (columns, rows, fileName = "tabela.csv") => {
     const csvContent = convertToCSV(columns, rows);
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'tabela.csv');
+    link.setAttribute('download', fileName);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 };
 
 const loadFontAsBinary = async  (url) => {

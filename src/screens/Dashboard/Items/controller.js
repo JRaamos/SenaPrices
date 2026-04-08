@@ -154,6 +154,14 @@ export default function useController() {
                 action: () => navigate("dashboard/items/create"),
             },
             {
+                label: "Importar",
+                icon: "products",
+                rounded: true,
+                outline: true,
+                color: "primary",
+                action: () => navigate("dashboard/items/import"),
+            },
+            {
                 label: "Painel",
                 icon: "home",
                 rounded: true,

@@ -22,9 +22,9 @@ const ROADMAP_MODULES = [
         icon: "/icons/products.svg",
     },
     {
-        key: "items",
-        title: "Importacao",
-        description: "Carga em lote do catalogo para acelerar onboarding e manutencao operacional.",
+        key: "promotions",
+        title: "Promocoes",
+        description: "Fila operacional para cartazes separados, impressao posterior e organizacao de campanhas.",
         status: "Planejado",
         icon: "/icons/products.svg",
     },
@@ -131,6 +131,14 @@ export default function useController() {
             action: () => navigate("dashboard/items"),
         },
         {
+            key: "import-items",
+            icon: "/icons/products.svg",
+            title: "Importar itens",
+            description: "Carregue planilhas CSV ou XLSX para alimentar a mesma base central do catalogo com revisao previa.",
+            buttonLabel: "Abrir importacao",
+            action: () => navigate("dashboard/items/import"),
+        },
+        {
             key: "quick-price",
             icon: "/icons/products.svg",
             title: "Criacao Rapida",
@@ -192,8 +200,8 @@ export default function useController() {
             description: "A base ja possui criacao de cartaz unitario e criacao rapida em lote com validacao e impressao.",
         },
         {
-            title: "Base de catalogo iniciada",
-            description: "Cadastro e manutencao de itens agora compartilham a mesma base local e alimentam a criacao de preco.",
+            title: "Base de catalogo conectada",
+            description: "Cadastro, listagem, importacao e criacao de preco agora compartilham a mesma base local de itens.",
         },
     ]), []);
 
@@ -235,6 +243,15 @@ export default function useController() {
             icon: "/icons/products.svg",
             actionLabel: "Abrir catalogo",
             action: () => navigate("dashboard/items"),
+        },
+        {
+            key: "import",
+            title: "Importacao",
+            description: "Carga em lote do catalogo com mapeamento, preview e estrategia de conflito antes de gravar.",
+            status: "Ativo",
+            icon: "/icons/products.svg",
+            actionLabel: "Importar itens",
+            action: () => navigate("dashboard/items/import"),
         },
         {
             key: "account",

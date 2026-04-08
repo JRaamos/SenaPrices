@@ -46,6 +46,7 @@ export default function DashboardSide({ fluid }){
         { label: 'Criacao Rapida', icon: 'products', path: 'dashboard/prices/quick' },
         { label: 'Itens', icon: 'products', path: 'dashboard/items' },
         { label: 'Criar Item', icon: 'products', path: 'dashboard/items/create' },
+        { label: 'Importar', icon: 'products', path: 'dashboard/items/import' },
         { label: 'Suporte', icon: 'proposal', path: 'dashboard/support' },
     ]
 

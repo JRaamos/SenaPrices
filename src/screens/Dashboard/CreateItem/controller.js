@@ -164,6 +164,14 @@ export default function useController() {
                 action: () => navigate("dashboard/items"),
             },
             {
+                label: "Importar",
+                icon: "products",
+                rounded: true,
+                outline: true,
+                color: "primary",
+                action: () => navigate("dashboard/items/import"),
+            },
+            {
                 label: "Criar preco",
                 icon: "products",
                 rounded: true,

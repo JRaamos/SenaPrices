@@ -149,6 +149,33 @@ export function getCatalogIdentifierConflicts(values, items = readCatalogItems()
     };
 }
 
+export function findCatalogItemByIdentifiers(values, items = readCatalogItems()) {
+    const draft = sanitizeCatalogItem(values);
+    const normalizedInternalCode = normalizeComparisonValue(draft.internalCode);
+    const internalCodeItem = normalizedInternalCode
+        ? items.find(item => normalizeComparisonValue(item.internalCode) === normalizedInternalCode) || null
+        : null;
+    const ean13Item = draft.ean13
+        ? items.find(item => item.ean13 === draft.ean13) || null
+        : null;
+
+    if (internalCodeItem && ean13Item && internalCodeItem.id !== ean13Item.id) {
+        return {
+            item: null,
+            internalCodeItem,
+            ean13Item,
+            isMixedMatch: true,
+        };
+    }
+
+    return {
+        item: internalCodeItem || ean13Item || null,
+        internalCodeItem,
+        ean13Item,
+        isMixedMatch: false,
+    };
+}
+
 export function saveCatalogPriceSeed(item) {
     return SaveObject(PRICE_SEED_KEY, sanitizeCatalogItem(item));
 }

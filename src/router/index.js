@@ -17,6 +17,7 @@ import CreatePassword from 'screens/Authentication/CreatePassword'
 import DashboardHome from 'screens/Dashboard/Home' 
 import DashboardCreatePrice from "screens/Dashboard/CreatePrice";
 import DashboardCreateItem from "screens/Dashboard/CreateItem";
+import DashboardImport from "screens/Dashboard/Import";
 import DashboardItems from "screens/Dashboard/Items";
 import DashboardQuickPrice from "screens/Dashboard/QuickPrice";
 import DashboardMe from 'screens/Dashboard/Me' 
@@ -40,6 +41,7 @@ export default function AppRouter() {
             <Route path="/dashboard/prices/create" exact element={<DashboardCreatePrice />} />
             <Route path="/dashboard/prices/quick" exact element={<DashboardQuickPrice />} />
             <Route path="/dashboard/items/create" exact element={<DashboardCreateItem />} />
+            <Route path="/dashboard/items/import" exact element={<DashboardImport />} />
             <Route path="/dashboard/items" exact element={<DashboardItems />} />
             <Route path="/dashboard/me" exact element={<DashboardMe />} /> 
             <Route path="/dashboard/me/password" exact element={<DashboardMePassword />} /> 
