@@ -98,6 +98,10 @@ export const SuccessActionButton = styled.button.attrs({
     font-weight: 700;
     line-height: 18px;
     cursor: pointer;
+
+    @media(max-width: 560px){
+        width: 100%;
+    }
 `;
 
 export const SummaryGrid = styled.div.attrs({

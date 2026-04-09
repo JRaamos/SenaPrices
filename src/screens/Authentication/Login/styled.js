@@ -233,6 +233,10 @@ export const PrimaryButton = styled.button`
     font-size: 14px;
     font-weight: 800;
     cursor: pointer;
+
+    @media(max-width: 560px){
+        width: 100%;
+    }
 `;
 
 export const SecondaryButton = styled.button`
@@ -245,6 +249,10 @@ export const SecondaryButton = styled.button`
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
+
+    @media(max-width: 560px){
+        width: 100%;
+    }
 `;
 
 export const DividerText = styled.div`

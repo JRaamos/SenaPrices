@@ -12,6 +12,10 @@ export const DashboardHeaderContainer = styled.div.attrs({
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @media(max-width: 560px){
+        padding: 0 12px;
+    }
 `;
 
 export const DashboardHeaderAction = styled.div.attrs({ 
@@ -20,6 +24,8 @@ export const DashboardHeaderAction = styled.div.attrs({
     font-size: 15px;
     text-transform: uppercase;
     cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
 
     display: flex;
     justify-content: center;

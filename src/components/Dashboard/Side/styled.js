@@ -6,19 +6,23 @@ export const DashboardMenuContainer = styled.div.attrs({
     ${
         p => p.fluid ? `
             width: 100%;
-            max-width: 320px;
-
-            @media(max-width:767px){
-                max-width: 180px;
-            }
-            @media(max-width:480px){
-                max-width: 120px;
-            }
+            max-width: 280px;
                 
             ${
                 !p?.opened ? `
-                    max-width: 60px !important;
+                    max-width: 64px !important;
                 ` : ``
+            }
+
+            @media(max-width:767px){
+                max-width: ${p?.opened ? "280px" : "64px"} !important;
+                ${p?.opened ? `
+                    position: fixed;
+                    top: 60px;
+                    left: 0;
+                    bottom: 0;
+                    z-index: 90;
+                ` : ``}
             }
         ` : `
             position: fixed;
@@ -45,19 +49,15 @@ export const DashboardMenu = styled.div.attrs({
     max-width: 389px;
     ${
         p => p.fluid ? `
-            max-width: 320px;
-            @media(max-width:767px){
-                max-width: 180px;
-            }
-            @media(max-width:480px){
-                max-width: 120px;
-            }
+            max-width: 280px;
             min-height: calc(100vh - 60px);
             max-height: calc(100vh - 60px);
             border-right: 1px solid ${ p.theme.palette.colors.lightshadow };
+            box-shadow: 0 16px 30px rgba(15, 23, 42, 0.06);
             ${
                 !p?.opened ? `
-                    max-width: 60px !important;
+                    max-width: 64px !important;
+                    box-shadow: none;
                 ` : ``
             }
         ` : `

@@ -162,6 +162,11 @@ export const HeroActions = styled.div.attrs({
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+
+    @media(max-width: 520px){
+        display: grid;
+        grid-template-columns: 1fr;
+    }
 `;
 
 export const HeroPrimaryButton = styled.button.attrs({
@@ -188,6 +193,10 @@ export const HeroPrimaryButton = styled.button.attrs({
         outline: 3px solid rgba(59, 130, 246, 0.2);
         outline-offset: 2px;
     }
+
+    @media(max-width: 520px){
+        width: 100%;
+    }
 `;
 
 export const HeroSecondaryButton = styled.button.attrs({
@@ -212,6 +221,10 @@ export const HeroSecondaryButton = styled.button.attrs({
     &:focus-visible{
         outline: 3px solid rgba(59, 130, 246, 0.2);
         outline-offset: 2px;
+    }
+
+    @media(max-width: 520px){
+        width: 100%;
     }
 `;
 
