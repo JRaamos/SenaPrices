@@ -3,6 +3,7 @@ import { normalizeUserRole } from "./users";
 
 export const ROUTE_KEYS = {
     landing: "landing",
+    checkout: "checkout",
     checkoutSuccess: "checkoutSuccess",
     login: "login",
     register: "register",
@@ -31,6 +32,7 @@ export const ROUTE_KEYS = {
 
 const PUBLIC_ROUTES = new Set([
     ROUTE_KEYS.landing,
+    ROUTE_KEYS.checkout,
     ROUTE_KEYS.checkoutSuccess,
     ROUTE_KEYS.login,
     ROUTE_KEYS.register,

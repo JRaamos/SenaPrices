@@ -1,42 +1,33 @@
 import * as CryptoJS from "crypto-js";
 
-export const storageKey = 'SenaPrices'
+import { readStorageValue, writeStorageValue } from "./runtime";
 
-export const SaveObject = (key, value) => {
-    return SaveStorage(key, JSON.stringify(value))
-}
+export const storageKey = "SenaPrices";
+
+export const SaveObject = (key, value) => SaveStorage(key, JSON.stringify(value));
 
 export const ReadObject = (key) => {
-    return JSON.parse( ReadStorage(key))
-} 
+    const value = ReadStorage(key);
+    return value ? JSON.parse(value) : false;
+};
 
-const Crypt = (value) => {
-    return CryptoJS.AES.encrypt(value, storageKey).toString()
-}
+const Crypt = (value) => CryptoJS.AES.encrypt(value, storageKey).toString();
 
-const Decrypt = (cvalue) => { 
-    const bytes  = CryptoJS.AES.decrypt(cvalue, storageKey);
+const Decrypt = (cvalue) => {
+    const bytes = CryptoJS.AES.decrypt(cvalue, storageKey);
     return bytes.toString(CryptoJS.enc.Utf8);
-}
+};
 
 export const SaveStorage = (key, value) => {
-    const cvalue = Crypt(value)
-    try {
-        return localStorage.setItem(`${ storageKey }::${ key }`, cvalue);
-    } catch (e) {
-        return sessionStorage.setItem(`${ storageKey }::${ key }`, cvalue);
-    }
-} 
+    const cvalue = Crypt(value);
+    return writeStorageValue(`${storageKey}::${key}`, cvalue, "local");
+};
 
 export const ReadStorage = (key) => {
-    let cvalue = ``
-    try {
-        cvalue = localStorage.getItem(`${ storageKey }::${ key }`); 
-    } catch (e) {
-        cvalue = sessionStorage.getItem(`${ storageKey }::${ key }`);
-    }  
-    if( cvalue !== '' && cvalue !== null ){
+    const cvalue = readStorageValue(`${storageKey}::${key}`, "local");
+    if (cvalue !== "" && cvalue !== null && cvalue !== false) {
         return Decrypt(cvalue);
     }
-    return false
-}
+
+    return false;
+};

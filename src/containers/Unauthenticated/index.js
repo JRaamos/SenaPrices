@@ -5,6 +5,7 @@ import { Row, Col } from 'reactstrap';
 import { ReadObject } from "services/storage"; 
 import { getDefaultAuthenticatedPath } from "services/access";
 import { hasAuthenticatedSession } from "services/authentication";
+import { scrollToTop } from "services/runtime";
 import { ThemedComponent } from "ui/theme";
 
 import {
@@ -40,7 +41,7 @@ export default function ContainerUnauthenticated({ children, keep, simple }){
 
     useEffect(() => {  
         init()
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        scrollToTop({ behavior: 'smooth' })
     }, [])
 
     return ( 

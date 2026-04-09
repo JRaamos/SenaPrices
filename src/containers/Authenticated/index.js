@@ -15,6 +15,7 @@ import { ThemedComponent } from "ui/theme";
 import DashboardSide from "components/Dashboard/Side";
 import PageActions from "components/Dashboard/PageActions";
 import { hasAuthenticatedSession } from "services/authentication";
+import { getElementById, scrollToTop } from "services/runtime";
 
 export default function ContainerAuthenticated({ children, actions, loading }){  
 
@@ -36,11 +37,11 @@ export default function ContainerAuthenticated({ children, actions, loading }){
 
     useEffect(() => {  
         init()
-        const scrollHost = document.getElementById("body-scroll");
+        const scrollHost = getElementById("body-scroll");
         if (scrollHost?.scrollTo) {
             scrollHost.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            scrollToTop({ behavior: "smooth" });
         }
     }, [])
 

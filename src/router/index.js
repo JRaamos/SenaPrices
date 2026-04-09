@@ -7,6 +7,7 @@ import {
     Routes,
 } from "react-router-dom";
 
+import Checkout from "screens/Checkout";
 import CheckoutSuccess from "screens/CheckoutSuccess";
 import CreatePassword from "screens/Authentication/CreatePassword";
 import Forgot from "screens/Authentication/Forgot";
@@ -57,6 +58,7 @@ export default function AppRouter() {
         <Router>
             <Routes>
                 <Route path="/" element={<GuardedElement routeKey={ROUTE_KEYS.landing} element={<Landpage />} />} />
+                <Route path="/checkout" element={<GuardedElement routeKey={ROUTE_KEYS.checkout} element={<Checkout />} />} />
                 <Route
                     path="/checkout/success"
                     element={<GuardedElement routeKey={ROUTE_KEYS.checkoutSuccess} element={<CheckoutSuccess />} />}

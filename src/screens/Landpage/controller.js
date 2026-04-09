@@ -10,6 +10,7 @@ import {
 } from "./content";
 import { buildAccessProfile, getAccountEntryPath, getDefaultAuthenticatedPath } from "services/access";
 import { buildPlanOffer, readMasterConfig, resolveSeasonalTheme } from "services/platform";
+import { scrollToTop } from "services/runtime";
 import { ReadObject } from "services/storage";
 
 const SEASONAL_LABELS = {
@@ -37,7 +38,7 @@ export default function useController() {
     const seasonalTheme = useMemo(() => resolveSeasonalTheme(masterConfig), [masterConfig]);
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTop({ behavior: "smooth" });
 
         const timer = setInterval(() => {
             setCurrentSlide(prev => (prev + 1) % HERO_SLIDES.length);
@@ -53,7 +54,7 @@ export default function useController() {
     }, []);
 
     const goTop = useCallback(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTop({ behavior: "smooth" });
     }, []);
 
     const toggleFaq = useCallback((faqKey) => {
@@ -83,7 +84,7 @@ export default function useController() {
                     return;
                 }
 
-                navigate("/login");
+                navigate(`/checkout?plan=${plan.key}&billing=${isAnnual ? "annual" : "monthly"}`);
             };
 
             return {

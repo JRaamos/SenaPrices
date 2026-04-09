@@ -1,62 +1,64 @@
-import { useRef, useState } from "react"; 
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { DoResetPassword } from "services/authentication.js";
+import { getSearchParams } from "services/runtime";
 import { exposeStrapiError } from "utils";
 
-export default function useController(){ 
+export default function useController() {
     const n = useNavigate();
-    const navigate = to => n(`/${ to }`); 
+    const location = useLocation();
+    const navigate = to => n(`/${to}`);
+    const searchParams = useMemo(() => getSearchParams(location.search), [location.search]);
+    const [loading, setLoading] = useState(false);
 
-    const params = new URLSearchParams(window.location.search)
-    const [ loading, setLoading ] = useState(false) 
-        
-    const formRef = useRef()
+    const formRef = useRef();
     const formItems = [
-        { ref:"password", label:"Nova Senha", type:"password", required:true, full:true },
-        { ref:"cpassword", label:"Confirmar nova Senha", type:"password", required:true, full:true, onSubmitEditing: () => action() },
-    ]
+        { ref: "password", label: "Nova senha", type: "password", required: true, full: true },
+        { ref: "cpassword", label: "Confirmar nova senha", type: "password", required: true, full: true, onSubmitEditing: () => action() },
+    ];
 
-    const valid = (formdata) => {  
+    const valid = (formdata) => {
+        if (formdata?.password !== formdata?.cpassword) {
+            toast.error("Nova senha e confirmação da nova senha não são iguais");
+            return false;
+        }
 
-        if( formdata?.password !== formdata?.cpassword){ 
-            toast.error('Nova senha e confirmação da nova senha não são iguais') ;
-            return false; 
-        } 
-
-        return true
-    }
+        return true;
+    };
 
     const action = async () => {
-        const form = formRef?.current?.getForm()
-        if(!form || !valid(form) || loading){ return ;}
-        setLoading(true)
-        
-        const result =  await DoResetPassword({
-            code: params.get('code'),
-            password: form?.password,
-            passwordConfirmation: form?.cpassword
-        })   
-        
-        if(result && !exposeStrapiError(result)){
-            completNext()
-        } 
-        
-        setLoading(false)
-    }
+        const form = formRef?.current?.getForm();
+        if (!form || !valid(form) || loading) {
+            return;
+        }
 
-    const completNext = () => {
-        toast.success('Senha criada com sucesso'); 
-        navigate('login')
-    } 
- 
+        setLoading(true);
+
+        const result = await DoResetPassword({
+            code: searchParams.get("code"),
+            password: form?.password,
+            passwordConfirmation: form?.cpassword,
+        });
+
+        if (result && !exposeStrapiError(result)) {
+            completeNext();
+        }
+
+        setLoading(false);
+    };
+
+    const completeNext = () => {
+        toast.success("Senha criada com sucesso");
+        navigate("login");
+    };
+
     return {
         formRef,
         formItems,
         loading,
         action,
-        navigate
-    }
-
+        navigate,
+    };
 }
