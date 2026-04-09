@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
  
 import Header from 'components/Dashboard/Header'  
   
-import { 
+import {
     DashboardPage,
     DashboardBody,
     DashboardBodyContent,
@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { ThemedComponent } from "ui/theme";
 import DashboardSide from "components/Dashboard/Side";
 import PageActions from "components/Dashboard/PageActions";
+import { hasAuthenticatedSession } from "services/authentication";
 
 export default function ContainerAuthenticated({ children, actions, loading }){  
 
@@ -24,7 +25,7 @@ export default function ContainerAuthenticated({ children, actions, loading }){
 
     const init = () => {
         const authentication = ReadObject('authentication')
-        if (!authentication?.jwt) {
+        if (!hasAuthenticatedSession(authentication)) {
             completeNext()
         }
     }
@@ -35,7 +36,12 @@ export default function ContainerAuthenticated({ children, actions, loading }){
 
     useEffect(() => {  
         init()
-        document.getElementById("body-scroll").scrollTo({ top: 0, behavior: 'smooth' })
+        const scrollHost = document.getElementById("body-scroll");
+        if (scrollHost?.scrollTo) {
+            scrollHost.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
     }, [])
 
     return ( 

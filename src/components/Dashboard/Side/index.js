@@ -3,30 +3,30 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-    DashboardMenuContainer,
     DashboardMenu,
+    DashboardMenuContainer,
+    DashboardMenuContent,
+    DashboardMenuFooter,
     DashboardMenuHeader,
     DashboardMenuHeaderIcon,
     DashboardMenuHeaderUserContent,
     DashboardMenuHeaderUserImage,
-    DashboardMenuContent,
-    DashboardMenuFooter,
     DashboardVersionContent,
     DashboardVersionText,
 } from "./styled";
 
-import { CoreContext } from "context/CoreContext";
 import DashboardSideCollapse from "../SideCollapse";
+import { CoreContext } from "context/CoreContext";
+import { buildAccessProfile, buildSidebarSections } from "services/access";
 import { DoLogout } from "services/authentication";
-import { canAccessSupportLog, canManagePromotions } from "services/users";
 
 export default function DashboardSide({ fluid }) {
     const n = useNavigate();
     const navigate = useCallback((to) => n(`/${to}`), [n]);
 
     const { side, setSide, user } = useContext(CoreContext);
-    const canManage = canManagePromotions(user);
-    const canSeeSupportLog = canAccessSupportLog(user);
+    const accessProfile = useMemo(() => buildAccessProfile(user), [user]);
+    const navigation = useMemo(() => buildSidebarSections(user, true), [user]);
 
     const verifyClose = event => {
         if (!event.target.closest(".menu-contant")) {
@@ -39,39 +39,17 @@ export default function DashboardSide({ fluid }) {
         navigate("login");
     }, [navigate]);
 
-    const menuOptions = useMemo(() => ([
-        { label: "Home", icon: "home", path: "dashboard", border: true },
-        { label: "Criar Preço", icon: "products", path: "dashboard/prices/create" },
-        { label: "Criação Rápida", icon: "products", path: "dashboard/prices/quick" },
-        { label: "Impressão em Lote", icon: "products", path: "dashboard/prices/batch" },
-        { label: "Histórico", icon: "products", path: "dashboard/history" },
-        { label: "Promoções", icon: "products", path: "dashboard/promotions" },
-        { label: "Etiquetas", icon: "products", path: "dashboard/labels" },
-        { label: "Integração PDV", icon: "products", path: "dashboard/integration" },
-        ...(canManage ? [
-            { label: "Itens", icon: "products", path: "dashboard/items" },
-            { label: "Criar Item", icon: "products", path: "dashboard/items/create" },
-            { label: "Importar", icon: "products", path: "dashboard/items/import" },
-            { label: "Definições", icon: "training", path: "dashboard/settings" },
-            { label: "Relatórios", icon: "training", path: "dashboard/reports" },
-        ] : []),
-        { label: "Suporte", icon: "proposal", path: "dashboard/support" },
-        ...(canSeeSupportLog ? [
-            { label: "Log de Suporte", icon: "training", path: "dashboard/support/access" },
-        ] : []),
-    ]), [canManage, canSeeSupportLog]);
+    const footerOptions = useMemo(() => {
+        const groups = [...navigation.secondary];
 
-    const footerOptions = useMemo(() => ([
-        {
-            label: "Minha Conta",
-            icon: "user",
-            children: [
-                { label: "Meu Perfil", path: "dashboard/me" },
-                { label: "Senha e segurança", path: "dashboard/me/password" },
-            ],
-        },
-        { label: "Sair", icon: "exit", action: exit },
-    ]), [exit]);
+        groups.push({
+            label: "Sair",
+            icon: "exit",
+            action: exit,
+        });
+
+        return groups.filter(item => !item.children || item.children.length);
+    }, [exit, navigation.secondary]);
 
     return (
         <>
@@ -89,14 +67,14 @@ export default function DashboardSide({ fluid }) {
                         </DashboardMenuHeaderUserContent>
 
                         <DashboardMenuContent>
-                            <DashboardSideCollapse options={menuOptions} fluid={fluid} />
+                            <DashboardSideCollapse options={navigation.primary} fluid={fluid} />
                         </DashboardMenuContent>
 
                         <DashboardMenuFooter>
                             <DashboardSideCollapse options={footerOptions} fluid={fluid} />
                             <DashboardVersionContent>
-                                <DashboardVersionText>1.0.0</DashboardVersionText>
-                                <DashboardVersionText>1.10.1.201</DashboardVersionText>
+                                <DashboardVersionText>{accessProfile.roleLabel}</DashboardVersionText>
+                                <DashboardVersionText>{accessProfile.planLabel}</DashboardVersionText>
                             </DashboardVersionContent>
                         </DashboardMenuFooter>
                     </DashboardMenu>

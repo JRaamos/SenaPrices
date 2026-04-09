@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { buildAccessProfile, getDefaultAuthenticatedPath } from "services/access";
+import { hasAuthenticatedSession } from "services/authentication";
+import { resolveUserSubscription, saveUserSubscription } from "services/platform";
 import { ReadObject } from "services/storage";
 
 const PLAN_LABELS = {
@@ -16,7 +19,8 @@ export default function useController() {
 
     const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
     const authentication = ReadObject("authentication") || {};
-    const isAuthenticated = !!authentication?.jwt;
+    const currentUser = ReadObject("user") || {};
+    const isAuthenticated = hasAuthenticatedSession(authentication);
 
     const sessionId = `${searchParams.get("session_id") || ""}`.trim();
     const statusParam = `${searchParams.get("status") || ""}`.trim().toLowerCase();
@@ -29,9 +33,26 @@ export default function useController() {
         || paymentStatus === "paid"
     ), [paymentStatus, sessionId, statusParam]);
 
-    const redirectTarget = isAuthenticated ? "dashboard/me" : "login";
-    const redirectLabel = isAuthenticated ? "Minha conta" : "Ir para login";
+    const accessProfile = useMemo(() => buildAccessProfile(currentUser), [currentUser]);
+    const redirectPath = isAuthenticated ? getDefaultAuthenticatedPath(currentUser) : "/login";
+    const redirectLabel = isAuthenticated ? (accessProfile.isMaster ? "Painel master" : "Minha conta") : "Ir para login";
     const planLabel = PLAN_LABELS[planParam] || "Plano SenaPrices";
+
+    useEffect(() => {
+        if (!isSuccess || !isAuthenticated || !PLAN_LABELS[planParam]) {
+            return;
+        }
+
+        const subscription = resolveUserSubscription(currentUser);
+        saveUserSubscription(currentUser, {
+            ...subscription,
+            plan: planParam,
+            status: "active",
+            startDate: subscription.startDate || new Date().toISOString(),
+            expiryDate: subscription.expiryDate || new Date(Date.now() + (365 * 24 * 60 * 60 * 1000)).toISOString(),
+            autoRenew: true,
+        });
+    }, [currentUser, isAuthenticated, isSuccess, planParam]);
 
     useEffect(() => {
         if (!isSuccess) {
@@ -39,11 +60,11 @@ export default function useController() {
         }
 
         const timer = window.setTimeout(() => {
-            navigate(redirectTarget);
-        }, 4500);
+            n(redirectPath);
+        }, 4200);
 
         return () => window.clearTimeout(timer);
-    }, [isSuccess, navigate, redirectTarget]);
+    }, [isSuccess, n, redirectPath]);
 
     const statusCard = useMemo(() => {
         if (isSuccess) {
@@ -52,25 +73,25 @@ export default function useController() {
                 eyebrow: "Pagamento confirmado",
                 title: "Assinatura recebida com sucesso",
                 description: isAuthenticated
-                    ? "Seu acesso já está autenticado. Vamos direcionar você para a área da conta para continuar a configuração."
-                    : "Seu pagamento foi confirmado. O próximo passo é entrar no sistema para concluir o acesso inicial da operação.",
+                    ? "Seu acesso ja esta autenticado. Vamos direcionar voce para a area correta da sua conta para continuar a configuracao."
+                    : "Seu pagamento foi confirmado. O proximo passo e entrar no sistema para concluir o acesso inicial da operacao.",
                 badge: "Sucesso",
             };
         }
 
         return {
             tone: "orange",
-            eyebrow: "Confirmação pendente",
-            title: "Não foi possível validar a sessão de checkout",
-            description: "Não encontramos um identificador confiável de retorno do pagamento. Você pode voltar à apresentação ou acessar o login e confirmar com o suporte, se necessário.",
+            eyebrow: "Confirmacao pendente",
+            title: "Nao foi possivel validar a sessao de checkout",
+            description: "Nao encontramos um identificador confiavel de retorno do pagamento. Voce pode voltar a apresentacao ou abrir o login e confirmar com o suporte, se necessario.",
             badge: "Revisar",
         };
     }, [isAuthenticated, isSuccess]);
 
     const summaryItems = useMemo(() => ([
         { label: "Plano", value: planLabel },
-        { label: "Sessão", value: sessionId || "Não informada" },
-        { label: "Próximo destino", value: isSuccess ? redirectLabel : "Página inicial" },
+        { label: "Sessao", value: sessionId || "Nao informada" },
+        { label: "Proximo destino", value: isSuccess ? redirectLabel : "Pagina inicial" },
         { label: "Status", value: isSuccess ? "Confirmado" : "Pendente" },
     ]), [isSuccess, planLabel, redirectLabel, sessionId]);
 
@@ -81,20 +102,20 @@ export default function useController() {
                     key: "continue",
                     label: redirectLabel,
                     primary: true,
-                    action: () => navigate(redirectTarget),
+                    action: () => n(redirectPath),
                 },
                 {
                     key: "presentation",
-                    label: "Voltar à apresentação",
-                    action: () => navigate(""),
+                    label: "Voltar a apresentacao",
+                    action: () => n("/"),
                 },
             ]
             : [
                 {
                     key: "presentation",
-                    label: "Voltar à apresentação",
+                    label: "Voltar a apresentacao",
                     primary: true,
-                    action: () => navigate(""),
+                    action: () => n("/"),
                 },
                 {
                     key: "login",
@@ -102,36 +123,36 @@ export default function useController() {
                     action: () => navigate("login"),
                 },
             ]
-    ), [isSuccess, navigate, redirectLabel, redirectTarget]);
+    ), [isSuccess, n, navigate, redirectLabel, redirectPath]);
 
     const guidelines = useMemo(() => (
         isSuccess
             ? [
                 {
-                    title: "Fluxo público sem sidebar",
-                    description: "A confirmação permanece fora da área autenticada para evitar mistura entre retorno de pagamento e navegação operacional.",
+                    title: "Fluxo publico sem sidebar",
+                    description: "A confirmacao permanece fora da area autenticada para evitar mistura entre retorno de pagamento e navegacao operacional.",
                 },
                 {
-                    title: "Redirecionamento previsível",
-                    description: "Quem já está autenticado segue para a conta; quem ainda não entrou vai para o login, sem exigir decisão manual em um ponto crítico do fluxo.",
+                    title: "Redirecionamento previsivel",
+                    description: "Quem ja esta autenticado segue para o destino certo conforme o papel; quem ainda nao entrou vai para o login.",
                 },
                 {
-                    title: "Preparada para Stripe real",
-                    description: "A tela aceita `session_id`, `status=success` ou `payment_status=paid`, deixando o acoplamento futuro do checkout mais seguro.",
+                    title: "Atualizacao local de assinatura",
+                    description: "Quando houver usuario autenticado e plano identificado, a assinatura local e sincronizada para refletir o acesso liberado.",
                 },
             ]
             : [
                 {
-                    title: "Validação defensiva",
-                    description: "Sem um identificador confiável de checkout, a tela não assume sucesso nem altera estados locais de assinatura.",
+                    title: "Validacao defensiva",
+                    description: "Sem um identificador confiavel de checkout, a tela nao assume sucesso nem altera estados locais de assinatura.",
                 },
                 {
-                    title: "Recuperação simples",
-                    description: "O visitante pode retornar à apresentação ou abrir o login para retomar o fluxo com apoio do suporte.",
+                    title: "Recuperacao simples",
+                    description: "O visitante pode retornar a apresentacao ou abrir o login para retomar o fluxo com apoio do suporte.",
                 },
                 {
-                    title: "Sem falsa confirmação",
-                    description: "A interface evita prometer ativação quando os sinais mínimos do retorno de pagamento não estão presentes.",
+                    title: "Sem falsa confirmacao",
+                    description: "A interface evita prometer ativacao quando os sinais minimos do retorno de pagamento nao estao presentes.",
                 },
             ]
     ), [isSuccess]);

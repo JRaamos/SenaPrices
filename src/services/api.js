@@ -35,14 +35,20 @@ export const SOCKET_ENDPOINT = envEndpoint(SOCKET_ENDPOINTS)
 export const GetHeaders = async authenticated => {
 	const headers = { 'Content-Type': 'application/json' }
 	const authentication = await ReadObject('authentication')
+	if (authenticated && authentication?.localOnly) {
+		return { headers, localOnly: true }
+	}
 	if (authenticated && authentication.jwt) {
 		headers.Authorization = `Bearer ${authentication.jwt}`
 	}
-	return { headers }
+	return { headers, localOnly: false }
 }
 
 export const ServerFetch = async (url, options, authenticated) => {
-	const { headers } = await GetHeaders(authenticated)
+	const { headers, localOnly } = await GetHeaders(authenticated)
+	if (authenticated && localOnly) {
+		return false;
+	}
 	// console.info(url, options, headers)
 	try{
 		const response = await fetch(url, { ...options, headers }) 

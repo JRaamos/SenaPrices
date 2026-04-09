@@ -94,6 +94,11 @@ export default function Landpage() {
         featureCards,
         planCards,
         faqItems,
+        seasonalLabel,
+        contactEmail,
+        contactPhone,
+        contactWhatsApp,
+        isAuthenticated,
         goLogin,
         goRegister,
         goTop,
@@ -119,7 +124,7 @@ export default function Landpage() {
                             Ver planos
                         </TopActionButton>
                         <TopActionButton $primary type="button" onClick={goLogin}>
-                            Entrar
+                            {isAuthenticated ? "Abrir sistema" : "Entrar"}
                         </TopActionButton>
                     </TopActions>
                 </TopBar>
@@ -127,7 +132,7 @@ export default function Landpage() {
                 <HeroSection>
                     <HeroGrid>
                         <div>
-                            <HeroBadge>Cartazes, etiquetas e operacao</HeroBadge>
+                            <HeroBadge>{`${seasonalLabel} \u00b7 cartazes, etiquetas e opera\u00e7\u00e3o`}</HeroBadge>
                             <HeroTitle>{currentHeroSlide.title}</HeroTitle>
                             <HeroDescription>{currentHeroSlide.description}</HeroDescription>
 
@@ -185,9 +190,9 @@ export default function Landpage() {
                 <Section>
                     <SectionHeader>
                         <SectionEyebrow>Plataforma</SectionEyebrow>
-                        <SectionTitle>Uma base preparada para uso real de loja</SectionTitle>
+                        <SectionTitle>Uma plataforma preparada para uso real de loja</SectionTitle>
                         <SectionDescription>
-                            A estrutura nova aproveita as regras funcionais do projeto local e as organiza com uma arquitetura mais limpa no GitHub.
+                            Cadastro, precifica\u00e7\u00e3o, etiquetas, hist\u00f3rico, promo\u00e7\u00f5es e governan\u00e7a compartilham a mesma base para reduzir retrabalho e facilitar manuten\u00e7\u00e3o.
                         </SectionDescription>
                     </SectionHeader>
 
@@ -205,9 +210,9 @@ export default function Landpage() {
                 <Section>
                     <SectionHeader>
                         <SectionEyebrow>Recursos</SectionEyebrow>
-                        <SectionTitle>Fluxos centrais do SenaPrices ja mapeados</SectionTitle>
+                        <SectionTitle>Fluxos centrais do SenaPrices j\u00e1 organizados</SectionTitle>
                         <SectionDescription>
-                            Esta landing apresenta a direcao funcional do produto enquanto as telas operacionais sao portadas modulo por modulo.
+                            A apresenta\u00e7\u00e3o p\u00fablica agora conversa com a mesma governan\u00e7a de papel, plano e configura\u00e7\u00e3o usada nos m\u00f3dulos internos.
                         </SectionDescription>
                     </SectionHeader>
 
@@ -225,15 +230,15 @@ export default function Landpage() {
                 <Section ref={plansRef}>
                     <SectionHeader>
                         <SectionEyebrow>Planos</SectionEyebrow>
-                        <SectionTitle>Escolha o nivel de maturidade da sua operacao</SectionTitle>
+                        <SectionTitle>Escolha o n\u00edvel de maturidade da sua opera\u00e7\u00e3o</SectionTitle>
                         <SectionDescription>
-                            Os valores abaixo organizam o posicionamento comercial da plataforma. Nesta etapa, os botoes direcionam para o fluxo publico de acesso.
+                            Os valores abaixo j\u00e1 leem a configura\u00e7\u00e3o global da plataforma. O fluxo comercial pode evoluir sem quebrar a camada de acesso j\u00e1 implantada.
                         </SectionDescription>
                     </SectionHeader>
 
                     <BillingPill>
                         <BillingPillText>Mensal</BillingPillText>
-                        <BillingToggle type="button" onClick={toggleBilling} aria-label="Alternar cobranca anual">
+                        <BillingToggle type="button" onClick={toggleBilling} aria-label="Alternar cobran\u00e7a anual">
                             <BillingToggleThumb $active={isAnnual} />
                         </BillingToggle>
                         <BillingPillText $active={isAnnual}>Anual</BillingPillText>
@@ -267,10 +272,10 @@ export default function Landpage() {
 
                 <Section>
                     <SectionHeader>
-                        <SectionEyebrow>Duvidas</SectionEyebrow>
-                        <SectionTitle>Perguntas frequentes sobre a base atual</SectionTitle>
+                        <SectionEyebrow>D\u00favidas</SectionEyebrow>
+                        <SectionTitle>Perguntas frequentes sobre a opera\u00e7\u00e3o atual</SectionTitle>
                         <SectionDescription>
-                            O objetivo desta tela e apresentar o produto com clareza sem prometer fluxos que ainda nao foram acoplados neste repositorio.
+                            A proposta desta tela \u00e9 apresentar o produto com clareza, com governan\u00e7a real de acesso e sem prometer integra\u00e7\u00f5es que ainda n\u00e3o foram homologadas aqui.
                         </SectionDescription>
                     </SectionHeader>
 
@@ -296,10 +301,10 @@ export default function Landpage() {
 
                 <ClosingSection>
                     <ClosingCard>
-                        <SectionEyebrow>Pronto para evoluir</SectionEyebrow>
-                        <ClosingTitle>Uma landing forte para sustentar as proximas etapas</ClosingTitle>
+                        <SectionEyebrow>Pronto para operar</SectionEyebrow>
+                        <ClosingTitle>Apresenta\u00e7\u00e3o p\u00fablica e acesso agora seguem a mesma governan\u00e7a</ClosingTitle>
                         <ClosingText>
-                            Login, conta, seguranca, suporte e home ja estao ativos. Agora a base publica tambem segue o mesmo nivel de organizacao para suportar a expansao do SenaPrices.
+                            Landing, login, retorno comercial, pap\u00e9is operacionais e conta master passaram a compartilhar a mesma l\u00f3gica de acesso para sustentar a expans\u00e3o do SenaPrices com menos risco.
                         </ClosingText>
 
                         <HeroActions>
@@ -314,7 +319,9 @@ export default function Landpage() {
                 </ClosingSection>
 
                 <FooterBar>
-                    <FooterCopy>SenaPrices. Estrutura organizada para varejo, suporte e manutencao previsivel.</FooterCopy>
+                    <FooterCopy>
+                        {`SenaPrices. Estrutura organizada para varejo, suporte e manuten\u00e7\u00e3o previs\u00edvel.${contactEmail ? ` Contato: ${contactEmail}.` : ""}${contactPhone ? ` Telefone: ${contactPhone}.` : ""}${contactWhatsApp ? ` WhatsApp: ${contactWhatsApp}.` : ""}`}
+                    </FooterCopy>
                     <FooterLinks>
                         <FooterLink type="button" onClick={goLogin}>Login</FooterLink>
                         <FooterLink type="button" onClick={goRegister}>Cadastro</FooterLink>

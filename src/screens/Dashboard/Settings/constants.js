@@ -1,72 +1,78 @@
 export const SETTINGS_TABS = [
     {
+        key: "platform",
+        label: "Master",
+        description: "Parametros globais da landing, planos e tema sazonal.",
+        icon: "/icons/training.svg",
+    },
+    {
         key: "print",
-        label: "Impressão",
+        label: "Impressao",
         description: "Defaults para novos cartazes e lotes operacionais.",
         icon: "/icons/products.svg",
     },
     {
         key: "sections",
-        label: "Seções",
-        description: "Classificação central do catálogo e da operação.",
+        label: "Secoes",
+        description: "Classificacao central do catalogo e da operacao.",
         icon: "/icons/products.svg",
     },
     {
         key: "labels",
         label: "Etiquetas",
-        description: "Preset, DPI e campos padrão da emissão.",
+        description: "Preset, DPI e campos padrao da emissao.",
         icon: "/icons/products.svg",
     },
     {
         key: "access",
         label: "Acessos",
-        description: "Matriz por perfil e diretório atual de usuários.",
+        description: "Matriz por perfil e diretorio atual de usuarios.",
         icon: "/icons/user.svg",
     },
 ];
 
 export const SETTINGS_GUIDELINES = [
     {
-        title: "Governança antes de customização",
-        description: "Centralize primeiro o que realmente muda a operação, para depois evoluir refinamentos visuais ou regras avançadas.",
+        title: "Governanca antes de customizacao",
+        description: "Centralize primeiro o que realmente muda a operacao, para depois evoluir refinamentos visuais ou regras avancadas.",
     },
     {
-        title: "Uma fonte única de verdade",
-        description: "Os defaults salvos aqui devem abastecer os módulos ativos, evitando configuração duplicada em cada tela.",
+        title: "Uma fonte unica de verdade",
+        description: "Os defaults salvos aqui devem abastecer os modulos ativos, evitando configuracao duplicada em cada tela.",
     },
     {
-        title: "Permissões honestas",
-        description: "A tela não deve prometer CRUD administrativo onde a API ainda não expõe alteração segura de usuários.",
+        title: "Permissoes honestas",
+        description: "A tela nao deve prometer CRUD administrativo onde a API ainda nao expoe alteracao segura de usuarios.",
     },
 ];
 
 export const ACCESS_MATRIX = [
     {
-        title: "Definições da plataforma",
+        title: "Definicoes da plataforma",
         admin: "Total",
         subadmin: "Operacional",
         user: "Sem acesso",
     },
     {
-        title: "Catálogo e seções",
+        title: "Catalogo e secoes",
         admin: "Total",
         subadmin: "Total",
         user: "Sem acesso",
     },
     {
-        title: "Criar Preço e Modo Rápido",
+        title: "Criar Preco e Modo Rapido",
         admin: "Total",
         subadmin: "Total",
         user: "Operacional",
     },
     {
-        title: "Etiquetas, Histórico e Lote",
+        title: "Etiquetas, Historico e Lote",
         admin: "Total",
         subadmin: "Total",
         user: "Operacional",
     },
     {
-        title: "Relatórios e governança",
+        title: "Relatorios e governanca",
         admin: "Total",
         subadmin: "Gerencial",
         user: "Sem acesso",
@@ -76,30 +82,30 @@ export const ACCESS_MATRIX = [
 export const SETTINGS_SHORTCUTS = [
     {
         key: "create-price",
-        title: "Criar Preço",
-        description: "Validar imediatamente como os defaults de impressão entram no cartaz.",
+        title: "Criar Preco",
+        description: "Validar imediatamente como os defaults de impressao entram no cartaz.",
         route: "dashboard/prices/create",
-        buttonLabel: "Abrir criação",
+        buttonLabel: "Abrir criacao",
     },
     {
         key: "labels",
         title: "Etiquetas",
-        description: "Conferir o preset atual de emissão e a leitura da gôndola.",
+        description: "Conferir o preset atual de emissao e a leitura da gondola.",
         route: "dashboard/labels",
         buttonLabel: "Abrir etiquetas",
     },
     {
         key: "pdv",
-        title: "Integração PDV",
-        description: "Ver como a política externa conversa com as regras operacionais do sistema.",
+        title: "Integracao PDV",
+        description: "Ver como a politica externa conversa com as regras operacionais do sistema.",
         route: "dashboard/integration",
-        buttonLabel: "Abrir integração",
+        buttonLabel: "Abrir integracao",
     },
     {
         key: "reports",
-        title: "Relatórios",
-        description: "Acompanhar o impacto das decisões de governança na base ativa.",
+        title: "Relatorios",
+        description: "Acompanhar o impacto das decisoes de governanca na base ativa.",
         route: "dashboard/reports",
-        buttonLabel: "Abrir relatórios",
+        buttonLabel: "Abrir relatorios",
     },
 ];

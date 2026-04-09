@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { Row, Col } from 'reactstrap';   
 import { ReadObject } from "services/storage"; 
+import { getDefaultAuthenticatedPath } from "services/access";
+import { hasAuthenticatedSession } from "services/authentication";
 import { ThemedComponent } from "ui/theme";
 
 import {
@@ -25,13 +27,15 @@ export default function ContainerUnauthenticated({ children, keep, simple }){
 
     const init = () => {
         const authentication = ReadObject('authentication')
-        if (authentication?.jwt && !keep) {
+        if (hasAuthenticatedSession(authentication) && !keep) {
             completeNext()
         }
     }
  
     const completeNext = () => {
-        navigate('dashboard')
+        const currentUser = ReadObject("user") || {};
+        const nextPath = getDefaultAuthenticatedPath(currentUser);
+        n(nextPath);
     }
 
     useEffect(() => {  

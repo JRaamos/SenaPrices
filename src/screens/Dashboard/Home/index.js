@@ -81,14 +81,17 @@ export default function DashboardHome() {
                             <DashboardProfileName>{profile.displayName}</DashboardProfileName>
                             <DashboardProfileEmail>{profile.email}</DashboardProfileEmail>
                             <DashboardProfileMeta>
-                                Conta criada em {profile.memberSince} • ID {profile.accountId}
+                                {`${profile.roleLabel} \u00b7 ${profile.planLabel} \u00b7 ${profile.subscriptionStatusLabel}`}
+                            </DashboardProfileMeta>
+                            <DashboardProfileMeta>
+                                {`Conta criada em ${profile.memberSince} \u00b7 ID ${profile.accountId}`}
                             </DashboardProfileMeta>
                         </DashboardCard>
 
                         <DashboardCard>
-                            <DashboardSectionTitle>Ações rápidas</DashboardSectionTitle>
+                            <DashboardSectionTitle>A\u00e7\u00f5es r\u00e1pidas</DashboardSectionTitle>
                             <DashboardSectionText>
-                                Atalhos principais da base já ativa do sistema para acelerar seu fluxo de trabalho.
+                                Atalhos principais da base j\u00e1 ativa do sistema para acelerar seu fluxo de trabalho.
                             </DashboardSectionText>
 
                             <DashboardQuickActionGrid>
@@ -110,7 +113,7 @@ export default function DashboardHome() {
                         <DashboardCard>
                             <DashboardSectionTitle>Resumo operacional</DashboardSectionTitle>
                             <DashboardSectionText>
-                                Uma visão rápida da operação atual do ambiente já disponível no projeto GitHub.
+                                Uma vis\u00e3o r\u00e1pida da opera\u00e7\u00e3o atual do ambiente j\u00e1 dispon\u00edvel no projeto GitHub.
                             </DashboardSectionText>
 
                             <DashboardSummaryGrid>
@@ -126,7 +129,7 @@ export default function DashboardHome() {
                         <DashboardCard>
                             <DashboardSectionTitle>Base atual do sistema</DashboardSectionTitle>
                             <DashboardSectionText>
-                                Estado consolidado do que já está estruturado e pronto para ser expandido com os próximos módulos.
+                                Estado consolidado do que j\u00e1 est\u00e1 estruturado e pronto para ser expandido com os pr\u00f3ximos m\u00f3dulos.
                             </DashboardSectionText>
 
                             <DashboardHighlightGrid>
@@ -140,9 +143,9 @@ export default function DashboardHome() {
                         </DashboardCard>
 
                         <DashboardCard>
-                            <DashboardSectionTitle>Módulos ativos</DashboardSectionTitle>
+                            <DashboardSectionTitle>M\u00f3dulos ativos</DashboardSectionTitle>
                             <DashboardSectionText>
-                                Áreas já implementadas no repositório atual e disponíveis para uso e manutenção.
+                                \u00c1reas j\u00e1 implementadas no reposit\u00f3rio atual e dispon\u00edveis para uso e manuten\u00e7\u00e3o.
                             </DashboardSectionText>
 
                             <DashboardModuleGrid>
@@ -165,7 +168,7 @@ export default function DashboardHome() {
                         <DashboardCard>
                             <DashboardSectionTitle>Tickets recentes</DashboardSectionTitle>
                             <DashboardSectionText>
-                                Últimos chamados registrados na fila de suporte para acesso rápido e acompanhamento.
+                                \u00daltimos chamados registrados na fila de suporte para acesso r\u00e1pido e acompanhamento.
                             </DashboardSectionText>
 
                             <DashboardTicketList>
@@ -173,14 +176,14 @@ export default function DashboardHome() {
                                     <DashboardTicketItem key={item.id}>
                                         <DashboardTicketTitle>{item.title}</DashboardTicketTitle>
                                         <DashboardTicketMeta>
-                                            {item.statusLabel} • {item.date} • {item.relativeDate}
+                                            {`${item.statusLabel} \u00b7 ${item.date} \u00b7 ${item.relativeDate}`}
                                         </DashboardTicketMeta>
                                     </DashboardTicketItem>
                                 )) : (
                                     <DashboardTicketItem>
                                         <DashboardTicketTitle>Nenhum ticket registrado ainda</DashboardTicketTitle>
                                         <DashboardTicketMeta>
-                                            Assim que o primeiro chamado for criado, ele aparecerá aqui.
+                                            Assim que o primeiro chamado for criado, ele aparecer\u00e1 aqui.
                                         </DashboardTicketMeta>
                                     </DashboardTicketItem>
                                 )}
@@ -188,9 +191,9 @@ export default function DashboardHome() {
                         </DashboardCard>
 
                         <DashboardCard>
-                            <DashboardSectionTitle>Próximos módulos mapeados</DashboardSectionTitle>
+                            <DashboardSectionTitle>Pr\u00f3ximos m\u00f3dulos mapeados</DashboardSectionTitle>
                             <DashboardSectionText>
-                                Referências funcionais observadas nas páginas locais para guiar as próximas implementações no padrão do GitHub.
+                                Refer\u00eancias funcionais observadas nas p\u00e1ginas locais para guiar as pr\u00f3ximas implementa\u00e7\u00f5es no padr\u00e3o do GitHub.
                             </DashboardSectionText>
 
                             <DashboardRoadmapGrid>
@@ -208,9 +211,9 @@ export default function DashboardHome() {
                         </DashboardCard>
 
                         <DashboardNoticeCard>
-                            <DashboardNoticeTitle>Direção da implantação</DashboardNoticeTitle>
+                            <DashboardNoticeTitle>Dire\u00e7\u00e3o da implanta\u00e7\u00e3o</DashboardNoticeTitle>
                             <DashboardNoticeText>
-                                Esta home funciona como painel central do SenaPrices: mostra o que já está ativo no GitHub e organiza, de forma clara, os módulos que serão portados das páginas locais nas próximas etapas.
+                                Esta home funciona como painel central do SenaPrices: mostra o que j\u00e1 est\u00e1 ativo no GitHub e organiza, de forma clara, os m\u00f3dulos que ser\u00e3o portados das p\u00e1ginas locais nas pr\u00f3ximas etapas.
                             </DashboardNoticeText>
                         </DashboardNoticeCard>
                     </DashboardMain>

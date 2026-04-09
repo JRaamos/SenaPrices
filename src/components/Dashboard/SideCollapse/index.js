@@ -19,7 +19,10 @@ import { Icon } from "ui/styled";
 
 export default function DashboardSideCollapse({ fluid, options }){ 
     const n = useNavigate();
-    const navigate = to => n(`/${ to }`); 
+    const navigate = to => {
+        const nextPath = `${to || ""}`.startsWith("/") ? `${to}` : `/${to}`;
+        n(nextPath);
+    }; 
 
     const { side, setSide } = useContext(CoreContext)
     const [collapsed, setCollapsed] = useState(false);

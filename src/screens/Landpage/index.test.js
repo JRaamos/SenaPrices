@@ -13,9 +13,9 @@ describe("Landpage", () => {
         );
 
         cy.contains("Cartazes promocionais prontos em segundos").should("exist");
-        cy.contains("Escolha o nivel de maturidade da sua operacao").should("exist");
+        cy.contains("Escolha o nível de maturidade da sua operação").should("exist");
         cy.contains("Essencial").should("exist");
-        cy.contains("Perguntas frequentes sobre a base atual").should("exist");
+        cy.contains("Perguntas frequentes sobre a operação atual").should("exist");
         cy.contains("Entrar no sistema").should("exist");
     });
 });

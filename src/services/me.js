@@ -1,17 +1,53 @@
-import { GET, POST, PUT, DELETE } from "./api";
+import { DELETE, GET, PUT } from "./api";
+
+import { ReadObject } from "./storage";
+import { getLocalSessionUser, removeLocalAccount, updateLocalAccount } from "./localAccounts";
+
+function isLocalSession() {
+    const authentication = ReadObject("authentication") || {};
+    return !!authentication?.localOnly;
+}
 
 export const ReadMe = async () => {
-    return await GET(`/me`, true);
-}
+    if (isLocalSession()) {
+        return getLocalSessionUser();
+    }
 
-export const UpdateMe = async (params) => {
-    return await PUT(`/me`, params, true);
-}
+    const apiUser = await GET("/me", true);
+    if (apiUser?.id || apiUser?.documentId) {
+        return apiUser;
+    }
+
+    return getLocalSessionUser();
+};
+
+export const UpdateMe = async params => {
+    if (isLocalSession()) {
+        return updateLocalAccount(getLocalSessionUser(), params);
+    }
+
+    return await PUT("/me", params, true);
+};
 
 export const RemoveMe = async () => {
-    return await DELETE(`/me`, true);
-}
+    if (isLocalSession()) {
+        const user = getLocalSessionUser();
+        const removed = removeLocalAccount(user);
+        return removed ? { ok: true } : { error: true, message: "Nao foi possivel remover a conta local." };
+    }
 
-export const UpdateMePassword = async (params) => {
-    return await PUT(`/me/password`, params, true);
-}
+    return await DELETE("/me", true);
+};
+
+export const UpdateMePassword = async params => {
+    if (isLocalSession()) {
+        const currentUser = getLocalSessionUser();
+        const updated = updateLocalAccount(currentUser, {
+            password: params?.password || params?.newPassword || "",
+        });
+
+        return updated || { error: true, message: "Nao foi possivel atualizar a senha local." };
+    }
+
+    return await PUT("/me/password", params, true);
+};
