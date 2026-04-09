@@ -1,4 +1,4 @@
-import {
+﻿import {
     ORIENTATION_OPTIONS,
     PAPER_SIZE_OPTIONS,
     PRICE_TYPE_OPTIONS,
@@ -23,7 +23,7 @@ export const QUICK_PRICE_DEFAULT_DRAFT = {
     priceType: "avista",
     paperSize: "A5",
     orientation: "portrait",
-    offerTitle: "Oferta rapida",
+    offerTitle: "Oferta rápida",
     validUntil: "",
     observation: "",
     showBarcode: true,
@@ -43,11 +43,11 @@ export const QUICK_PRICE_LIMITS = {
 export const QUICK_PRICE_GUIDELINES = [
     {
         title: "Entrada curta e objetiva",
-        description: "Use nomes curtos e identificaveis para manter ritmo de digitacao e leitura rapida no cartaz.",
+        description: "Use nomes curtos e identificáveis para manter ritmo de digitação e leitura rápida no cartaz.",
     },
     {
         title: "Lotes sem retrabalho",
-        description: "Revise todas as linhas validas antes de imprimir o lote para evitar desperdicio operacional.",
+        description: "Revise todas as linhas válidas antes de imprimir o lote para evitar desperdício operacional.",
     },
     {
         title: "PDV com governança clara",

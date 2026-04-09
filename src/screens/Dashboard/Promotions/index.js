@@ -16,18 +16,10 @@ import {
     CatalogInput,
     CatalogLabel,
     CatalogSelect,
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
     EmptyState,
-    ErrorSummary,
-    ErrorSummaryItem,
-    ErrorSummaryTitle,
     FieldCounter,
     FieldError,
     FieldMeta,
-    InlineNotice,
     MetaBadge,
     OrderActionButton,
     OrderActions,
@@ -61,8 +53,6 @@ import {
     SummaryItem,
     SummaryLabel,
     SummaryValue,
-    WarningItem,
-    WarningList,
 } from "./styled";
 
 function getOrderStatusTone(order) {
@@ -81,7 +71,6 @@ export default function DashboardPromotions() {
         validation,
         statusCard,
         summaryItems,
-        recentOrders,
         orders,
         archivedOrders,
         availableSources,
@@ -91,7 +80,6 @@ export default function DashboardPromotions() {
         orientationOptions,
         selectionSearch,
         selectionSource,
-        guidelines,
         setSelectionSearch,
         setSelectionSource,
         applyPatch,
@@ -110,47 +98,16 @@ export default function DashboardPromotions() {
 
                 <PromotionsLayout>
                     <PromotionsMain>
-                        {!canManage ? (
-                            <CatalogCard>
-                                <CatalogCardHeader>
-                                    <CatalogCardEyebrow>Fila recebida</CatalogCardEyebrow>
-                                    <CatalogCardTitle>Cartazes prontos para impressão</CatalogCardTitle>
-                                    <CatalogCardText>
-                                        Admin e subadmin programam as campanhas e enviam os cartazes para o usuário responsável pela impressão. Nesta tela o seu foco é apenas consultar a descrição da oferta, o período e imprimir o material recebido.
-                                    </CatalogCardText>
-                                </CatalogCardHeader>
-
-                                <InlineNotice>
-                                    Quando a vigência termina, a promoção sai automaticamente desta área para todos os usuários. O registro encerrado permanece apenas na visão administrativa de histórico promocional.
-                                </InlineNotice>
-                            </CatalogCard>
-                        ) : (
+                        {canManage ? (
                             <>
                                 <CatalogCard>
                                     <CatalogCardHeader>
-                                        <CatalogCardEyebrow>Fila</CatalogCardEyebrow>
-                                        <CatalogCardTitle>Nova promoção programada</CatalogCardTitle>
+                                        <CatalogCardEyebrow>Nova promoção</CatalogCardEyebrow>
+                                        <CatalogCardTitle>Promoções programadas</CatalogCardTitle>
                                         <CatalogCardText>
-                                            Monte campanhas reaproveitando registros reais do histórico, distribua os cartazes para os usuários responsáveis e mantenha a operação alinhada entre criação, programação e impressão.
+                                            Crie campanhas, atribua aos usuários responsáveis e controle a vigência da fila.
                                         </CatalogCardText>
                                     </CatalogCardHeader>
-
-                                    {validation.errorList.length ? (
-                                        <ErrorSummary>
-                                            <ErrorSummaryTitle>Pendências da promoção</ErrorSummaryTitle>
-                                            {validation.errorList.map(item => (
-                                                <ErrorSummaryItem key={item}>{item}</ErrorSummaryItem>
-                                            ))}
-                                        </ErrorSummary>
-                                    ) : null}
-
-                                    {validation.warnings.length ? (
-                                        <WarningList>
-                                            {validation.warnings.map(item => (
-                                                <WarningItem key={item}>{item}</WarningItem>
-                                            ))}
-                                        </WarningList>
-                                    ) : null}
 
                                     <CatalogGrid>
                                         <CatalogField $full>
@@ -241,11 +198,8 @@ export default function DashboardPromotions() {
 
                                         <CatalogField $full>
                                             <CatalogLabel>Usuários destinatários</CatalogLabel>
-
                                             {!assignableUsers.length ? (
-                                                <EmptyState>
-                                                    Nenhum usuário elegível foi encontrado para receber a campanha. Revise o cadastro de usuários antes de liberar a promoção.
-                                                </EmptyState>
+                                                <EmptyState>Nenhum usuário elegível foi encontrado para receber a campanha.</EmptyState>
                                             ) : (
                                                 <RecipientList>
                                                     {assignableUsers.map(item => (
@@ -259,25 +213,20 @@ export default function DashboardPromotions() {
                                                     ))}
                                                 </RecipientList>
                                             )}
-
                                             <FieldMeta>
                                                 <FieldError>{validation.errors.assignedUserIds || ""}</FieldError>
                                                 <FieldCounter>{form.assignedUserIds.length} selecionado(s)</FieldCounter>
                                             </FieldMeta>
                                         </CatalogField>
                                     </CatalogGrid>
-
-                                    <InlineNotice>
-                                        A promoção só fica visível para os usuários atribuídos, com descrição, período e formato definidos. Quando a vigência expira, a campanha sai da fila operacional e permanece apenas no histórico administrativo.
-                                    </InlineNotice>
                                 </CatalogCard>
 
                                 <CatalogCard>
                                     <CatalogCardHeader>
                                         <CatalogCardEyebrow>Seleção</CatalogCardEyebrow>
-                                        <CatalogCardTitle>Registros disponíveis do histórico</CatalogCardTitle>
+                                        <CatalogCardTitle>Cartazes disponíveis no histórico</CatalogCardTitle>
                                         <CatalogCardText>
-                                            Escolha quais cartazes entram na promoção. A seleção conversa diretamente com o módulo de Histórico e evita duplicidade entre o que foi criado e o que será enviado aos usuários.
+                                            Escolha os registros que entram na campanha e serão enviados para a fila.
                                         </CatalogCardText>
                                     </CatalogCardHeader>
 
@@ -313,9 +262,7 @@ export default function DashboardPromotions() {
                                     </SelectionToolbar>
 
                                     {!availableSources.length ? (
-                                        <EmptyState>
-                                            Nenhum registro do histórico foi encontrado com os filtros atuais. Gere cartazes ou ajuste a busca para compor a promoção.
-                                        </EmptyState>
+                                        <EmptyState>Nenhum registro do histórico foi encontrado com os filtros atuais.</EmptyState>
                                     ) : (
                                         <SelectionList>
                                             {availableSources.map(entry => (
@@ -347,7 +294,7 @@ export default function DashboardPromotions() {
                                     )}
                                 </CatalogCard>
                             </>
-                        )}
+                        ) : null}
 
                         <CatalogCard>
                             <CatalogCardHeader>
@@ -355,8 +302,8 @@ export default function DashboardPromotions() {
                                 <CatalogCardTitle>{canManage ? "Promoções programadas" : "Cartazes enviados para você"}</CatalogCardTitle>
                                 <CatalogCardText>
                                     {canManage
-                                        ? "Acompanhe as campanhas preparadas a partir do histórico, os usuários destinatários e o período em que cada cartaz deve permanecer disponível."
-                                        : "Consulte as promoções recebidas, confirme a descrição programada e imprima apenas o material liberado para o seu usuário."}
+                                        ? "Acompanhe campanhas preparadas, usuários atribuídos e vigência de cada cartaz."
+                                        : "Consulte as promoções recebidas, confirme a descrição programada e imprima o material liberado para o seu usuário."}
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -433,10 +380,10 @@ export default function DashboardPromotions() {
                         {canManage && archivedOrders.length ? (
                             <CatalogCard>
                                 <CatalogCardHeader>
-                                    <CatalogCardEyebrow>Histórico administrativo</CatalogCardEyebrow>
-                                    <CatalogCardTitle>Promoções encerradas</CatalogCardTitle>
+                                    <CatalogCardEyebrow>Encerradas</CatalogCardEyebrow>
+                                    <CatalogCardTitle>Promoções fora da fila operacional</CatalogCardTitle>
                                     <CatalogCardText>
-                                        Quando a vigência termina, a campanha deixa a fila operacional de todos os usuários e permanece apenas nesta visão para admin e subadmin.
+                                        Quando a vigência termina, a campanha sai da fila dos usuários e permanece apenas na visão administrativa.
                                     </CatalogCardText>
                                 </CatalogCardHeader>
 
@@ -463,25 +410,6 @@ export default function DashboardPromotions() {
                                                     </OrderActionButton>
                                                 </OrderActions>
                                             </OrderHeader>
-
-                                            <OrderDetails>
-                                                <OrderDetail>
-                                                    <OrderDetailLabel>Descrição programada</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.description || "Sem descrição adicional"}</OrderDetailValue>
-                                                </OrderDetail>
-                                                <OrderDetail>
-                                                    <OrderDetailLabel>Vigência</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.periodLabel}</OrderDetailValue>
-                                                </OrderDetail>
-                                                <OrderDetail>
-                                                    <OrderDetailLabel>Destinatários</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.assignedUserNames.join(", ") || `${order.assignedUserIds.length} usuário(s)`}</OrderDetailValue>
-                                                </OrderDetail>
-                                                <OrderDetail>
-                                                    <OrderDetailLabel>Origem</OrderDetailLabel>
-                                                    <OrderDetailValue>{order.entryTitles.join(" - ") || "Sem títulos resolvidos"}</OrderDetailValue>
-                                                </OrderDetail>
-                                            </OrderDetails>
                                         </OrderCard>
                                     ))}
                                 </OrderList>
@@ -506,54 +434,6 @@ export default function DashboardPromotions() {
                                 ))}
                             </SummaryGrid>
                         </StatusCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Recentes</CatalogCardEyebrow>
-                                <CatalogCardTitle>{canManage ? "Últimas promoções" : "Últimas recebidas"}</CatalogCardTitle>
-                                <CatalogCardText>
-                                    {canManage
-                                        ? "Retome rapidamente as filas mais novas para imprimir ou reutilizar como base."
-                                        : "Consulte as últimas campanhas atribuídas ao seu usuário sem depender de nova configuração."}
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            {!recentOrders.length ? (
-                                <EmptyState>
-                                    {canManage
-                                        ? "As promoções criadas recentemente aparecerão aqui."
-                                        : "As últimas promoções recebidas aparecerão aqui."}
-                                </EmptyState>
-                            ) : (
-                                <ChecklistList>
-                                    {recentOrders.map(order => (
-                                        <ChecklistItem key={order.id}>
-                                            <ChecklistTitle>{order.name}</ChecklistTitle>
-                                            <ChecklistText>{order.periodLabel} - {order.cardsLabel}</ChecklistText>
-                                        </ChecklistItem>
-                                    ))}
-                                </ChecklistList>
-                            )}
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Checklist</CatalogCardEyebrow>
-                                <CatalogCardTitle>Diretrizes da fila</CatalogCardTitle>
-                                <CatalogCardText>
-                                    O foco aqui é manter a organização da campanha ligada ao que já foi produzido nos módulos anteriores.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
-                        </CatalogCard>
                     </PromotionsSidebar>
                 </PromotionsLayout>
             </PageContent>

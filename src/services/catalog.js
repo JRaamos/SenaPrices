@@ -321,9 +321,9 @@ export function clearCatalogPriceSeed() {
 export function buildPriceDraftFromCatalogItem(item) {
     const currentItem = sanitizeCatalogItem(item);
     const subtitleParts = [currentItem.description2, currentItem.description3].filter(Boolean);
-    const safeUnit = ["unidade", "kg", "litro", "pacote", "caixa"].includes(currentItem.unit)
+    const safeUnit = ["cada", "unidade", "kg", "100g", "litro", "pacote", "caixa", "saco", "fardo"].includes(currentItem.unit)
         ? currentItem.unit
-        : "unidade";
+        : "cada";
 
     return {
         productName: currentItem.description1,

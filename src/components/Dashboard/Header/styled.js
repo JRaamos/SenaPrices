@@ -1,45 +1,38 @@
-import styled from 'styled-components'   
- 
-export const DashboardHeaderContainer = styled.div.attrs({ 
-})`           
-    height: 60px;
+import styled from "styled-components";
+
+export const DashboardHeaderContainer = styled.header`
+    height: 64px;
     width: 100%;
-
-    background: ${ props => props.theme.palette.primary.main };
-    background: linear-gradient(45deg, rgba(${props => props.theme.palette.primary.main}, .45) 0%, rgba(${props => props.theme.palette.primary.main}, .6) 25%, rgba(${props => props.theme.palette.primary.main}, .75) 50%, rgba(${props => props.theme.palette.primary.main}, .9) 75%, rgba(${props => props.theme.palette.primary.main}, 1) 100%);
     padding: 0 20px;
-
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    backdrop-filter: blur(16px);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 40;
 
-    @media(max-width: 560px){
-        padding: 0 12px;
+    @media (max-width: 560px) {
+        padding: 0 14px;
     }
 `;
 
-export const DashboardHeaderAction = styled.div.attrs({ 
-})`           
-    color: ${ props => props.theme.palette.colors.white };
-    font-size: 15px;
-    text-transform: uppercase;
-    cursor: pointer;
-    min-width: 44px;
-    min-height: 44px;
-
+export const DashboardHeaderAction = styled.button`
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: #ffffff;
     display: flex;
-    justify-content: center;
     align-items: center;
-`;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease;
 
-export const AppLogo = styled.img.attrs({ 
-    src:`/logo1024.png`,
-    alt:"logo-icon",
-    height:50
-})`            
-`;
-
-export const DashboardHeaderActionIcon = styled.img.attrs({ 
-})`           
-    margin-right: 10px;
+    &:hover {
+        background: #f8fafc;
+        border-color: rgba(148, 163, 184, 0.3);
+    }
 `;

@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 import { CoreContext } from "context/CoreContext";
 import { readCatalogItems, readCatalogSections } from "services/catalog";
@@ -29,9 +28,6 @@ import {
 } from "./helpers";
 
 export default function useController() {
-    const n = useNavigate();
-    const navigate = useCallback((to) => n(`/${to}`), [n]);
-
     const { user } = useContext(CoreContext);
 
     const [loading, setLoading] = useState(false);
@@ -77,8 +73,8 @@ export default function useController() {
         if (!ready) return;
 
         const availableIds = new Set(items.map(item => item.id));
-        setSelectedQuantities(prev => {
-            const next = Object.entries(prev).reduce((result, [itemId, copies]) => {
+        setSelectedQuantities(previous => {
+            const next = Object.entries(previous).reduce((result, [itemId, copies]) => {
                 if (!availableIds.has(itemId)) {
                     return result;
                 }
@@ -87,7 +83,7 @@ export default function useController() {
                 return result;
             }, {});
 
-            return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
+            return JSON.stringify(next) === JSON.stringify(previous) ? previous : next;
         });
     }, [items, ready]);
 
@@ -120,17 +116,18 @@ export default function useController() {
     ), [selectedItems]);
 
     const applyFiltersPatch = useCallback((patch) => {
-        setFilters(prev => sanitizeLabelFilters({
-            ...prev,
-            ...(typeof patch === "function" ? patch(prev) : patch),
+        setFilters(previous => sanitizeLabelFilters({
+            ...previous,
+            ...(typeof patch === "function" ? patch(previous) : patch),
         }));
     }, []);
 
     const applySettingsPatch = useCallback((patch) => {
-        setSettings(prev => {
-            const next = typeof patch === "function" ? patch(prev) : patch;
+        setSettings(previous => {
+            const next = typeof patch === "function" ? patch(previous) : patch;
+
             return sanitizeLabelSettings({
-                ...prev,
+                ...previous,
                 ...next,
             });
         });
@@ -144,13 +141,15 @@ export default function useController() {
             return;
         }
 
-        setSelectedQuantities(prev => {
-            const next = { ...prev };
+        setSelectedQuantities(previous => {
+            const next = { ...previous };
+
             if (next[item.id]) {
                 delete next[item.id];
             } else {
                 next[item.id] = settings.defaultCopies;
             }
+
             return next;
         });
     }, [settings.defaultCopies]);
@@ -158,13 +157,15 @@ export default function useController() {
     const handleChangeCopies = useCallback((itemId, value) => {
         const copies = Math.min(Math.max(parseInt(`${value || 0}`, 10) || 0, 0), 99);
 
-        setSelectedQuantities(prev => {
-            const next = { ...prev };
+        setSelectedQuantities(previous => {
+            const next = { ...previous };
+
             if (copies <= 0) {
                 delete next[itemId];
             } else {
                 next[itemId] = copies;
             }
+
             return next;
         });
     }, []);
@@ -173,13 +174,14 @@ export default function useController() {
         const selectableIds = visibleRows.filter(item => item.canSelect).map(item => item.id);
         const allSelected = selectableIds.length > 0 && selectableIds.every(itemId => Number(selectedQuantities[itemId]) > 0);
 
-        setSelectedQuantities(prev => {
-            const next = { ...prev };
+        setSelectedQuantities(previous => {
+            const next = { ...previous };
 
             if (allSelected) {
                 selectableIds.forEach(itemId => {
                     delete next[itemId];
                 });
+
                 return next;
             }
 
@@ -234,7 +236,7 @@ export default function useController() {
             printWindow.document.open();
             printWindow.document.write(buildLabelPrintMarkup({
                 title,
-                subtitle: `${totalLabels} etiqueta(s) - ${settings.widthMm}x${settings.heightMm} mm - ${user?.email || "usuario@local"}`,
+                subtitle: `${totalLabels} etiqueta(s) · ${settings.widthMm}x${settings.heightMm} mm · ${user?.email || "usuario@local"}`,
                 items: selectedItems,
                 settings,
             }));
@@ -362,64 +364,10 @@ export default function useController() {
             { label: "Operação" },
             { label: "Etiquetas" },
         ],
-        actions: [
-            {
-                label: "Itens",
-                rounded: true,
-                outline: true,
-                color: "primary",
-                action: () => navigate("dashboard/items"),
-            },
-            {
-                label: "Criar preço",
-                rounded: true,
-                outline: true,
-                color: "primary",
-                action: () => navigate("dashboard/prices/create"),
-            },
-            {
-                label: "Histórico",
-                rounded: true,
-                color: "secondary",
-                action: () => navigate("dashboard/history"),
-            },
-        ],
-    }), [navigate]);
+        actions: [],
+    }), []);
 
-    const actions = useMemo(() => ([
-        {
-            label: "Limpar seleção",
-            color: "error",
-            outline: true,
-            rounded: true,
-            left: true,
-            action: handleClearSelection,
-        },
-        {
-            label: visibleRows.filter(item => item.canSelect).length
-                && visibleRows.filter(item => item.canSelect).every(item => Number(selectedQuantities[item.id]) > 0)
-                ? "Desmarcar visíveis"
-                : "Selecionar visíveis",
-            color: "primary",
-            outline: true,
-            rounded: true,
-            action: handleToggleVisible,
-        },
-        {
-            label: "Gerar ZPL",
-            color: "primary",
-            outline: true,
-            rounded: true,
-            action: handleGenerateZpl,
-        },
-        {
-            label: "Imprimir etiquetas",
-            color: "primary",
-            rounded: true,
-            loadable: true,
-            action: handlePrint,
-        },
-    ]), [handleClearSelection, handleGenerateZpl, handlePrint, handleToggleVisible, selectedQuantities, visibleRows]);
+    const actions = useMemo(() => ([]), []);
 
     const visibleSelectableCount = useMemo(() => (
         visibleRows.filter(item => item.canSelect).length
@@ -486,6 +434,7 @@ export default function useController() {
         handleCopyZpl,
         handleDownloadZpl,
         handleGenerateZpl,
+        handlePrint,
         handleCloseZpl,
     };
 }

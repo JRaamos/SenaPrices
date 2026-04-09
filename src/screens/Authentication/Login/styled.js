@@ -112,6 +112,39 @@ export const BrandList = styled.div`
     gap: 12px;
 `;
 
+export const BrandSignalGrid = styled.div`
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+
+    @media (max-width: 720px) {
+        grid-template-columns: 1fr;
+    }
+`;
+
+export const BrandSignalCard = styled.div`
+    padding: 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+`;
+
+export const BrandSignalValue = styled.div`
+    color: ${({ theme }) => theme.palette.colors.white};
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 24px;
+    letter-spacing: -0.04em;
+`;
+
+export const BrandSignalText = styled.div`
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 12px;
+    line-height: 18px;
+`;
+
 export const BrandListItem = styled.div`
     padding: 14px 16px;
     border-radius: 16px;
@@ -267,6 +300,28 @@ export const DividerText = styled.div`
 export const CredentialGrid = styled.div`
     display: grid;
     gap: 10px;
+`;
+
+export const LoginSupportCard = styled.div`
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: rgba(248, 250, 252, 0.9);
+`;
+
+export const LoginSupportTitle = styled.div`
+    color: ${({ theme }) => theme.palette.colors.ebony};
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 20px;
+`;
+
+export const LoginSupportText = styled.div`
+    margin-top: 6px;
+    color: ${({ theme }) => theme.palette.colors.slate};
+    font-size: 12px;
+    line-height: 18px;
 `;
 
 export const CredentialCard = styled.button`

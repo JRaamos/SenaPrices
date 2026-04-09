@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
     FAQ_ITEMS,
     FEATURE_CARDS,
+    HERO_METRICS,
     HERO_SLIDES,
     PLAN_CARDS,
     PLATFORM_FEATURES,
@@ -64,19 +65,41 @@ export default function useController() {
     const planCards = useMemo(() => (
         PLAN_CARDS.map(plan => {
             const offer = buildPlanOffer(plan.key, { isAnnual });
+            const formatCurrency = (value) => value.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: offer.currency,
+                minimumFractionDigits: 2,
+            });
+
             const displayPrice = offer.price === null
                 ? "Sob consulta"
-                : offer.price.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: offer.currency,
-                    minimumFractionDigits: 2,
-                });
+                : isAnnual && offer.annualPrice
+                    ? formatCurrency(offer.annualPrice / 12)
+                    : formatCurrency(offer.price);
 
-            const displayMeta = offer.price === null
+            const originalAnnualEquivalent = offer.monthlyPrice && offer.annualPrice
+                ? offer.monthlyPrice * 12
+                : null;
+
+            const annualSavings = originalAnnualEquivalent && offer.annualPrice
+                ? Math.max(0, originalAnnualEquivalent - offer.annualPrice)
+                : 0;
+
+            const displayOriginalPrice = offer.price === null || !isAnnual || !offer.monthlyPrice
+                ? ""
+                : `${formatCurrency(offer.monthlyPrice)} /mês`;
+
+            const displayBillingLine = offer.price === null
                 ? "Escopo, onboarding e SLA negociados com a equipe comercial"
                 : isAnnual
-                    ? `cobran\u00e7a anual \u00b7 ${plan.discountLabel}`
-                    : "cobran\u00e7a mensal";
+                    ? `${formatCurrency(offer.annualPrice)} cobrados anualmente`
+                    : "Cobrança mensal";
+
+            const displayDiscount = offer.price === null || !isAnnual
+                ? ""
+                : annualSavings > 0
+                    ? `Economize até ${offer.annualDiscountPercent}% · ${formatCurrency(annualSavings)} ao ano`
+                    : plan.discountLabel;
 
             const action = () => {
                 if (isAuthenticated) {
@@ -90,16 +113,18 @@ export default function useController() {
             return {
                 ...plan,
                 displayPrice,
-                displayMeta,
+                displayOriginalPrice,
+                displayBillingLine,
+                displayDiscount,
                 action,
             };
         })
     ), [currentUser, isAnnual, isAuthenticated, n, navigate]);
 
     const heroChips = useMemo(() => ([
-        { key: "desktop", label: "Programa de computador", icon: "/icons/products.svg" },
-        { key: "web", label: "Acesso web governado", icon: "/icons/menu.svg" },
-        { key: "labels", label: "Etiquetas Zebra ZPL", icon: "/icons/training.svg" },
+        { key: "desktop", label: "Programa de computador", iconToken: "landingDesktop" },
+        { key: "web", label: "Acesso web (Profissional+)", iconToken: "landingWeb" },
+        { key: "labels", label: "Etiquetas Zebra ZPL", iconToken: "labels" },
     ]), []);
 
     const quickLinks = useMemo(() => {
@@ -163,6 +188,7 @@ export default function useController() {
         currentHeroSlide,
         currentSlide,
         heroSlides: HERO_SLIDES,
+        heroMetrics: HERO_METRICS,
         isAnnual,
         openFaqKey,
         heroChips,

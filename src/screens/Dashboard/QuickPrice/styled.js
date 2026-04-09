@@ -446,6 +446,7 @@ export const PreviewCard = styled(QuickCard).attrs({
 })`
     background: linear-gradient(180deg, rgba(6,52,107,0.98) 0%, rgba(17,24,39,1) 100%);
     color: ${props => props.theme.palette.colors.white};
+    border-color: ${props => props.$accentColor || "rgba(59, 130, 246, 0.18)"};
 `;
 
 export const PreviewBadge = styled.span.attrs({
@@ -454,7 +455,7 @@ export const PreviewBadge = styled.span.attrs({
     align-items: center;
     padding: 8px 12px;
     border-radius: 999px;
-    background: rgba(255,255,255,0.14);
+    background: ${props => props.$accentColor ? `${props.$accentColor}24` : "rgba(255,255,255,0.14)"};
     color: ${props => props.theme.palette.colors.white};
     font-size: 11px;
     font-weight: 800;
@@ -467,35 +468,44 @@ export const PreviewTitle = styled.h3.attrs({
 })`
     margin: 0;
     color: inherit;
-    font-size: 32px;
+    font-size: ${props => `${props.$fontSize || 32}px`};
     font-weight: 800;
     line-height: 0.98;
     letter-spacing: -0.05em;
+    text-align: ${props => props.$align || "left"};
+    text-transform: ${props => props.$transform || "uppercase"};
+    font-family: ${props => props.$fontFamily || "inherit"};
 `;
 
 export const PreviewSubtitle = styled.p.attrs({
 })`
     margin: 0;
     color: rgba(255,255,255,0.76);
-    font-size: 14px;
+    font-size: ${props => `${props.$fontSize || 14}px`};
     line-height: 22px;
+    text-align: ${props => props.$align || "left"};
+    font-family: ${props => props.$fontFamily || "inherit"};
 `;
 
 export const PreviewPrice = styled.div.attrs({
 })`
-    color: inherit;
-    font-size: 42px;
+    color: ${props => props.$accentColor || "inherit"};
+    font-size: ${props => `${props.$fontSize || 42}px`};
     font-weight: 800;
     line-height: 0.95;
     letter-spacing: -0.05em;
+    text-align: ${props => props.$align || "left"};
+    font-family: ${props => props.$fontFamily || "inherit"};
 `;
 
 export const PreviewSupportPrice = styled.div.attrs({
 })`
     color: rgba(255,255,255,0.8);
-    font-size: 15px;
+    font-size: ${props => `${props.$fontSize || 15}px`};
     line-height: 22px;
     ${props => props.$strike ? "text-decoration: line-through;" : ""}
+    text-align: ${props => props.$align || "left"};
+    font-family: ${props => props.$fontFamily || "inherit"};
 `;
 
 export const PreviewSpecialLabel = styled.div.attrs({
@@ -505,10 +515,11 @@ export const PreviewSpecialLabel = styled.div.attrs({
     padding: 9px 12px;
     border-radius: 12px;
     background: rgba(232, 108, 48, 0.18);
-    color: #ffd9c7;
+    color: ${props => props.$color || "#ffd9c7"};
     font-size: 13px;
     font-weight: 700;
     line-height: 19px;
+    font-family: ${props => props.$fontFamily || "inherit"};
 `;
 
 export const PreviewMetaList = styled.div.attrs({

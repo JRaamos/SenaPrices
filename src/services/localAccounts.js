@@ -226,6 +226,95 @@ export function updateLocalAccount(subject = {}, patch = {}) {
     return updated ? stripSensitiveFields(updated) : null;
 }
 
+export function createLocalAccount(values = {}) {
+    const draft = normalizeDraftAccount(values);
+    const accounts = readLocalAccounts();
+
+    if (draft.role === "master") {
+        throw new Error("A conta master é gerenciada separadamente.");
+    }
+
+    if (accounts.some(account => account.email === draft.email)) {
+        throw new Error("Já existe uma conta com este e-mail.");
+    }
+
+    const nextAccount = normalizeLocalAccount({
+        id: `local-account-${Date.now()}`,
+        documentId: `local-account-${Date.now()}`,
+        name: draft.name,
+        email: draft.email,
+        role: draft.role,
+        active: draft.active,
+        passwordHash: hashSecret(draft.password),
+        pinHash: hashSecret(draft.pin),
+        subscription: draft.subscription,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        source: "local",
+    });
+
+    SaveObject(LOCAL_ACCOUNTS_KEY, [...accounts, nextAccount]);
+    return stripSensitiveFields(nextAccount);
+}
+
+export function saveGovernedLocalAccount(subject = {}, patch = {}) {
+    const current = findLocalAccountMatch(subject);
+    if (!current) {
+        return null;
+    }
+
+    if (current.role === "master" && patch?.role && patch.role !== "master") {
+        throw new Error("A conta master não pode mudar de perfil.");
+    }
+
+    const accounts = readLocalAccounts();
+    const nextDraft = normalizeDraftAccount({
+        ...current,
+        ...patch,
+        subscription: patch?.subscription || current.subscription,
+        password: patch?.password || "",
+        pin: patch?.pin || "",
+        allowEmptySecrets: true,
+    }, true);
+
+    if (accounts.some(account => account.id !== current.id && account.email === nextDraft.email)) {
+        throw new Error("Já existe outra conta com este e-mail.");
+    }
+
+    const nextAccounts = accounts.map(account => {
+        if (account.id !== current.id) {
+            return account;
+        }
+
+        return normalizeLocalAccount({
+            ...account,
+            name: nextDraft.name,
+            email: nextDraft.email,
+            role: current.role === "master" ? "master" : nextDraft.role,
+            active: current.role === "master" ? true : nextDraft.active,
+            passwordHash: nextDraft.password ? hashSecret(nextDraft.password) : account.passwordHash,
+            pinHash: nextDraft.pin ? hashSecret(nextDraft.pin) : account.pinHash,
+            subscription: nextDraft.subscription,
+            updatedAt: new Date().toISOString(),
+        });
+    });
+
+    SaveObject(LOCAL_ACCOUNTS_KEY, nextAccounts);
+    const updated = nextAccounts.find(account => account.id === current.id);
+    return updated ? stripSensitiveFields(updated) : null;
+}
+
+export function toggleLocalAccountActive(subject = {}) {
+    const current = findLocalAccountMatch(subject);
+    if (!current || current.role === "master") {
+        throw new Error("A conta selecionada não pode ser desativada.");
+    }
+
+    return updateLocalAccount(current, {
+        active: !current.active,
+    });
+}
+
 export function removeLocalAccount(subject = {}) {
     const current = findLocalAccountMatch(subject);
     if (!current || current.role === "master") {
@@ -289,6 +378,49 @@ function stripSensitiveFields(account = {}) {
         createdAt: account.createdAt,
         updatedAt: account.updatedAt,
         source: "local",
+    };
+}
+
+function normalizeDraftAccount(values = {}, isUpdate = false) {
+    const role = normalizeRole(values?.role);
+    const name = `${values?.name || ""}`.trim();
+    const email = `${values?.email || ""}`.trim().toLowerCase();
+    const password = `${values?.password || ""}`.trim();
+    const pin = `${values?.pin || ""}`.replace(/\D/g, "").slice(0, 8);
+    const allowEmptySecrets = !!values?.allowEmptySecrets;
+
+    if (!name) {
+        throw new Error("Informe o nome do usuário.");
+    }
+
+    if (!email || !email.includes("@")) {
+        throw new Error("Informe um e-mail válido.");
+    }
+
+    if ((!isUpdate || !allowEmptySecrets) && password.length < 6) {
+        throw new Error("A senha deve ter ao menos 6 caracteres.");
+    }
+
+    if ((!isUpdate || !allowEmptySecrets) && pin.length !== 8) {
+        throw new Error("O PIN deve ter 8 dígitos.");
+    }
+
+    if (isUpdate && !allowEmptySecrets && values?.password !== undefined && password.length && password.length < 6) {
+        throw new Error("A senha deve ter ao menos 6 caracteres.");
+    }
+
+    if (isUpdate && !allowEmptySecrets && values?.pin !== undefined && pin.length && pin.length !== 8) {
+        throw new Error("O PIN deve ter 8 dígitos.");
+    }
+
+    return {
+        name,
+        email,
+        role,
+        active: values?.active !== false,
+        password,
+        pin,
+        subscription: normalizeSubscription(values?.subscription),
     };
 }
 

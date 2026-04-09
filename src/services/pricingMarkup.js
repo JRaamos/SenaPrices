@@ -1,7 +1,8 @@
 import moment from "moment";
 
-import { buildPreview } from "screens/Dashboard/CreatePrice/helpers";
+import { buildPreview, buildPrintStyleTokens, withAlpha } from "screens/Dashboard/CreatePrice/helpers";
 import { buildRowPreview, sanitizeQuickDraft } from "screens/Dashboard/QuickPrice/helpers";
+import { getPrintStyleSettings } from "./settings";
 
 export function buildHistoryEntryPrintMarkup(entry) {
     const cards = buildCardsFromHistoryEntry(entry);
@@ -17,16 +18,19 @@ export function buildPromotionPrintMarkup(order, entries = []) {
     const cards = entries.flatMap(buildCardsFromHistoryEntry);
     const periodLabel = [formatDate(order?.validFrom), formatDate(order?.validTo)]
         .filter(Boolean)
-        .join(" ate ");
+        .join(" até ");
     const formatLabel = [order?.paperSize, formatOrientation(order?.orientation)]
         .filter(Boolean)
         .join(" ");
-    const subtitleParts = [periodLabel ? `Vigência ${periodLabel}` : "", formatLabel ? `Formato ${formatLabel}` : "", order?.description || ""]
-        .filter(Boolean);
+    const subtitleParts = [
+        periodLabel ? `Vigência ${periodLabel}` : "",
+        formatLabel ? `Formato ${formatLabel}` : "",
+        order?.description || "",
+    ].filter(Boolean);
 
     return buildPricingDocumentMarkup({
         title: order?.name || "Promoção SenaPrices",
-        subtitle: subtitleParts.join(" - "),
+        subtitle: subtitleParts.join(" · "),
         cards,
     });
 }
@@ -63,6 +67,7 @@ function buildCardsFromHistoryEntry(entry = {}) {
                 barcodeLabel: preview.barcodeLabel,
                 validityLabel: preview.validityLabel,
                 observation: preview.observation,
+                style: preview.style,
             };
         });
     }
@@ -79,11 +84,13 @@ function buildCardsFromHistoryEntry(entry = {}) {
         barcodeLabel: preview.barcodeLabel,
         validityLabel: preview.validityLabel,
         observation: preview.observation,
+        style: preview.style,
     }];
 }
 
 function buildPricingDocumentMarkup({ title, subtitle, cards = [] }) {
     const safeCards = Array.isArray(cards) ? cards : [];
+    const headerStyle = safeCards[0]?.style || buildPrintStyleTokens(getPrintStyleSettings());
 
     return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -97,7 +104,7 @@ function buildPricingDocumentMarkup({ title, subtitle, cards = [] }) {
             margin: 0;
             padding: 24px;
             background: #f3f6fb;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: ${headerStyle.infoFontFamily};
             color: #111827;
         }
         .header {
@@ -105,7 +112,7 @@ function buildPricingDocumentMarkup({ title, subtitle, cards = [] }) {
             margin: 0 auto 24px;
             padding: 24px 28px;
             border-radius: 24px;
-            background: linear-gradient(180deg, #06346b 0%, #0f172a 100%);
+            background: linear-gradient(180deg, ${headerStyle.accentColor} 0%, #0f172a 100%);
             color: #ffffff;
         }
         .eyebrow {
@@ -120,6 +127,7 @@ function buildPricingDocumentMarkup({ title, subtitle, cards = [] }) {
         }
         .header-title {
             margin: 18px 0 0;
+            font-family: ${headerStyle.titleFontFamily};
             font-size: 34px;
             line-height: 1.02;
             font-weight: 800;
@@ -127,8 +135,8 @@ function buildPricingDocumentMarkup({ title, subtitle, cards = [] }) {
         }
         .header-text {
             margin: 12px 0 0;
-            max-width: 720px;
-            color: rgba(255,255,255,0.76);
+            max-width: 760px;
+            color: rgba(255,255,255,0.78);
             font-size: 15px;
             line-height: 22px;
         }
@@ -146,79 +154,10 @@ function buildPricingDocumentMarkup({ title, subtitle, cards = [] }) {
             border: 1px solid #d9e4f2;
             break-inside: avoid;
         }
-        .badge {
-            display: inline-block;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: #06346b;
-            color: #ffffff;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-        .title {
-            margin: 14px 0 0;
-            font-size: 30px;
-            line-height: 0.98;
-            font-weight: 800;
-            letter-spacing: -0.05em;
-        }
-        .subtitle {
-            margin: 10px 0 0;
-            color: #475569;
-            font-size: 14px;
-            line-height: 21px;
-        }
-        .price {
-            margin-top: 22px;
-            color: #06346b;
-            font-size: 48px;
-            line-height: 0.94;
-            font-weight: 800;
-            letter-spacing: -0.05em;
-        }
-        .support {
-            margin-top: 10px;
-            color: #64748b;
-            font-size: 18px;
-            line-height: 24px;
-        }
-        .special {
-            margin-top: 12px;
-            display: inline-block;
-            padding: 8px 12px;
-            border-radius: 12px;
-            background: #fff1ea;
-            color: #e86c30;
-            font-size: 13px;
-            font-weight: 700;
-        }
-        .meta {
-            margin-top: 18px;
-            display: grid;
-            gap: 10px;
-        }
-        .meta-item {
-            padding: 12px 14px;
-            border-radius: 14px;
-            background: #f8fbff;
-            border: 1px solid #d9e4f2;
-        }
-        .meta-label {
-            color: #64748b;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-        .meta-value {
-            margin-top: 6px;
-            color: #111827;
-            font-size: 13px;
-            font-weight: 700;
-            line-height: 20px;
-            word-break: break-word;
+        @media (max-width: 840px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
         @media print {
             body { background: #ffffff; padding: 0; }
@@ -242,28 +181,101 @@ function buildPricingDocumentMarkup({ title, subtitle, cards = [] }) {
 }
 
 function renderCard(card = {}) {
+    const style = card.style || buildPrintStyleTokens(getPrintStyleSettings());
+
     return `
         <article class="card">
-            <span class="badge">${escapeHtml(card.offerTitle || "Oferta")}</span>
-            <h2 class="title">${escapeHtml(card.title || "Sem descrição")}</h2>
-            ${card.subtitle ? `<p class="subtitle">${escapeHtml(card.subtitle)}</p>` : ""}
-            <div class="price">${escapeHtml(card.primaryPrice || "R$ --,--")}</div>
-            ${card.supportingPrice ? `<div class="support">${escapeHtml(card.supportingPrice)}</div>` : ""}
-            ${card.specialLabel ? `<div class="special">${escapeHtml(card.specialLabel)}</div>` : ""}
-            <div class="meta">
-                ${card.barcodeLabel ? renderMeta("Código", card.barcodeLabel) : ""}
-                ${card.validityLabel ? renderMeta("Validade", card.validityLabel) : ""}
-                ${card.observation ? renderMeta("Observacao", card.observation) : ""}
+            <span
+                style="
+                    display:inline-block;
+                    padding:8px 12px;
+                    border-radius:999px;
+                    background:${style.accentColor};
+                    color:#ffffff;
+                    font-size:11px;
+                    font-weight:700;
+                    letter-spacing:0.08em;
+                    text-transform:uppercase;
+                "
+            >${escapeHtml(card.offerTitle || "Oferta")}</span>
+            <h2
+                style="
+                    margin:14px 0 0;
+                    color:#111827;
+                    font-family:${style.titleFontFamily};
+                    font-size:${Math.max(28, Math.round(style.titleSizePx * 0.72))}px;
+                    font-weight:800;
+                    line-height:0.98;
+                    letter-spacing:-0.05em;
+                    text-align:${style.titleAlign};
+                    text-transform:${style.titleTransform};
+                "
+            >${escapeHtml(card.title || "Sem descrição")}</h2>
+            ${card.subtitle ? `
+                <p
+                    style="
+                        margin:10px 0 0;
+                        color:#475569;
+                        font-family:${style.infoFontFamily};
+                        font-size:${Math.max(14, Math.round(style.subtitleSizePx * 0.88))}px;
+                        line-height:1.5;
+                        text-align:${style.titleAlign};
+                    "
+                >${escapeHtml(card.subtitle)}</p>
+            ` : ""}
+            <div
+                style="
+                    margin-top:22px;
+                    color:${style.accentColor};
+                    font-family:${style.priceFontFamily};
+                    font-size:${Math.max(44, Math.round(style.priceSizePx * 0.68))}px;
+                    line-height:0.94;
+                    font-weight:800;
+                    letter-spacing:-0.05em;
+                    text-align:${style.priceAlign};
+                "
+            >${escapeHtml(card.primaryPrice || "R$ --,--")}</div>
+            ${card.supportingPrice ? `
+                <div
+                    style="
+                        margin-top:10px;
+                        color:#64748b;
+                        font-family:${style.infoFontFamily};
+                        font-size:${Math.max(16, Math.round(style.supportSizePx * 0.76))}px;
+                        line-height:1.35;
+                        text-align:${style.priceAlign};
+                    "
+                >${escapeHtml(card.supportingPrice)}</div>
+            ` : ""}
+            ${card.specialLabel ? `
+                <div
+                    style="
+                        margin-top:12px;
+                        display:inline-block;
+                        padding:8px 12px;
+                        border-radius:12px;
+                        background:${withAlpha(style.highlightColor, 0.12)};
+                        color:${style.highlightColor};
+                        font-family:${style.infoFontFamily};
+                        font-size:13px;
+                        font-weight:700;
+                    "
+                >${escapeHtml(card.specialLabel)}</div>
+            ` : ""}
+            <div style="margin-top:18px;display:grid;gap:10px;">
+                ${card.barcodeLabel ? renderMeta("Código", card.barcodeLabel, style) : ""}
+                ${card.validityLabel ? renderMeta("Validade", card.validityLabel, style) : ""}
+                ${card.observation ? renderMeta("Observação", card.observation, style) : ""}
             </div>
         </article>
     `;
 }
 
-function renderMeta(label, value) {
+function renderMeta(label, value, style) {
     return `
-        <div class="meta-item">
-            <div class="meta-label">${escapeHtml(label)}</div>
-            <div class="meta-value">${escapeHtml(value)}</div>
+        <div style="padding:12px 14px;border-radius:14px;background:#f8fbff;border:1px solid #d9e4f2;">
+            <div style="color:#64748b;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(label)}</div>
+            <div style="margin-top:6px;color:#111827;font-family:${style.infoFontFamily};font-size:13px;font-weight:700;line-height:20px;word-break:break-word;">${escapeHtml(value)}</div>
         </div>
     `;
 }

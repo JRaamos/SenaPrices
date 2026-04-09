@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 import { CoreContext } from "context/CoreContext";
 import {
@@ -9,11 +8,8 @@ import {
     updateCatalogItem,
 } from "services/catalog";
 
-import { ITEM_GUIDELINES } from "../CreateItem/constants";
-
 import {
     IMPORT_CONFLICT_OPTIONS,
-    IMPORT_GUIDELINES,
     IMPORT_TARGET_FIELDS,
 } from "./constants";
 import {
@@ -25,9 +21,6 @@ import {
 } from "./helpers";
 
 export default function useController() {
-    const n = useNavigate();
-    const navigate = useCallback((to) => n(`/${to}`), [n]);
-
     const { user, setModal } = useContext(CoreContext);
 
     const [loading, setLoading] = useState(false);
@@ -81,24 +74,8 @@ export default function useController() {
             { label: "Catálogo" },
             { label: "Importar" },
         ],
-        actions: [
-            {
-                label: "Itens",
-                icon: "products",
-                rounded: true,
-                outline: true,
-                color: "primary",
-                action: () => navigate("dashboard/items"),
-            },
-            {
-                label: "Criar item",
-                icon: "products",
-                rounded: true,
-                color: "secondary",
-                action: () => navigate("dashboard/items/create"),
-            },
-        ],
-    }), [navigate]);
+        actions: [],
+    }), []);
 
     const resetImportSession = useCallback(() => {
         setDataset(null);
@@ -109,14 +86,14 @@ export default function useController() {
     const handleClearImport = useCallback(() => {
         resetImportSession();
         setLastImportResult(null);
-        toast.info("Arquivo de importacao removido da sessao atual.");
+        toast.info("Arquivo de importação removido da sessão atual.");
     }, [resetImportSession]);
 
     const confirmClearImport = useCallback(() => {
         setModal({
             type: "confirm",
             title: "Descartar este arquivo importado?",
-            text: "O arquivo atual, o mapeamento e o preview serao removidos desta sessao.",
+            text: "O arquivo atual, o mapeamento e o preview serão removidos desta sessão.",
             action: handleClearImport,
         });
     }, [handleClearImport, setModal]);
@@ -131,7 +108,7 @@ export default function useController() {
             setDataset(nextDataset);
             setMapping(buildInitialMapping(nextDataset.columns));
             setLastImportResult(null);
-            toast.success(`${nextDataset.rows.length} linha(s) carregadas para revisao.`);
+            toast.success(`${nextDataset.rows.length} linha(s) carregadas para revisão.`);
         } catch (error) {
             toast.error(error?.message || "Não foi possível ler o arquivo informado.");
         } finally {
@@ -150,7 +127,7 @@ export default function useController() {
         setModal({
             type: "confirm",
             title: "Substituir o arquivo atual?",
-            text: "O preview atual sera descartado e a nova carga assumira a sessao de importacao.",
+            text: "O preview atual será descartado e a nova carga assumirá a sessão de importação.",
             action: () => processAcceptedFile(file),
         });
     }, [dataset, processAcceptedFile, setModal]);
@@ -164,12 +141,12 @@ export default function useController() {
 
     const handleImport = useCallback(() => {
         if (mappingSummary.requiredMissing.length) {
-            toast.error("Mapeie todos os campos obrigatorios antes de importar.");
+            toast.error("Mapeie todos os campos obrigatórios antes de importar.");
             return;
         }
 
         if (!importPlan.canImport) {
-            toast.error("Nao ha linhas validas prontas para importacao.");
+            toast.error("Não há linhas válidas prontas para importação.");
             return;
         }
 
@@ -208,7 +185,7 @@ export default function useController() {
             resetImportSession();
 
             if (errors.length) {
-                toast.warn(`${created + updated} linha(s) processadas com pendencias registradas no resumo.`);
+                toast.warn(`${created + updated} linha(s) processadas com pendências registradas no resumo.`);
             } else {
                 toast.success(`${created + updated} linha(s) processadas com sucesso na base.`);
             }
@@ -219,7 +196,7 @@ export default function useController() {
 
     const actions = useMemo(() => ([
         !dataset ? null : {
-            label: "Limpar importacao",
+            label: "Limpar importação",
             color: "error",
             outline: true,
             rounded: true,
@@ -241,64 +218,13 @@ export default function useController() {
             action: () => downloadImportTemplate("xlsx"),
         },
         !dataset ? null : {
-            label: "Importar linhas validas",
+            label: "Importar linhas válidas",
             color: "primary",
             rounded: true,
             loadable: true,
             action: handleImport,
         },
     ].filter(Boolean)), [confirmClearImport, dataset, handleImport]);
-
-    const statusCard = useMemo(() => {
-        if (!dataset && lastImportResult) {
-            const hasErrors = lastImportResult.invalid > 0;
-
-            return {
-                tone: hasErrors ? "orange" : "green",
-                title: hasErrors ? "Ultima importacao concluida com pendencias" : "Ultima importacao concluida",
-                description: hasErrors
-                    ? `${lastImportResult.created + lastImportResult.updated} linha(s) processadas e ${lastImportResult.invalid} pendencia(s) registradas no resumo.`
-                    : `${lastImportResult.created + lastImportResult.updated} linha(s) processadas com sucesso na ultima carga.`,
-            };
-        }
-
-        if (!dataset) {
-            return {
-                tone: "orange",
-                title: "Aguardando arquivo",
-                description: "Carregue um CSV ou XLSX para iniciar o mapeamento e a revisao das linhas.",
-            };
-        }
-
-        if (mappingSummary.requiredMissing.length) {
-            return {
-                tone: "orange",
-                title: "Mapeamento incompleto",
-                description: `${mappingSummary.requiredMissing.length} campo(s) obrigatorio(s) ainda precisam ser relacionados ao arquivo.`,
-            };
-        }
-
-        if (importPlan.summary.invalid) {
-            return {
-                tone: "orange",
-                title: "Linhas em revisao",
-                description: `${importPlan.summary.invalid} linha(s) exigem ajuste antes da importacao completa.`,
-            };
-        }
-
-        return {
-            tone: "green",
-            title: "Arquivo consistente",
-            description: `${readyRowsCount} linha(s) prontas para processar na base.`,
-        };
-    }, [dataset, importPlan.summary.invalid, lastImportResult, mappingSummary.requiredMissing.length, readyRowsCount]);
-
-    const summaryItems = useMemo(() => ([
-        { label: "Itens na base", value: `${catalogItems.length}` },
-        { label: "Linhas carregadas", value: `${dataset?.rows?.length || 0}` },
-        { label: "Campos mapeados", value: `${mappingSummary.mappedCount}/${mappingSummary.totalCount}` },
-        { label: "Linhas prontas", value: `${readyRowsCount}` },
-    ]), [catalogItems.length, dataset?.rows?.length, mappingSummary.mappedCount, mappingSummary.totalCount, readyRowsCount]);
 
     return {
         loading,
@@ -311,13 +237,10 @@ export default function useController() {
         conflictOptions: IMPORT_CONFLICT_OPTIONS,
         targetFields: IMPORT_TARGET_FIELDS,
         importPlan,
-        statusCard,
-        summaryItems,
         lastImportResult,
-        guidelines: [...ITEM_GUIDELINES, ...IMPORT_GUIDELINES],
         handleFileAccepted,
         applyMappingPatch,
-        confirmClearImport,
         setConflictMode,
+        readyRowsCount,
     };
 }

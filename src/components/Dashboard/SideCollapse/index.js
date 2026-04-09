@@ -1,98 +1,161 @@
-import React, { useContext, useState } from "react";  
+import React, { useContext, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { useNavigate } from 'react-router-dom';
-
-import {  
-
+import {
+    ChevronIcon,
+    DashboardMenuBorder,
+    DashboardMenuGlyph,
     DashboardMenuOption,
-    OptionContainer,
-    OptionText,
     DashboardSubMenu,
     DashboardSubMenuItem,
-    ChevronIcon,
-    DashboardMenuBorder
-
-} from "./styled"; 
+    OptionContainer,
+    OptionText,
+} from "./styled";
 
 import { CoreContext } from "context/CoreContext";
-import { Icon } from "ui/styled";
+import DashboardIconGlyph from "../IconGlyph";
 
-export default function DashboardSideCollapse({ fluid, options }){ 
+function normalizeRoute(path = "") {
+    try {
+        const url = new URL(path, "http://localhost");
+        return {
+            pathname: url.pathname.replace(/\/+$/, "") || "/",
+            search: url.search || "",
+        };
+    } catch (error) {
+        return {
+            pathname: `${path || ""}`.replace(/\/+$/, "") || "/",
+            search: "",
+        };
+    }
+}
+
+export default function DashboardSideCollapse({ fluid, options }) {
     const n = useNavigate();
-    const navigate = to => {
-        const nextPath = `${to || ""}`.startsWith("/") ? `${to}` : `/${to}`;
-        n(nextPath);
-    }; 
-
-    const { side, setSide } = useContext(CoreContext)
-    const [collapsed, setCollapsed] = useState(false);
+    const location = useLocation();
+    const { side, setSide } = useContext(CoreContext);
     const [openSubmenus, setOpenSubmenus] = useState({});
 
+    const currentRoute = useMemo(() => ({
+        pathname: (location.pathname || "/").replace(/\/+$/, "") || "/",
+        search: location.search || "",
+    }), [location.pathname, location.search]);
+
+    const navigate = (to) => {
+        const nextPath = `${to || ""}`.startsWith("/") ? `${to}` : `/${to}`;
+        n(nextPath);
+    };
+
+    const shouldCloseAfterNavigate = () => (
+        !fluid || (typeof window !== "undefined" && window.innerWidth < 1024)
+    );
+
+    const isPathActive = (path) => {
+        const target = normalizeRoute(path);
+
+        if (target.search) {
+            return currentRoute.pathname === target.pathname && currentRoute.search === target.search;
+        }
+
+        return currentRoute.pathname === target.pathname;
+    };
+
+    const isItemActive = (item) => {
+        if (item?.path && isPathActive(item.path)) {
+            return true;
+        }
+
+        if (item?.children?.length) {
+            return item.children.some(child => isPathActive(child.path));
+        }
+
+        return false;
+    };
+
     const handleSide = (item) => {
-        if(typeof item?.action === 'function'){
-            item?.action()
+        if (typeof item?.action === "function") {
+            item.action();
             return;
         }
-        if(item?.children){
-            if(!side) {
-                setSide(true)
-                setCollapsed(true)
-                setOpenSubmenus(prev => ({ ...prev, [item.label]: true }));
-                return;
+
+        if (item?.children?.length) {
+            if (!side) {
+                setSide(true);
             }
+
             setOpenSubmenus(prev => ({ ...prev, [item.label]: !prev[item.label] }));
             return;
         }
-        if(!fluid) setSide(false);
-        navigate(item.path);
-    }
 
-    const handleSubSide = sub => {
-        if(collapsed){
-            setSide(false)
-            setCollapsed(false)
+        if (shouldCloseAfterNavigate()) {
+            setSide(false);
         }
-        navigate(sub.path)
-    }
 
-    return ( 
-        <>  
-            {
-                (options||[])?.map((item, index) => (
+        navigate(item.path);
+    };
+
+    const handleSubSide = (sub) => {
+        if (shouldCloseAfterNavigate()) {
+            setSide(false);
+        }
+
+        navigate(sub.path);
+    };
+
+    return (
+        <>
+            {(options || []).map((item) => {
+                const active = isItemActive(item);
+                const submenuOpen = !!openSubmenus[item.label] || (!!item.children?.length && active);
+
+                return (
                     <React.Fragment key={item.label}>
                         <DashboardMenuOption
+                            type="button"
                             opened={side}
+                            active={active}
                             onClick={() => handleSide(item)}
                         >
-                            <Icon icon={item.icon} pointer nomargin width={24} />
-                                {
-                                    !side ? null : <>
-                                        <OptionContainer>
-                                            <OptionText>
-                                                { item.label }
-                                            </OptionText>
-                                            {!item.children ? null : <ChevronIcon icon={'chevron-up'} active={openSubmenus[item.label]} />}
-                                        </OptionContainer>
-                                    </>
-                                }
+                            <DashboardMenuGlyph $active={active}>
+                                {item.iconToken ? (
+                                    <DashboardIconGlyph
+                                        name={item.iconToken}
+                                        size={20}
+                                        color={active ? "#f8fafc" : "#94a3b8"}
+                                    />
+                                ) : null}
+                            </DashboardMenuGlyph>
+
+                            {!side ? null : (
+                                <OptionContainer>
+                                    <OptionText active={active}>{item.label}</OptionText>
+                                    {!item.children?.length ? null : <ChevronIcon active={submenuOpen} />}
+                                </OptionContainer>
+                            )}
                         </DashboardMenuOption>
-                        {
-                            !side ? null : <>
-                                {item.children && openSubmenus[item.label] && (
+
+                        {!side ? null : (
+                            <>
+                                {item.children?.length && submenuOpen ? (
                                     <DashboardSubMenu>
                                         {item.children.map(sub => (
-                                            <DashboardSubMenuItem key={sub.path} onClick={() => handleSubSide(sub)}>
+                                            <DashboardSubMenuItem
+                                                key={sub.path}
+                                                type="button"
+                                                active={isPathActive(sub.path)}
+                                                onClick={() => handleSubSide(sub)}
+                                            >
                                                 {sub.label}
                                             </DashboardSubMenuItem>
                                         ))}
                                     </DashboardSubMenu>
-                                )}
+                                ) : null}
                                 {!item?.border ? null : <DashboardMenuBorder />}
                             </>
-                        }
+                        )}
                     </React.Fragment>
-                ))
-            }
+                );
+            })}
         </>
     );
 }

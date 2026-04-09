@@ -1,12 +1,12 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 import { CoreContext } from "context/CoreContext";
 import {
     getPdvPolicy,
     resolvePdvSuggestionForQuery,
 } from "services/pdv";
+import { readOfferTypes } from "services/governance";
 import { recordPricingOperation } from "services/pricing";
 import { getQuickPriceDefaults } from "services/settings";
 
@@ -37,9 +37,6 @@ import {
 } from "./storage";
 
 export default function useController() {
-    const n = useNavigate();
-    const navigate = useCallback((to) => n(`/${to}`), [n]);
-
     const { user, setModal } = useContext(CoreContext);
 
     const [draft, setDraft] = useState({
@@ -273,7 +270,7 @@ export default function useController() {
 
     const handlePrintBatch = useCallback(() => {
         if (!validation.isValid) {
-            toast.error("A impressao em lote exige todas as linhas validas.");
+            toast.error("A impressão em lote exige todas as linhas válidas.");
             return;
         }
 
@@ -344,7 +341,7 @@ export default function useController() {
             }, 250);
         } catch (error) {
             console.log("QuickPricePrintError", error);
-            toast.error("A impressao do lote falhou. Tente novamente.");
+            toast.error("A impressão do lote falhou. Tente novamente.");
             setLoading(false);
         }
     }, [draft, handleSaveBatch, user, validation.isValid, validation.validRows]);
@@ -417,29 +414,8 @@ export default function useController() {
             { label: "Operação" },
             { label: "Criação Rápida" },
         ],
-        actions: [
-            {
-                label: "Criar preço",
-                rounded: true,
-                outline: true,
-                color: "primary",
-                action: () => navigate("dashboard/prices/create"),
-            },
-            {
-                label: "Painel",
-                rounded: true,
-                color: "secondary",
-                action: () => navigate("dashboard"),
-            },
-            {
-                label: "Histórico",
-                rounded: true,
-                outline: true,
-                color: "primary",
-                action: () => navigate("dashboard/history"),
-            },
-        ],
-    }), [navigate]);
+        actions: [],
+    }), []);
 
     const actions = useMemo(() => ([
         {
@@ -478,7 +454,7 @@ export default function useController() {
             return {
                 tone: "green",
                 title: "Lote consistente",
-                description: "Todas as linhas estao validas e prontas para salvar ou imprimir em lote.",
+                description: "Todas as linhas estão válidas e prontas para salvar ou imprimir em lote.",
             };
         }
 
@@ -492,7 +468,7 @@ export default function useController() {
     const summaryItems = useMemo(() => ([
         { label: "Operador", value: user?.email || "usuario@local" },
         { label: "Tipo", value: PRICE_TYPE_OPTIONS.find(item => item.value === draft.priceType)?.label || "--" },
-        { label: "Linhas", value: `${validation.validRows.length}/${draft.rows.length} validas` },
+        { label: "Linhas", value: `${validation.validRows.length}/${draft.rows.length} válidas` },
         { label: "Rascunho", value: formatLastSaved(lastSavedAt) },
     ]), [draft.priceType, draft.rows.length, lastSavedAt, user, validation.validRows.length]);
 
@@ -531,6 +507,14 @@ export default function useController() {
             message: item,
         })))
     ), [draft.rows, validation.draftErrors, validation.rowErrors]);
+    const offerTypeOptions = useMemo(() => (
+        readOfferTypes()
+            .filter(item => item.active)
+            .map(item => ({
+                value: item.name,
+                label: item.name,
+            }))
+    ), []);
 
     return {
         loading,
@@ -546,6 +530,7 @@ export default function useController() {
         shortcuts,
         errorSummary,
         guidelines: QUICK_PRICE_GUIDELINES,
+        offerTypeOptions,
         priceTypeOptions: PRICE_TYPE_OPTIONS,
         paperSizeOptions: PAPER_SIZE_OPTIONS,
         orientationOptions: ORIENTATION_OPTIONS,

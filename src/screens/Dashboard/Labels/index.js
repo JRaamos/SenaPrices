@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import ContainerAuthenticated from "containers/Authenticated";
 import PageHeader from "components/Dashboard/PageHeader";
+import { buildLabelStyleTokens } from "services/labels";
+import { ALIGN_OPTIONS, PRINT_FONT_OPTIONS } from "services/settings";
 import { FormSpacer, PageContent } from "ui/styled";
 
 import useController from "./controller";
@@ -16,11 +18,6 @@ import {
     CatalogInput,
     CatalogLabel,
     CatalogSelect,
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
-    CodeBlock,
     CopiesButton,
     CopiesControl,
     CopiesValue,
@@ -29,7 +26,6 @@ import {
     FieldError,
     FieldMeta,
     FiltersGrid,
-    InlineNotice,
     ItemHeaderMain,
     ItemList,
     ItemMeta,
@@ -56,26 +52,23 @@ import {
     PreviewLabelPrice,
     PreviewLabelText,
     PreviewLabelTitle,
-    RecentButton,
-    RecentHeader,
-    RecentItem,
-    RecentList,
-    RecentMeta,
-    RecentTitle,
     SettingsGrid,
-    StatusBadge,
-    StatusCard,
-    StatusText,
-    StatusTitle,
-    SummaryGrid,
-    SummaryItem,
-    SummaryLabel,
-    SummaryValue,
     ToggleGrid,
     ToggleInput,
     ToggleItem,
     ToggleText,
 } from "./styled";
+
+const LABEL_TOGGLES = [
+    ["showDescription2", "Descrição complementar", "Exibe a segunda linha de descrição quando ela contribuir para a leitura do item."],
+    ["showDescription3", "Descrição adicional", "Ativa a terceira linha quando a operação precisar de detalhamento extra na etiqueta."],
+    ["showSection", "Seção do item", "Ajuda a equipe a conferir rapidamente em qual área da loja a etiqueta será aplicada."],
+    ["showUnit", "Unidade de venda", "Mantém contexto de peso, volume ou unidade diretamente na etiqueta de gôndola."],
+    ["showBarcode", "Código de barras EAN-13", "Emite o bloco gráfico para leitura por scanner em impressoras Zebra compatíveis."],
+    ["showEan", "Número do EAN", "Mostra o código numérico junto da etiqueta quando o processo exigir conferência manual."],
+    ["showInternalCode", "Código interno", "Exibe o identificador do catálogo quando a equipe também opera por referência de cadastro."],
+    ["showPrice", "Preço principal", "Permite esconder o valor na etiqueta quando o template servir a fluxos técnicos específicos."],
+];
 
 export default function DashboardLabels() {
     const {
@@ -89,10 +82,6 @@ export default function DashboardLabels() {
         selectedQuantities,
         selectedItems,
         previewItems,
-        recentJobs,
-        statusCard,
-        summaryItems,
-        guidelines,
         presetOptions,
         dpiOptions,
         allVisibleSelected,
@@ -104,12 +93,13 @@ export default function DashboardLabels() {
         handleToggleItem,
         handleChangeCopies,
         handleToggleVisible,
-        handleRestoreRecentJob,
         handleCopyZpl,
         handleDownloadZpl,
         handleGenerateZpl,
+        handlePrint,
         handleCloseZpl,
     } = useController();
+    const previewStyle = useMemo(() => buildLabelStyleTokens(settings), [settings]);
 
     return (
         <ContainerAuthenticated actions={actions} loading={loading}>
@@ -124,16 +114,14 @@ export default function DashboardLabels() {
                                 <div>
                                     <ModalTitle>Código ZPL pronto para Zebra</ModalTitle>
                                     <ModalText>
-                                        Use este conteúdo para enviar as etiquetas diretamente para a impressora Zebra sem conversão intermediária.
+                                        Use este conteúdo para enviar as etiquetas diretamente para a impressora Zebra.
                                     </ModalText>
                                 </div>
 
-                                <ModalCloseButton onClick={handleCloseZpl}>
-                                    Fechar
-                                </ModalCloseButton>
+                                <ModalCloseButton onClick={handleCloseZpl}>Fechar</ModalCloseButton>
                             </ModalHeader>
 
-                            <CodeBlock>{zplCode}</CodeBlock>
+                            <pre>{zplCode}</pre>
 
                             <ModalActions>
                                 <ActionButton onClick={handleCopyZpl}>Copiar ZPL</ActionButton>
@@ -148,9 +136,9 @@ export default function DashboardLabels() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Seleção</CatalogCardEyebrow>
-                                <CatalogCardTitle>Etiquetas ligadas ao catálogo e ao preço</CatalogCardTitle>
+                                <CatalogCardTitle>Etiquetas / Mata-burro</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Esta tela usa a base real de itens e a última precificação vinculada por EAN-13 ou código interno. O objetivo é emitir etiqueta sem quebrar a consistência entre cartaz, gôndola e operação.
+                                    Selecione produtos com preço rastreável para emitir etiquetas de gôndola ou ZPL.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -185,18 +173,14 @@ export default function DashboardLabels() {
                                     </FieldMeta>
                                 </CatalogField>
                             </FiltersGrid>
-
-                            <InlineNotice>
-                                Itens sem preço continuam visíveis para manutenção, mas não entram na emissão até existir uma precificação rastreável. Isso evita etiqueta sem base comercial confiável.
-                            </InlineNotice>
                         </CatalogCard>
 
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Configuração</CatalogCardEyebrow>
-                                <CatalogCardTitle>Preset, resolução e campos da etiqueta</CatalogCardTitle>
+                                <CatalogCardTitle>Preset e conteúdo da etiqueta</CatalogCardTitle>
                                 <CatalogCardText>
-                                    A configuração fica persistida na base local criptografada e já prepara o terreno para a futura centralização em Definições.
+                                    Ajuste o formato da etiqueta e os campos exibidos antes de gerar o lote.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -279,74 +263,111 @@ export default function DashboardLabels() {
                                         <FieldCounter />
                                     </FieldMeta>
                                 </CatalogField>
+
+                                <CatalogField>
+                                    <CatalogLabel>Fonte principal</CatalogLabel>
+                                    <CatalogSelect
+                                        value={settings.fontFamily}
+                                        onChange={event => applySettingsPatch({ fontFamily: event.target.value })}
+                                    >
+                                        {PRINT_FONT_OPTIONS.map(item => (
+                                            <option key={item.value} value={item.value}>{item.label}</option>
+                                        ))}
+                                    </CatalogSelect>
+                                    <FieldMeta>
+                                        <FieldError />
+                                        <FieldCounter />
+                                    </FieldMeta>
+                                </CatalogField>
+
+                                <CatalogField>
+                                    <CatalogLabel>Alinhamento do conteúdo</CatalogLabel>
+                                    <CatalogSelect
+                                        value={settings.textAlign}
+                                        onChange={event => applySettingsPatch({ textAlign: event.target.value })}
+                                    >
+                                        {ALIGN_OPTIONS.map(item => (
+                                            <option key={item.value} value={item.value}>{item.label}</option>
+                                        ))}
+                                    </CatalogSelect>
+                                    <FieldMeta>
+                                        <FieldError />
+                                        <FieldCounter />
+                                    </FieldMeta>
+                                </CatalogField>
+
+                                <CatalogField>
+                                    <CatalogLabel>Escala do título (%)</CatalogLabel>
+                                    <CatalogInput
+                                        type="number"
+                                        min="80"
+                                        max="140"
+                                        value={settings.titleScale}
+                                        onChange={event => applySettingsPatch({ titleScale: Number(event.target.value) })}
+                                    />
+                                    <FieldMeta>
+                                        <FieldError />
+                                        <FieldCounter>80 a 140</FieldCounter>
+                                    </FieldMeta>
+                                </CatalogField>
+
+                                <CatalogField>
+                                    <CatalogLabel>Escala do preço (%)</CatalogLabel>
+                                    <CatalogInput
+                                        type="number"
+                                        min="80"
+                                        max="180"
+                                        value={settings.priceScale}
+                                        onChange={event => applySettingsPatch({ priceScale: Number(event.target.value) })}
+                                    />
+                                    <FieldMeta>
+                                        <FieldError />
+                                        <FieldCounter>80 a 180</FieldCounter>
+                                    </FieldMeta>
+                                </CatalogField>
+
+                                <CatalogField>
+                                    <CatalogLabel>Escala dos metadados (%)</CatalogLabel>
+                                    <CatalogInput
+                                        type="number"
+                                        min="80"
+                                        max="140"
+                                        value={settings.metaScale}
+                                        onChange={event => applySettingsPatch({ metaScale: Number(event.target.value) })}
+                                    />
+                                    <FieldMeta>
+                                        <FieldError />
+                                        <FieldCounter>80 a 140</FieldCounter>
+                                    </FieldMeta>
+                                </CatalogField>
+
+                                <CatalogField>
+                                    <CatalogLabel>Cor de destaque</CatalogLabel>
+                                    <CatalogInput
+                                        type="color"
+                                        value={settings.accentColor}
+                                        onChange={event => applySettingsPatch({ accentColor: event.target.value })}
+                                    />
+                                    <FieldMeta>
+                                        <FieldError />
+                                        <FieldCounter>{settings.accentColor}</FieldCounter>
+                                    </FieldMeta>
+                                </CatalogField>
                             </SettingsGrid>
 
                             <ToggleGrid>
-                                <ToggleItem>
-                                    <ToggleInput
-                                        checked={settings.showDescription2}
-                                        onChange={event => applySettingsPatch({ showDescription2: event.target.checked })}
-                                    />
-                                    <ToggleText>
-                                        <strong>Descrição complementar</strong>
-                                        Exibe a segunda linha de descrição quando o item tiver complemento operacional relevante.
-                                    </ToggleText>
-                                </ToggleItem>
-
-                                <ToggleItem>
-                                    <ToggleInput
-                                        checked={settings.showSection}
-                                        onChange={event => applySettingsPatch({ showSection: event.target.checked })}
-                                    />
-                                    <ToggleText>
-                                        <strong>Seção do item</strong>
-                                        Ajuda a equipe a conferir rapidamente em qual área da loja a etiqueta será aplicada.
-                                    </ToggleText>
-                                </ToggleItem>
-
-                                <ToggleItem>
-                                    <ToggleInput
-                                        checked={settings.showUnit}
-                                        onChange={event => applySettingsPatch({ showUnit: event.target.checked })}
-                                    />
-                                    <ToggleText>
-                                        <strong>Unidade de venda</strong>
-                                        Mantém contexto de peso, volume ou unidade diretamente na etiqueta de gôndola.
-                                    </ToggleText>
-                                </ToggleItem>
-
-                                <ToggleItem>
-                                    <ToggleInput
-                                        checked={settings.showBarcode}
-                                        onChange={event => applySettingsPatch({ showBarcode: event.target.checked })}
-                                    />
-                                    <ToggleText>
-                                        <strong>Código de barras EAN-13</strong>
-                                        Emite o EAN na etiqueta para leitura por scanner em impressoras Zebra compatíveis.
-                                    </ToggleText>
-                                </ToggleItem>
-
-                                <ToggleItem>
-                                    <ToggleInput
-                                        checked={settings.showEan}
-                                        onChange={event => applySettingsPatch({ showEan: event.target.checked })}
-                                    />
-                                    <ToggleText>
-                                        <strong>Número do EAN</strong>
-                                        Mostra o código numérico junto da etiqueta quando o processo operacional exige conferência manual.
-                                    </ToggleText>
-                                </ToggleItem>
-
-                                <ToggleItem>
-                                    <ToggleInput
-                                        checked={settings.showInternalCode}
-                                        onChange={event => applySettingsPatch({ showInternalCode: event.target.checked })}
-                                    />
-                                    <ToggleText>
-                                        <strong>Código interno</strong>
-                                        Exibe o identificador interno do catálogo quando a equipe opera também por referência de cadastro.
-                                    </ToggleText>
-                                </ToggleItem>
+                                {LABEL_TOGGLES.map(([key, title, description]) => (
+                                    <ToggleItem key={key}>
+                                        <ToggleInput
+                                            checked={settings[key]}
+                                            onChange={event => applySettingsPatch({ [key]: event.target.checked })}
+                                        />
+                                        <ToggleText>
+                                            <strong>{title}</strong>
+                                            {description}
+                                        </ToggleText>
+                                    </ToggleItem>
+                                ))}
                             </ToggleGrid>
                         </CatalogCard>
 
@@ -355,14 +376,12 @@ export default function DashboardLabels() {
                                 <CatalogCardEyebrow>Itens</CatalogCardEyebrow>
                                 <CatalogCardTitle>Catálogo pronto para emissão</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Selecione apenas itens com preço rastreável. A quantidade de cópias pode ser ajustada por item sem quebrar a configuração geral do lote.
+                                    Selecione apenas itens com preço rastreável e ajuste a quantidade por produto quando necessário.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!rows.length ? (
-                                <EmptyState>
-                                    Nenhum item encontrado nesta visão. Ajuste a busca ou cadastre itens para iniciar a emissão de etiquetas.
-                                </EmptyState>
+                                <EmptyState>Nenhum item encontrado nesta visão.</EmptyState>
                             ) : (
                                 <ItemList>
                                     {rows.map(item => {
@@ -412,131 +431,93 @@ export default function DashboardLabels() {
                     </LabelsMain>
 
                     <LabelsSidebar>
-                        <StatusCard $tone={statusCard.tone}>
-                            <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Pronto" : "Atenção"}
-                            </StatusBadge>
-                            <StatusTitle>{statusCard.title}</StatusTitle>
-                            <StatusText>{statusCard.description}</StatusText>
-
-                            <SummaryGrid>
-                                {summaryItems.map(item => (
-                                    <SummaryItem key={item.label}>
-                                        <SummaryLabel>{item.label}</SummaryLabel>
-                                        <SummaryValue>{item.value}</SummaryValue>
-                                    </SummaryItem>
-                                ))}
-                            </SummaryGrid>
-                        </StatusCard>
-
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Preview</CatalogCardEyebrow>
-                                <CatalogCardTitle>Etiqueta física esperada</CatalogCardTitle>
+                                <CatalogCardTitle>Prévia da etiqueta</CatalogCardTitle>
                                 <CatalogCardText>
-                                    A pré-visualização usa a mesma configuração salva para dar segurança antes da emissão em HTML ou ZPL.
+                                    A visualização usa a mesma configuração salva para a impressão HTML ou Zebra.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!previewItems.length ? (
-                                <EmptyState>
-                                    Selecione itens válidos para ver a etiqueta antes de imprimir.
-                                </EmptyState>
+                                <EmptyState>Selecione itens válidos para ver a etiqueta antes de imprimir.</EmptyState>
                             ) : (
                                 <PreviewGrid>
                                     {previewItems.map(item => (
-                                        <PreviewLabelCard key={item.id} $heightMm={settings.heightMm}>
-                                            <PreviewLabelTitle>{item.description1}</PreviewLabelTitle>
+                                        <PreviewLabelCard
+                                            key={item.id}
+                                            $heightMm={settings.heightMm}
+                                            $textAlign={previewStyle.textAlign}
+                                        >
+                                            <PreviewLabelTitle
+                                                $fontFamily={previewStyle.fontFamily}
+                                                $fontSize={previewStyle.titleSizePx}
+                                            >
+                                                {item.description1}
+                                            </PreviewLabelTitle>
                                             {settings.showDescription2 && item.description2 ? (
-                                                <PreviewLabelText>{item.description2}</PreviewLabelText>
+                                                <PreviewLabelText
+                                                    $fontFamily={previewStyle.fontFamily}
+                                                    $fontSize={previewStyle.subtitleSizePx}
+                                                >
+                                                    {item.description2}
+                                                </PreviewLabelText>
                                             ) : null}
-                                            <PreviewLabelPrice>{item.priceLabel}</PreviewLabelPrice>
-                                            {item.secondaryPrice ? (
-                                                <PreviewLabelMeta>{item.secondaryPrice}</PreviewLabelMeta>
+                                            {settings.showDescription3 && item.description3 ? (
+                                                <PreviewLabelText
+                                                    $fontFamily={previewStyle.fontFamily}
+                                                    $fontSize={previewStyle.subtitleSizePx}
+                                                >
+                                                    {item.description3}
+                                                </PreviewLabelText>
+                                            ) : null}
+                                            {settings.showPrice ? (
+                                                <PreviewLabelPrice
+                                                    $fontFamily={previewStyle.fontFamily}
+                                                    $fontSize={previewStyle.priceSizePx}
+                                                    $accentColor={previewStyle.accentColor}
+                                                >
+                                                    {item.priceLabel}
+                                                </PreviewLabelPrice>
+                                            ) : null}
+                                            {settings.showPrice && item.secondaryPrice ? (
+                                                <PreviewLabelMeta
+                                                    $fontFamily={previewStyle.fontFamily}
+                                                    $fontSize={previewStyle.metaSizePx}
+                                                >
+                                                    {item.secondaryPrice}
+                                                </PreviewLabelMeta>
                                             ) : null}
                                             {item.offerLabel ? (
-                                                <PreviewLabelMeta>{item.offerLabel}</PreviewLabelMeta>
+                                                <PreviewLabelMeta
+                                                    $fontFamily={previewStyle.fontFamily}
+                                                    $fontSize={previewStyle.metaSizePx}
+                                                >
+                                                    {item.offerLabel}
+                                                </PreviewLabelMeta>
                                             ) : null}
-                                            <PreviewLabelMeta>
+                                            <PreviewLabelMeta
+                                                $fontFamily={previewStyle.fontFamily}
+                                                $fontSize={previewStyle.metaSizePx}
+                                            >
                                                 {[
                                                     settings.showSection ? item.section : "",
                                                     settings.showUnit ? item.unit : "",
                                                     settings.showInternalCode ? item.internalCode : "",
                                                     settings.showEan ? item.ean13 : "",
-                                                ].filter(Boolean).join(" - ")}
+                                                ].filter(Boolean).join(" · ")}
                                             </PreviewLabelMeta>
                                         </PreviewLabelCard>
                                     ))}
                                 </PreviewGrid>
                             )}
 
-                            {selectedItems.length ? (
-                                <InlineNotice>
-                                    Use o atalho `Ctrl + P` para imprimir o lote atual ou `Ctrl + Shift + A` para selecionar todos os itens visíveis com preço válido.
-                                </InlineNotice>
-                            ) : null}
-
-                            <ActionButton $tone="primary" onClick={handleToggleVisible}>
-                                {allVisibleSelected && visibleSelectableCount
-                                    ? "Desmarcar visíveis"
-                                    : "Selecionar visíveis"}
+                            <ActionButton onClick={handleToggleVisible}>
+                                {allVisibleSelected && visibleSelectableCount ? "Desmarcar visíveis" : "Selecionar visíveis"}
                             </ActionButton>
-                            <ActionButton onClick={handleGenerateZpl}>
-                                Gerar ZPL do lote
-                            </ActionButton>
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Recentes</CatalogCardEyebrow>
-                                <CatalogCardTitle>Últimos lotes de etiquetas</CatalogCardTitle>
-                                <CatalogCardText>
-                                    Reaproveite seleções anteriores quando a loja repetir a mesma troca de preços ou a mesma campanha.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            {!recentJobs.length ? (
-                                <EmptyState>
-                                    Os lotes recentes aparecerão aqui depois da primeira emissão.
-                                </EmptyState>
-                            ) : (
-                                <RecentList>
-                                    {recentJobs.map(item => (
-                                        <RecentItem key={item.id}>
-                                            <RecentHeader>
-                                                <div>
-                                                    <RecentTitle>{item.title || "Lote de etiquetas"}</RecentTitle>
-                                                    <RecentMeta>{item.helper}</RecentMeta>
-                                                    <RecentMeta>{item.preset}</RecentMeta>
-                                                    <RecentMeta>{item.relativeDate}</RecentMeta>
-                                                </div>
-                                                <RecentButton type="button" onClick={() => handleRestoreRecentJob(item)}>
-                                                    Restaurar
-                                                </RecentButton>
-                                            </RecentHeader>
-                                        </RecentItem>
-                                    ))}
-                                </RecentList>
-                            )}
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Checklist</CatalogCardEyebrow>
-                                <CatalogCardTitle>Diretrizes da emissão</CatalogCardTitle>
-                                <CatalogCardText>
-                                    A emissão de etiquetas foi desenhada para acompanhar o ritmo do varejo sem abrir brecha entre cadastro, preço e gôndola.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
+                            <ActionButton $tone="primary" onClick={handlePrint}>Imprimir etiquetas</ActionButton>
+                            <ActionButton $tone="primary" onClick={handleGenerateZpl}>Gerar ZPL</ActionButton>
                         </CatalogCard>
                     </LabelsSidebar>
                 </LabelsLayout>

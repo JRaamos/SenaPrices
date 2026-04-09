@@ -1,8 +1,8 @@
-export const PRICE_TYPE_OPTIONS = [
+﻿export const PRICE_TYPE_OPTIONS = [
     {
         value: "avista",
-        label: "A vista",
-        helper: "Preco unico com destaque direto no cartaz.",
+        label: "À vista",
+        helper: "Preço único com destaque direto no cartaz.",
     },
     {
         value: "depor",
@@ -12,7 +12,7 @@ export const PRICE_TYPE_OPTIONS = [
     {
         value: "clube",
         label: "Clube",
-        helper: "Destaca a condicao especial para membros do clube.",
+        helper: "Destaca a condição especial para membros do clube.",
     },
     {
         value: "ofertaespecial",
@@ -34,11 +34,15 @@ export const ORIENTATION_OPTIONS = [
 ];
 
 export const UNIT_OPTIONS = [
+    { value: "cada", label: "Cada" },
     { value: "unidade", label: "Unidade" },
     { value: "kg", label: "Kg" },
+    { value: "100g", label: "Cada 100g" },
     { value: "litro", label: "Litro" },
     { value: "pacote", label: "Pacote" },
     { value: "caixa", label: "Caixa" },
+    { value: "saco", label: "Saco" },
+    { value: "fardo", label: "Fardo" },
 ];
 
 export const SPECIAL_LAYOUT_OPTIONS = [
@@ -49,14 +53,14 @@ export const SPECIAL_LAYOUT_OPTIONS = [
 export const QUALITY_GUIDELINES = [
     {
         title: "Descrição clara e objetiva",
-        description: "Use o nome principal do produto de forma curta para manter leitura rapida no ponto de venda.",
+        description: "Use o nome principal do produto de forma curta para manter leitura rápida no ponto de venda.",
     },
     {
-        title: "Dados validos antes da impressao",
+        title: "Dados válidos antes da impressão",
         description: "Revise preço, validade e regra promocional para evitar retrabalho e divergência operacional.",
     },
     {
-        title: "Nada sensivel no cartaz",
+        title: "Nada sensível no cartaz",
         description: "Não inclua observações internas, códigos confidenciais ou dados que não devam aparecer ao cliente.",
     },
 ];
@@ -66,7 +70,7 @@ export const DEFAULT_FORM_VALUES = {
     productName: "",
     productSubtitle: "",
     sectionName: "",
-    unitLabel: "unidade",
+    unitLabel: "cada",
     internalCode: "",
     eanCode: "",
     cashPrice: "",
@@ -81,6 +85,7 @@ export const DEFAULT_FORM_VALUES = {
     paperSize: "A5",
     orientation: "portrait",
     offerTitle: "Oferta da semana",
+    validFrom: "",
     validUntil: "",
     observation: "",
     showBarcode: true,

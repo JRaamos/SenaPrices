@@ -3,7 +3,9 @@ import styled from "styled-components";
 export const CreateItemLayout = styled.div.attrs({
 })`
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    grid-template-columns: ${props => props.$singleColumn
+        ? "minmax(0, 1fr)"
+        : "minmax(0, 1.15fr) minmax(320px, 0.85fr)"};
     gap: 24px;
     align-items: start;
     padding-bottom: 120px;

@@ -1,55 +1,43 @@
-import styled from 'styled-components'  
- 
-export const DashboardPage = styled.div.attrs({ 
-})`            
+import styled from "styled-components";
+
+export const DashboardPage = styled.div`
+    min-height: 100vh;
+    background: #eef3f8;
 `;
 
-export const DashboardBody = styled.div.attrs({ 
-})`       
+export const DashboardBody = styled.div`
     position: relative;
-    min-height: calc(100vh - 60px);
-    max-height: calc(100vh - 60px);
-    background: ${ props => props.theme.palette.colors.white };
-
+    min-height: calc(100vh - 64px);
+    background: #eef3f8;
     display: flex;
-    align-items: flex-start;     
-    overflow: auto;
-    width: 100vw;
-    max-width: 100vw;
-    flex:1;
-`;
-
-export const DashboardBodyContainer = styled.div.attrs({ 
-    id:"body-scroll"
-})`
-    flex:1;
-    ${
-        p => p?.fluid ? `
-            overflow:auto;
-            min-height: calc(100vh - 60px);
-            max-height: calc(100vh - 60px);
-        ` : ``
-    }
-`;
-
-export const DashboardBodyContent = styled.div.attrs({ 
-})`
-    margin: 24px;
-    background: ${ props => props.theme.palette.colors.white };
-    padding: 35px 20px;
-    border-radius: 11px;
-    min-height: calc(100vh - 108px);
-    @media(max-width: 767px){
-        margin: 12px;
-        padding: 17px 10px;
-    }
-    @media(max-width: 480px){
-        margin: 6px;
-        padding: 8px 5px;
-    }
-`;
-
-export const Content = styled.div.attrs({ 
-})`           
+    align-items: stretch;
     overflow: hidden;
-`; 
+    width: 100%;
+    flex: 1;
+`;
+
+export const DashboardBodyContainer = styled.div.attrs({
+    id: "body-scroll",
+})`
+    flex: 1;
+    overflow: auto;
+    min-height: calc(100vh - 64px);
+    max-height: calc(100vh - 64px);
+`;
+
+export const DashboardBodyContent = styled.div`
+    padding: 28px 28px 120px;
+    min-height: calc(100vh - 64px);
+
+    @media(max-width: 767px){
+        padding: 18px 16px 112px;
+    }
+
+    @media(max-width: 480px){
+        padding: 14px 12px 104px;
+    }
+`;
+
+export const Content = styled.div`
+    overflow: hidden;
+`;

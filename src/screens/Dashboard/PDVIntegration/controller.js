@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 import { CoreContext } from "context/CoreContext";
 import {
@@ -14,8 +13,6 @@ import {
 } from "services/pdv";
 
 import {
-    PDV_COMPATIBILITY_OPTIONS,
-    PDV_GUIDELINES,
     PDV_POLICY_ROWS,
     PDV_STEP_CONTENT,
     PDV_SYNC_INTERVAL_OPTIONS,
@@ -23,15 +20,10 @@ import {
 } from "./constants";
 import {
     buildStatusCard,
-    buildTypeSummary,
     formatSyncDate,
-    getSyncLabel,
-    getSyncTone,
 } from "./helpers";
 
 export default function useController() {
-    const n = useNavigate();
-    const navigate = useCallback((to) => n(`/${to}`), [n]);
     const { user } = useContext(CoreContext);
 
     const [form, setForm] = useState(readPdvConfig());
@@ -58,9 +50,9 @@ export default function useController() {
     }), [overview.coverage, overview.recentSyncs, validation]);
 
     const applyPatch = useCallback((patch) => {
-        setForm(prev => validatePdvConfig({
-            ...prev,
-            ...(typeof patch === "function" ? patch(prev) : patch),
+        setForm(previous => validatePdvConfig({
+            ...previous,
+            ...(typeof patch === "function" ? patch(previous) : patch),
         }).draft);
     }, []);
 
@@ -124,32 +116,10 @@ export default function useController() {
         title: "Integração PDV",
         breadcrumbs: [
             { label: "Home", to: "/dashboard" },
-            { label: "Integrações" },
-            { label: "PDV" },
+            { label: "Integração PDV" },
         ],
-        actions: [
-            {
-                label: "Criar preço",
-                rounded: true,
-                outline: true,
-                color: "primary",
-                action: () => navigate("dashboard/prices/create"),
-            },
-            {
-                label: "Histórico",
-                rounded: true,
-                outline: true,
-                color: "primary",
-                action: () => navigate("dashboard/history"),
-            },
-            overview.policy.canConfigure ? {
-                label: "Relatórios",
-                rounded: true,
-                color: "secondary",
-                action: () => navigate("dashboard/reports"),
-            } : null,
-        ].filter(Boolean),
-    }), [navigate, overview.policy.canConfigure]);
+        actions: [],
+    }), []);
 
     const actions = useMemo(() => (
         overview.policy.canConfigure ? [
@@ -161,7 +131,7 @@ export default function useController() {
                 action: handleValidate,
             },
             {
-                label: "Salvar configuração",
+                label: "Salvar",
                 color: "primary",
                 rounded: true,
                 loadable: true,
@@ -178,32 +148,20 @@ export default function useController() {
         },
     ]), [overview.config.lastSyncAt, overview.summaryItems]);
 
-    const typeSummary = useMemo(() => buildTypeSummary(validation.draft), [validation.draft]);
-
     const policyRows = useMemo(() => (
-        PDV_POLICY_ROWS.map(item => {
-            const isDisabled = !overview.policy.canConfigure || (
+        PDV_POLICY_ROWS.map(item => ({
+            ...item,
+            active: !!validation.draft[item.key],
+            disabled: !overview.policy.canConfigure || (
                 item.key === "showPdvPricesForUsers" && !validation.draft.allowUserPriceEdit
-            );
-
-            return {
-                ...item,
-                active: !!validation.draft[item.key],
-                disabled: isDisabled,
-            };
-        })
+            ),
+        }))
     ), [overview.policy.canConfigure, validation.draft]);
 
-    const steps = useMemo(() => PDV_STEP_CONTENT[validation.draft.type] || PDV_STEP_CONTENT.none, [validation.draft.type]);
-
-    const recentSyncs = useMemo(() => (
-        overview.recentSyncs.map(item => ({
-            ...item,
-            tone: getSyncTone(item.status),
-            label: getSyncLabel(item.status),
-            createdLabel: formatSyncDate(item.createdAt),
-        }))
-    ), [overview.recentSyncs]);
+    const steps = useMemo(
+        () => PDV_STEP_CONTENT[validation.draft.type] || PDV_STEP_CONTENT.none,
+        [validation.draft.type]
+    );
 
     return {
         loading,
@@ -213,19 +171,12 @@ export default function useController() {
         validation,
         statusCard,
         summaryItems,
-        typeSummary,
         policyRows,
         steps,
-        recentSyncs,
-        compatibilityOptions: PDV_COMPATIBILITY_OPTIONS,
-        guidelines: PDV_GUIDELINES,
         typeOptions: PDV_TYPE_OPTIONS,
         syncIntervalOptions: PDV_SYNC_INTERVAL_OPTIONS,
-        coverage: overview.coverage,
         policy: overview.policy,
         applyPatch,
-        handleSave,
-        handleValidate,
-        handleTogglePolicy: (key) => applyPatch(prev => ({ [key]: !prev[key] })),
+        handleTogglePolicy: key => applyPatch(previous => ({ [key]: !previous[key] })),
     };
 }

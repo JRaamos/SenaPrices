@@ -30,22 +30,12 @@ import {
     CatalogInput,
     CatalogLabel,
     CatalogSelect,
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
     EmptyState,
     FieldCounter,
     FieldError,
     FieldMeta,
-    InlineNotice,
+    FilterToolbar,
     MetaBadge,
-    RecentButton,
-    RecentHeader,
-    RecentItem,
-    RecentList,
-    RecentMeta,
-    RecentTitle,
     StatusBadge,
     StatusCard,
     StatusText,
@@ -56,29 +46,24 @@ import {
     SummaryValue,
     ToolbarActions,
     ToolbarButton,
-    FilterToolbar,
 } from "./styled";
 
 export default function DashboardBatchPrint() {
     const {
         loading,
-        canManage,
         header,
         actions,
         draft,
         candidates,
         selectedCandidates,
-        recentJobs,
         statusCard,
         summaryItems,
-        guidelines,
         sourceOptions,
         paperOptions,
         applyPatch,
         handleToggleCandidate,
         handleToggleVisible,
         handleClearSelection,
-        handleRestoreRecentJob,
     } = useController();
 
     return (
@@ -92,9 +77,9 @@ export default function DashboardBatchPrint() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Consulta</CatalogCardEyebrow>
-                                <CatalogCardTitle>Fila unificada de impressao</CatalogCardTitle>
+                                <CatalogCardTitle>Impressão em lote</CatalogCardTitle>
                                 <CatalogCardText>
-                                    A tela consolida fontes reais de Histórico e Promoções para montar lotes sem duplicar cadastro, sem recriar cartazes e com rastreabilidade preservada.
+                                    Selecione registros reais do histórico e das promoções para montar o lote de impressão.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -108,7 +93,7 @@ export default function DashboardBatchPrint() {
                                     />
                                     <FieldMeta>
                                         <FieldError />
-                                        <FieldCounter>{candidates.length} registro(s) visivel(is)</FieldCounter>
+                                        <FieldCounter>{candidates.length} registro(s)</FieldCounter>
                                     </FieldMeta>
                                 </CatalogField>
 
@@ -148,33 +133,27 @@ export default function DashboardBatchPrint() {
                             <ToolbarActions>
                                 <ToolbarButton $tone="primary" onClick={handleToggleVisible} disabled={!candidates.length}>
                                     {candidates.length && candidates.every(item => draft.selectedKeys.includes(item.key))
-                                        ? "Desmarcar visiveis"
-                                        : "Selecionar visiveis"}
+                                        ? "Desmarcar visíveis"
+                                        : "Selecionar visíveis"}
                                 </ToolbarButton>
                                 <ToolbarButton onClick={handleClearSelection} disabled={!selectedCandidates.length}>
-                                    Limpar selecao
+                                    Limpar seleção
                                 </ToolbarButton>
                             </ToolbarActions>
-
-                            <InlineNotice>
-                                {canManage
-                                    ? "Admin e subadmin podem montar o lote com histórico operacional e promoções ativas. O sistema deduplica registros repetidos antes da impressão para evitar cartazes em dobro."
-                                    : "O usuário operacional vê apenas o próprio histórico e as promoções atribuídas ao seu usuário. Registros expirados ou não autorizados não entram na fila."}
-                            </InlineNotice>
                         </CatalogCard>
 
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Selecao</CatalogCardEyebrow>
-                                <CatalogCardTitle>Fontes disponiveis para o lote</CatalogCardTitle>
+                                <CatalogCardEyebrow>Seleção</CatalogCardEyebrow>
+                                <CatalogCardTitle>Cartazes disponíveis</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Selecione registros operacionais ou campanhas programadas. A impressao em lote reaproveita exatamente as mesmas fontes ja validadas nos modulos anteriores.
+                                    Monte o lote reaproveitando o que já foi criado ou programado para a operação.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!candidates.length ? (
                                 <EmptyState>
-                                    Nenhum registro disponível nesta visão. Gere cartazes no Histórico ou aguarde novas promoções atribuídas para alimentar a fila de impressão.
+                                    Nenhum registro disponível nesta visão. Gere cartazes ou aguarde promoções atribuídas para alimentar a fila.
                                 </EmptyState>
                             ) : (
                                 <BatchList>
@@ -196,7 +175,6 @@ export default function DashboardBatchPrint() {
                                                         <MetaBadge>{candidate.paperLabel || "--"}</MetaBadge>
                                                     </BatchMeta>
                                                 </BatchHeaderMain>
-
                                                 <BatchSelectionMark $selected={draft.selectedKeys.includes(candidate.key)} />
                                             </BatchRowHeader>
 
@@ -206,12 +184,12 @@ export default function DashboardBatchPrint() {
                                                     <BatchDetailValue>{candidate.detailValue || "--"}</BatchDetailValue>
                                                 </BatchDetail>
                                                 <BatchDetail>
-                                                    <BatchDetailLabel>Periodo operacional</BatchDetailLabel>
+                                                    <BatchDetailLabel>Período operacional</BatchDetailLabel>
                                                     <BatchDetailValue>{candidate.periodLabel || "--"}</BatchDetailValue>
                                                 </BatchDetail>
                                                 <BatchDetail>
                                                     <BatchDetailLabel>Origem dos cartazes</BatchDetailLabel>
-                                                    <BatchDetailValue>{candidate.entryTitles.join(" - ") || "Sem titulos adicionais"}</BatchDetailValue>
+                                                    <BatchDetailValue>{candidate.entryTitles.join(" - ") || "Sem títulos adicionais"}</BatchDetailValue>
                                                 </BatchDetail>
                                                 <BatchDetail>
                                                     <BatchDetailLabel>Chave da fila</BatchDetailLabel>
@@ -228,7 +206,7 @@ export default function DashboardBatchPrint() {
                     <BatchPrintSidebar>
                         <StatusCard $tone={statusCard.tone}>
                             <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Pronto" : "Atencao"}
+                                {statusCard.tone === "green" ? "Pronto" : "Atenção"}
                             </StatusBadge>
                             <StatusTitle>{statusCard.title}</StatusTitle>
                             <StatusText>{statusCard.description}</StatusText>
@@ -242,59 +220,6 @@ export default function DashboardBatchPrint() {
                                 ))}
                             </SummaryGrid>
                         </StatusCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Recentes</CatalogCardEyebrow>
-                                <CatalogCardTitle>Lotes recentes</CatalogCardTitle>
-                                <CatalogCardText>
-                                    Retome selecoes ja impressas para repetir a operacao sem remontar a fila do zero.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            {!recentJobs.length ? (
-                                <EmptyState>
-                                    Os ultimos lotes impressos aparecerao aqui.
-                                </EmptyState>
-                            ) : (
-                                <RecentList>
-                                    {recentJobs.map(item => (
-                                        <RecentItem key={item.id}>
-                                            <RecentHeader>
-                                                <div>
-                                                    <RecentTitle>{item.title || "Lote operacional"}</RecentTitle>
-                                                    <RecentMeta>{item.helper}</RecentMeta>
-                                                    <RecentMeta>{item.sourceSummary || item.createdLabel}</RecentMeta>
-                                                    <RecentMeta>{item.relativeDate}</RecentMeta>
-                                                </div>
-                                                <RecentButton type="button" onClick={() => handleRestoreRecentJob(item)}>
-                                                    Restaurar
-                                                </RecentButton>
-                                            </RecentHeader>
-                                        </RecentItem>
-                                    ))}
-                                </RecentList>
-                            )}
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Checklist</CatalogCardEyebrow>
-                                <CatalogCardTitle>Diretrizes do lote</CatalogCardTitle>
-                                <CatalogCardText>
-                                    A impressao em lote foi desenhada para ganhar escala sem quebrar o encadeamento dos modulos que ja estao ativos.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
-                        </CatalogCard>
                     </BatchPrintSidebar>
                 </BatchPrintLayout>
             </PageContent>

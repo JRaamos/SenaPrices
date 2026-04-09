@@ -32,6 +32,24 @@ export default function useController() {
         subtitle: `Senha ${item.password} \u00b7 PIN ${item.pin}`,
     })), []);
 
+    const accessSignals = useMemo(() => ([
+        {
+            key: "security",
+            value: "2 etapas",
+            description: "Credenciais e PIN quando a conta exigir confirmação adicional.",
+        },
+        {
+            key: "governance",
+            value: "papel + plano",
+            description: "A sessão entra já limitada ao perfil operacional ou gerencial correto.",
+        },
+        {
+            key: "continuity",
+            value: "sessão previsível",
+            description: "Login, recuperação de contexto e redirecionamento seguem a mesma regra de acesso.",
+        },
+    ]), []);
+
     const completeLogin = useCallback((user) => {
         const authentication = ReadObject("authentication") || {};
         SaveObject("authentication", {
@@ -201,6 +219,7 @@ export default function useController() {
         error,
         credentials,
         pin,
+        accessSignals,
         demoCredentials,
         isPartiallyAuthenticated: !!authentication?.jwt && !hasAuthenticatedSession(authentication),
         setPin,

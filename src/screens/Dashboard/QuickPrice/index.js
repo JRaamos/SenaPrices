@@ -6,14 +6,6 @@ import { FormSpacer, PageContent } from "ui/styled";
 
 import useController from "./controller";
 import {
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
-    DraftNotice,
-    ErrorSummary,
-    ErrorSummaryItem,
-    ErrorSummaryTitle,
     PreviewBadge,
     PreviewCard,
     PreviewMetaItem,
@@ -45,12 +37,6 @@ import {
     QuickPriceSidebar,
     QuickSelect,
     QuickTextarea,
-    RecentButton,
-    RecentHeader,
-    RecentItem,
-    RecentList,
-    RecentMeta,
-    RecentTitle,
     RowActionButton,
     RowActions,
     RowBadge,
@@ -62,10 +48,6 @@ import {
     RowPriceGrid,
     RowStatus,
     SetupGrid,
-    ShortcutItem,
-    ShortcutKey,
-    ShortcutList,
-    ShortcutText,
     StatusBadge,
     StatusCard,
     StatusText,
@@ -74,8 +56,6 @@ import {
     SummaryItem,
     SummaryLabel,
     SummaryValue,
-    WarningItem,
-    WarningList,
 } from "./styled";
 
 export default function DashboardQuickPrice() {
@@ -89,10 +69,7 @@ export default function DashboardQuickPrice() {
         validation,
         statusCard,
         summaryItems,
-        recentItems,
-        shortcuts,
-        errorSummary,
-        guidelines,
+        offerTypeOptions,
         priceTypeOptions,
         paperSizeOptions,
         orientationOptions,
@@ -106,6 +83,7 @@ export default function DashboardQuickPrice() {
         setActiveRowId,
         handleRestoreBatch,
     } = useController();
+    const isCustomOfferTitle = !draft.offerTitle || !offerTypeOptions.some(item => item.value === draft.offerTitle);
 
     return (
         <ContainerAuthenticated actions={actions} loading={loading}>
@@ -140,21 +118,54 @@ export default function DashboardQuickPrice() {
 
                             <SetupGrid>
                                 <QuickField>
-                                    <QuickLabel>Titulo da oferta</QuickLabel>
-                                    <QuickInput
-                                        value={draft.offerTitle}
-                                        maxLength={30}
-                                        placeholder="Ex: Oferta de corredor"
-                                        onChange={event => applyPatch({ offerTitle: event.target.value })}
-                                    />
+                                    <QuickLabel>Tipo de oferta</QuickLabel>
+                                    <QuickSelect
+                                        value={isCustomOfferTitle ? "__custom__" : draft.offerTitle}
+                                        onChange={event => {
+                                            const nextValue = event.target.value;
+
+                                            if (nextValue === "__custom__") {
+                                                applyPatch(previous => ({
+                                                    ...previous,
+                                                    offerTitle: offerTypeOptions.some(item => item.value === previous.offerTitle)
+                                                        ? ""
+                                                        : previous.offerTitle,
+                                                }));
+                                                return;
+                                            }
+
+                                            applyPatch({ offerTitle: nextValue });
+                                        }}
+                                    >
+                                        {offerTypeOptions.map(item => (
+                                            <option key={item.value} value={item.value}>{item.label}</option>
+                                        ))}
+                                        <option value="__custom__">Personalizado</option>
+                                    </QuickSelect>
                                     <QuickFieldMeta>
                                         <QuickFieldError />
-                                        <QuickFieldCounter>{draft.offerTitle.length}/30</QuickFieldCounter>
+                                        <QuickFieldCounter />
                                     </QuickFieldMeta>
                                 </QuickField>
 
+                                {isCustomOfferTitle ? (
+                                    <QuickField>
+                                        <QuickLabel>Título customizado</QuickLabel>
+                                        <QuickInput
+                                            value={draft.offerTitle}
+                                            maxLength={30}
+                                            placeholder="Ex: Oferta de corredor"
+                                            onChange={event => applyPatch({ offerTitle: event.target.value })}
+                                        />
+                                        <QuickFieldMeta>
+                                            <QuickFieldError />
+                                            <QuickFieldCounter>{draft.offerTitle.length}/30</QuickFieldCounter>
+                                        </QuickFieldMeta>
+                                    </QuickField>
+                                ) : null}
+
                                 <QuickField>
-                                    <QuickLabel>Valido ate</QuickLabel>
+                                    <QuickLabel>Válido até</QuickLabel>
                                     <QuickInput
                                         type="date"
                                         value={draft.validUntil}
@@ -183,7 +194,7 @@ export default function DashboardQuickPrice() {
                                 </QuickField>
 
                                 <QuickField>
-                                    <QuickLabel>Orientacao</QuickLabel>
+                                    <QuickLabel>Orientação</QuickLabel>
                                     <QuickSelect
                                         value={draft.orientation}
                                         onChange={event => applyPatch({ orientation: event.target.value })}
@@ -199,7 +210,7 @@ export default function DashboardQuickPrice() {
                                 </QuickField>
 
                                 <QuickField $full>
-                                    <QuickLabel>Observacao do lote</QuickLabel>
+                                    <QuickLabel>Observação do lote</QuickLabel>
                                     <QuickTextarea
                                         value={draft.observation}
                                         maxLength={60}
@@ -213,21 +224,14 @@ export default function DashboardQuickPrice() {
                                 </QuickField>
                             </SetupGrid>
 
-                            <DraftNotice>
-                                {pdvPolicy.integrationEnabled
-                                    ? pdvPolicy.canSeeSuggestedPrice
-                                        ? `A política de ${pdvPolicy.sourceLabel} está ativa. Quando o produto ou EAN coincidir com um registro rastreável, o campo principal é pré-preenchido automaticamente${pdvPolicy.locksUserPriceEditing ? " e permanece protegido para este perfil." : "."}`
-                                        : "A integração PDV está ativa, mas o preço sugerido não fica visível para este perfil pela política atual."
-                                    : "Esta versão trabalha com entrada manual segura. Use descrição curta para nome do produto ou EAN-13 completo quando estiver operando com código."}
-                            </DraftNotice>
                         </QuickCard>
 
                         <QuickCard>
                             <QuickCardHeader>
                                 <QuickCardEyebrow>Linhas</QuickCardEyebrow>
-                                <QuickCardTitle>Montagem rapida do lote</QuickCardTitle>
+                                <QuickCardTitle>Montagem rápida do lote</QuickCardTitle>
                                 <QuickCardText>
-                                    Cada linha representa um cartaz. O lote so e liberado quando todas as linhas estao consistentes.
+                                    Cada linha representa um cartaz. O lote só é liberado quando todas as linhas estão consistentes.
                                 </QuickCardText>
                             </QuickCardHeader>
 
@@ -260,7 +264,7 @@ export default function DashboardQuickPrice() {
                                                     <QuickInput
                                                         value={row.query}
                                                         maxLength={80}
-                                                        placeholder="Ex: Cafe Pilao 500g ou 7891234567890"
+                                                        placeholder="Ex: Café Pilão 500g ou 7891234567890"
                                                         onFocus={() => setActiveRowId(row.id)}
                                                         onChange={event => updateRow(row.id, { query: event.target.value })}
                                                     />
@@ -275,7 +279,7 @@ export default function DashboardQuickPrice() {
                                                     <QuickInput
                                                         value={row.subtitle}
                                                         maxLength={60}
-                                                        placeholder="Ex: Torracao media"
+                                                        placeholder="Ex: Torração média"
                                                         onFocus={() => setActiveRowId(row.id)}
                                                         onChange={event => updateRow(row.id, { subtitle: event.target.value })}
                                                     />
@@ -288,7 +292,7 @@ export default function DashboardQuickPrice() {
                                                 <RowPriceGrid>
                                                     {draft.priceType === "avista" ? (
                                                         <RowField>
-                                                            <QuickLabel>Preco promocional</QuickLabel>
+                                                            <QuickLabel>Preço promocional</QuickLabel>
                                                             <QuickInput
                                                                 value={row.cashPrice}
                                                                 inputMode="decimal"
@@ -313,7 +317,7 @@ export default function DashboardQuickPrice() {
                                                     {draft.priceType === "depor" ? (
                                                         <>
                                                             <RowField>
-                                                                <QuickLabel>Preco original</QuickLabel>
+                                                                <QuickLabel>Preço original</QuickLabel>
                                                                 <QuickInput
                                                                     value={row.fromPrice}
                                                                     inputMode="decimal"
@@ -328,7 +332,7 @@ export default function DashboardQuickPrice() {
                                                             </RowField>
 
                                                             <RowField>
-                                                                <QuickLabel>Preco promocional</QuickLabel>
+                                                                <QuickLabel>Preço promocional</QuickLabel>
                                                                 <QuickInput
                                                                     value={row.toPrice}
                                                                     inputMode="decimal"
@@ -410,7 +414,7 @@ export default function DashboardQuickPrice() {
                                                             </RowField>
 
                                                             <RowField>
-                                                                <QuickLabel>Preco da oferta</QuickLabel>
+                                                                <QuickLabel>Preço da oferta</QuickLabel>
                                                                 <QuickInput
                                                                     value={row.specialPrice}
                                                                     inputMode="decimal"
@@ -466,7 +470,7 @@ export default function DashboardQuickPrice() {
                     <QuickPriceSidebar>
                         <StatusCard $tone={statusCard.tone}>
                             <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Liberado" : "Revisao"}
+                                {statusCard.tone === "green" ? "Liberado" : "Revisão"}
                             </StatusBadge>
                             <StatusTitle>{statusCard.title}</StatusTitle>
                             <StatusText>{statusCard.description}</StatusText>
@@ -481,50 +485,62 @@ export default function DashboardQuickPrice() {
                             </SummaryGrid>
                         </StatusCard>
 
-                        {errorSummary.length ? (
-                            <ErrorSummary>
-                                <ErrorSummaryTitle>Pendencias do lote</ErrorSummaryTitle>
-                                {errorSummary.map(item => (
-                                    <ErrorSummaryItem key={item.key}>{item.message}</ErrorSummaryItem>
-                                ))}
-                            </ErrorSummary>
-                        ) : null}
-
-                        {validation.warningList.length ? (
-                            <QuickCard>
-                                <QuickCardHeader>
-                                    <QuickCardEyebrow>Melhorias</QuickCardEyebrow>
-                                    <QuickCardTitle>Ajustes recomendados</QuickCardTitle>
-                                    <QuickCardText>
-                                        Mesmo com lote valido, estes pontos ajudam a manter padrao superior de operacao.
-                                    </QuickCardText>
-                                </QuickCardHeader>
-
-                                <WarningList>
-                                    {validation.warningList.map(item => (
-                                        <WarningItem key={item}>{item}</WarningItem>
-                                    ))}
-                                </WarningList>
-                            </QuickCard>
-                        ) : null}
-
-                        <PreviewCard>
+                        <PreviewCard $accentColor={activePreview?.style?.accentColor}>
                             <QuickCardHeader>
-                                <PreviewBadge>{activePreview?.offerTitle || "Linha ativa"}</PreviewBadge>
-                                <PreviewTitle>{activePreview?.title || "Selecione uma linha"}</PreviewTitle>
-                                {activePreview?.subtitle ? <PreviewSubtitle>{activePreview.subtitle}</PreviewSubtitle> : null}
+                                <PreviewBadge $accentColor={activePreview?.style?.accentColor}>
+                                    {activePreview?.offerTitle || "Linha ativa"}
+                                </PreviewBadge>
+                                <PreviewTitle
+                                    $fontFamily={activePreview?.style?.titleFontFamily}
+                                    $fontSize={activePreview?.style?.titleSizePx}
+                                    $align={activePreview?.style?.titleAlign}
+                                    $transform={activePreview?.style?.titleTransform}
+                                >
+                                    {activePreview?.title || "Selecione uma linha"}
+                                </PreviewTitle>
+                                {activePreview?.subtitle ? (
+                                    <PreviewSubtitle
+                                        $fontFamily={activePreview?.style?.infoFontFamily}
+                                        $fontSize={activePreview?.style?.subtitleSizePx}
+                                        $align={activePreview?.style?.titleAlign}
+                                    >
+                                        {activePreview.subtitle}
+                                    </PreviewSubtitle>
+                                ) : null}
                             </QuickCardHeader>
 
-                            <PreviewPrice>{activePreview?.primaryPrice || "R$ --,--"}</PreviewPrice>
+                            <PreviewPrice
+                                $fontFamily={activePreview?.style?.priceFontFamily}
+                                $fontSize={activePreview?.style?.priceSizePx}
+                                $align={activePreview?.style?.priceAlign}
+                                $accentColor={activePreview?.style?.accentColor}
+                            >
+                                {activePreview?.primaryPrice || "R$ --,--"}
+                            </PreviewPrice>
 
                             {activePreview?.supportingPrice ? (
-                                <PreviewSupportPrice $strike={draft.priceType === "depor"}>
+                                <PreviewSupportPrice
+                                    $strike={draft.priceType === "depor"}
+                                    $fontFamily={activePreview?.style?.infoFontFamily}
+                                    $fontSize={activePreview?.style?.supportSizePx}
+                                    $align={activePreview?.style?.priceAlign}
+                                >
                                     {activePreview.supportingPrice}
                                 </PreviewSupportPrice>
                             ) : null}
 
                             {activePreview?.specialLabel ? (
-                                <PreviewSpecialLabel>{activePreview.specialLabel}</PreviewSpecialLabel>
+                                <PreviewSpecialLabel
+                                    $fontFamily={activePreview?.style?.infoFontFamily}
+                                    $color={activePreview?.style?.highlightColor}
+                                    style={{
+                                        background: activePreview?.style?.highlightColor
+                                            ? `linear-gradient(180deg, ${activePreview.style.highlightColor}22 0%, ${activePreview.style.highlightColor}14 100%)`
+                                            : undefined,
+                                    }}
+                                >
+                                    {activePreview.specialLabel}
+                                </PreviewSpecialLabel>
                             ) : null}
 
                             <PreviewMetaList>
@@ -533,8 +549,8 @@ export default function DashboardQuickPrice() {
                                     <PreviewMetaValue>{activePreview?.paperLabel || "--"}</PreviewMetaValue>
                                 </PreviewMetaItem>
                                 <PreviewMetaItem>
-                                    <PreviewMetaLabel>Codigo</PreviewMetaLabel>
-                                    <PreviewMetaValue>{activePreview?.barcodeLabel || "Nao exibido"}</PreviewMetaValue>
+                                    <PreviewMetaLabel>Código</PreviewMetaLabel>
+                                    <PreviewMetaValue>{activePreview?.barcodeLabel || "Não exibido"}</PreviewMetaValue>
                                 </PreviewMetaItem>
                                 <PreviewMetaItem>
                                     <PreviewMetaLabel>Validade</PreviewMetaLabel>
@@ -542,82 +558,12 @@ export default function DashboardQuickPrice() {
                                 </PreviewMetaItem>
                                 {activePreview?.observation ? (
                                     <PreviewMetaItem>
-                                        <PreviewMetaLabel>Observacao</PreviewMetaLabel>
+                                        <PreviewMetaLabel>Observação</PreviewMetaLabel>
                                         <PreviewMetaValue>{activePreview.observation}</PreviewMetaValue>
                                     </PreviewMetaItem>
                                 ) : null}
                             </PreviewMetaList>
                         </PreviewCard>
-
-                        <QuickCard>
-                            <QuickCardHeader>
-                                <QuickCardEyebrow>Boas praticas</QuickCardEyebrow>
-                                <QuickCardTitle>Checklist de operacao</QuickCardTitle>
-                                <QuickCardText>
-                                    Diretrizes de mercado para manter velocidade sem perder controle no lote rápido.
-                                </QuickCardText>
-                            </QuickCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
-                        </QuickCard>
-
-                        <QuickCard>
-                            <QuickCardHeader>
-                                <QuickCardEyebrow>Histórico local</QuickCardEyebrow>
-                                <QuickCardTitle>Lotes recentes</QuickCardTitle>
-                                <QuickCardText>
-                                    Restauracao rapida de lotes validos salvos com a infraestrutura atual de storage criptografado.
-                                </QuickCardText>
-                            </QuickCardHeader>
-
-                            <RecentList>
-                                {!recentItems.length ? (
-                                    <RecentItem>
-                                        <RecentTitle>Nenhum lote salvo ainda</RecentTitle>
-                                        <RecentMeta>Use "Salvar lote" para criar um ponto de restauracao local.</RecentMeta>
-                                    </RecentItem>
-                                ) : recentItems.map(item => (
-                                    <RecentItem key={item.id}>
-                                        <RecentHeader>
-                                            <div>
-                                                <RecentTitle>{item.offerTitle || "Lote rápido"}</RecentTitle>
-                                                <RecentMeta>{item.helper}</RecentMeta>
-                                                <RecentMeta>{item.relativeDate}</RecentMeta>
-                                            </div>
-                                            <RecentButton type="button" onClick={() => handleRestoreBatch(item)}>
-                                                Restaurar
-                                            </RecentButton>
-                                        </RecentHeader>
-                                    </RecentItem>
-                                ))}
-                            </RecentList>
-                        </QuickCard>
-
-                        <QuickCard>
-                            <QuickCardHeader>
-                                <QuickCardEyebrow>Atalhos</QuickCardEyebrow>
-                                <QuickCardTitle>Produtividade</QuickCardTitle>
-                                <QuickCardText>
-                                    Atalhos seguros para acelerar a digitacao sem abrir mao da validacao completa do lote.
-                                </QuickCardText>
-                            </QuickCardHeader>
-
-                            <ShortcutList>
-                                {shortcuts.map(item => (
-                                    <ShortcutItem key={item.label}>
-                                        <ShortcutKey>{item.label}</ShortcutKey>
-                                        <ShortcutText>{item.description}</ShortcutText>
-                                    </ShortcutItem>
-                                ))}
-                            </ShortcutList>
-                        </QuickCard>
                     </QuickPriceSidebar>
                 </QuickPriceLayout>
             </PageContent>

@@ -28,6 +28,54 @@ export const DashboardMain = styled.div.attrs({
     gap: 24px;
 `;
 
+export const DashboardInfoGrid = styled.div.attrs({
+})`
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+
+    @media(max-width: 920px){
+        grid-template-columns: 1fr;
+    }
+`;
+
+export const DashboardInfoLabel = styled.div.attrs({
+})`
+    color: ${props => props.theme.palette.colors.gull};
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 18px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+`;
+
+export const DashboardInfoValue = styled.div.attrs({
+})`
+    margin-top: 8px;
+    color: ${props => props.theme.palette.colors.ebony};
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    word-break: break-word;
+`;
+
+export const DashboardIdentifier = styled(DashboardInfoValue).attrs({
+})`
+    color: ${props => props.theme.palette.colors.azure};
+`;
+
+export const DashboardInfoNote = styled.div.attrs({
+})`
+    margin-top: 22px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: ${props => props.theme.palette.colors.catskill};
+    color: ${props => props.theme.palette.colors.slate};
+    font-size: 14px;
+    line-height: 22px;
+`;
+
 export const DashboardCard = styled.div.attrs({
 })`           
     padding: 24px;
@@ -110,10 +158,15 @@ export const DashboardQuickActionCard = styled.div.attrs({
     gap: 10px;
 `;
 
-export const DashboardQuickActionIcon = styled.img.attrs({
-    width: 22,
-    height: 22,
+export const DashboardQuickActionIcon = styled.div.attrs({
 })`
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: rgba(59, 130, 246, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 export const DashboardQuickActionTitle = styled.div.attrs({

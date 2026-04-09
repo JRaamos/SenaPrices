@@ -15,10 +15,6 @@ import {
     CatalogInput,
     CatalogLabel,
     CatalogSelect,
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
     EmptyState,
     FieldCounter,
     FieldError,
@@ -63,8 +59,6 @@ export default function DashboardHistory() {
         statusOptions,
         statusCard,
         summaryItems,
-        recentEntries,
-        guidelines,
         applyFiltersPatch,
         clearFilters,
         setSearch,
@@ -85,9 +79,9 @@ export default function DashboardHistory() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Consulta</CatalogCardEyebrow>
-                                <CatalogCardTitle>Rastro operacional da precificacao</CatalogCardTitle>
+                                <CatalogCardTitle>Histórico de impressão</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Esta tela concentra os registros produzidos por Criar Preço e Criação Rápida, permitindo restaurar, reimprimir e auditar a base ja usada nas operacoes atuais.
+                                    Consulte, restaure e reimprima registros já produzidos pela operação.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -96,7 +90,7 @@ export default function DashboardHistory() {
                                     <CatalogLabel>Buscar registro</CatalogLabel>
                                     <CatalogInput
                                         value={search}
-                                        placeholder="Buscar por titulo, oferta, resumo ou operador"
+                                        placeholder="Buscar por título, oferta, resumo ou operador"
                                         onChange={event => setSearch(event.target.value)}
                                     />
                                     <FieldMeta>
@@ -140,9 +134,7 @@ export default function DashboardHistory() {
 
                             {search || filters.source || filters.status ? (
                                 <HistoryActions>
-                                    <HistoryActionButton onClick={clearFilters}>
-                                        Limpar filtros
-                                    </HistoryActionButton>
+                                    <HistoryActionButton onClick={clearFilters}>Limpar filtros</HistoryActionButton>
                                 </HistoryActions>
                             ) : null}
                         </CatalogCard>
@@ -152,13 +144,13 @@ export default function DashboardHistory() {
                                 <CatalogCardEyebrow>Registros</CatalogCardEyebrow>
                                 <CatalogCardTitle>Histórico consolidado</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Cada linha abaixo pode voltar para o fluxo original ou ser reimpressa sem precisar remontar o cartaz do zero.
+                                    Cada linha pode voltar para o fluxo original ou ser reimpressa sem remontar o cartaz do zero.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!entries.length ? (
                                 <EmptyState>
-                                    Nenhum registro encontrado nesta visão. Salve ou imprima um cartaz para iniciar o histórico compartilhado da operação.
+                                    Nenhum registro encontrado nesta visão. Salve ou imprima um cartaz para iniciar o histórico compartilhado.
                                 </EmptyState>
                             ) : (
                                 <HistoryList>
@@ -194,19 +186,16 @@ export default function DashboardHistory() {
                                             <HistoryDetails>
                                                 <HistoryDetail>
                                                     <HistoryDetailLabel>Oferta</HistoryDetailLabel>
-                                                    <HistoryDetailValue>{entry.offerTitle || "Nao informado"}</HistoryDetailValue>
+                                                    <HistoryDetailValue>{entry.offerTitle || "Não informado"}</HistoryDetailValue>
                                                 </HistoryDetail>
-
                                                 <HistoryDetail>
                                                     <HistoryDetailLabel>Formato</HistoryDetailLabel>
                                                     <HistoryDetailValue>{entry.paperLabel || "--"}</HistoryDetailValue>
                                                 </HistoryDetail>
-
                                                 <HistoryDetail>
                                                     <HistoryDetailLabel>Salvo em</HistoryDetailLabel>
                                                     <HistoryDetailValue>{entry.savedLabel} - {entry.relativeSavedAt}</HistoryDetailValue>
                                                 </HistoryDetail>
-
                                                 <HistoryDetail>
                                                     <HistoryDetailLabel>Impresso em</HistoryDetailLabel>
                                                     <HistoryDetailValue>{entry.printedLabel}</HistoryDetailValue>
@@ -222,7 +211,7 @@ export default function DashboardHistory() {
                     <HistorySidebar>
                         <StatusCard $tone={statusCard.tone}>
                             <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Ativo" : "Atencao"}
+                                {statusCard.tone === "green" ? "Ativo" : "Atenção"}
                             </StatusBadge>
                             <StatusTitle>{statusCard.title}</StatusTitle>
                             <StatusText>{statusCard.description}</StatusText>
@@ -236,52 +225,6 @@ export default function DashboardHistory() {
                                 ))}
                             </SummaryGrid>
                         </StatusCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Recentes</CatalogCardEyebrow>
-                                <CatalogCardTitle>Ultimos registros</CatalogCardTitle>
-                                <CatalogCardText>
-                                    Uma leitura rapida da fila mais recente para retomar fluxos sem perder contexto.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            {!recentEntries.length ? (
-                                <EmptyState>
-                                    Os registros recentes aparecerão aqui assim que o histórico for alimentado.
-                                </EmptyState>
-                            ) : (
-                                <ChecklistList>
-                                    {recentEntries.map(entry => (
-                                        <ChecklistItem key={entry.id}>
-                                            <ChecklistTitle>{entry.title}</ChecklistTitle>
-                                            <ChecklistText>
-                                                {entry.sourceLabel} - {entry.cardsLabel} - {entry.relativeSavedAt}
-                                            </ChecklistText>
-                                        </ChecklistItem>
-                                    ))}
-                                </ChecklistList>
-                            )}
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Checklist</CatalogCardEyebrow>
-                                <CatalogCardTitle>Diretrizes da trilha</CatalogCardTitle>
-                                <CatalogCardText>
-                                    O histórico foi desenhado para sustentar manutenção, auditoria e os módulos que ainda vamos conectar.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
-                        </CatalogCard>
                     </HistorySidebar>
                 </HistoryLayout>
             </PageContent>

@@ -81,7 +81,8 @@ export function canManagePromotions(user = {}) {
 }
 
 export function canAccessSupportLog(user = {}) {
-    return normalizeUserRole(user) === "admin";
+    const role = normalizeUserRole(user);
+    return role === "admin" || role === "master";
 }
 
 function normalizeUsersResponse(result) {

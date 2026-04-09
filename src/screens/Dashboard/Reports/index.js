@@ -6,8 +6,6 @@ import { FormSpacer, PageContent } from "ui/styled";
 
 import useController from "./controller";
 import {
-    AccessActions,
-    AccessButton,
     ActivityHeader,
     ActivityItem,
     ActivityList,
@@ -25,29 +23,15 @@ import {
     CatalogCardHeader,
     CatalogCardText,
     CatalogCardTitle,
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
-    InlineNotice,
     PeriodButton,
     PeriodToolbar,
     ReportsLayout,
     ReportsMain,
-    ReportsSidebar,
     StatCard,
     StatLabel,
     StatMeta,
     StatValue,
     StatsGrid,
-    StatusBadge,
-    StatusCard,
-    StatusText,
-    StatusTitle,
-    SummaryGrid,
-    SummaryItem,
-    SummaryLabel,
-    SummaryValue,
     TrendBar,
     TrendBarWrap,
     TrendColumn,
@@ -65,9 +49,7 @@ export default function DashboardReports() {
         period,
         periodOptions,
         report,
-        guidelines,
         setPeriod,
-        navigate,
     } = useController();
 
     return (
@@ -76,7 +58,7 @@ export default function DashboardReports() {
                 <PageHeader header={header} loading={loading} />
                 <FormSpacer />
 
-                <ReportsLayout>
+                <ReportsLayout $singleColumn>
                     <ReportsMain>
                         {!access.canAccess ? (
                             <CatalogCard>
@@ -87,19 +69,6 @@ export default function DashboardReports() {
                                         Esta área consolida indicadores operacionais e fica disponível apenas para perfis com responsabilidade de gestão.
                                     </CatalogCardText>
                                 </CatalogCardHeader>
-
-                                <InlineNotice>
-                                    Se você precisa acompanhar volumes, produtividade ou auditoria operacional, solicite liberação a um administrador ou subadministrador.
-                                </InlineNotice>
-
-                                <AccessActions>
-                                    <AccessButton $primary onClick={() => navigate("dashboard/history")}>
-                                        Abrir histórico
-                                    </AccessButton>
-                                    <AccessButton onClick={() => navigate("dashboard/support")}>
-                                        Falar com suporte
-                                    </AccessButton>
-                                </AccessActions>
                             </CatalogCard>
                         ) : (
                             <>
@@ -108,7 +77,7 @@ export default function DashboardReports() {
                                         <CatalogCardEyebrow>Período</CatalogCardEyebrow>
                                         <CatalogCardTitle>Leitura consolidada da operação</CatalogCardTitle>
                                         <CatalogCardText>
-                                            O relatório combina Histórico, Promoções, lotes e Etiquetas para mostrar o que realmente aconteceu na base ativa do SenaPrices.
+                                            Acompanhe o volume de movimentações e o comportamento da operação por janela de tempo.
                                         </CatalogCardText>
                                     </CatalogCardHeader>
 
@@ -140,14 +109,12 @@ export default function DashboardReports() {
                                         <CatalogCardEyebrow>Tendência</CatalogCardEyebrow>
                                         <CatalogCardTitle>Volume por dia</CatalogCardTitle>
                                         <CatalogCardText>
-                                            O gráfico abaixo resume o volume de eventos operacionais recentes dentro do período selecionado.
+                                            A linha do tempo resume a quantidade de eventos operacionais registrados no período selecionado.
                                         </CatalogCardText>
                                     </CatalogCardHeader>
 
                                     {!report.trend.length ? (
-                                        <InlineNotice>
-                                            Ainda não existem eventos suficientes no período selecionado para compor a linha do tempo.
-                                        </InlineNotice>
+                                        <CatalogCardText>Sem dados no período.</CatalogCardText>
                                     ) : (
                                         <TrendGrid>
                                             {report.trend.map(item => (
@@ -165,19 +132,71 @@ export default function DashboardReports() {
                                     )}
                                 </CatalogCard>
 
+                                <StatsGrid>
+                                    <CatalogCard>
+                                        <CatalogCardHeader>
+                                            <CatalogCardEyebrow>Por origem</CatalogCardEyebrow>
+                                            <CatalogCardTitle>Fontes da operação</CatalogCardTitle>
+                                            <CatalogCardText>
+                                                Entenda quais fluxos estão puxando mais volume no período.
+                                            </CatalogCardText>
+                                        </CatalogCardHeader>
+
+                                        {!report.sourceSummary.length ? (
+                                            <CatalogCardText>Sem dados no período.</CatalogCardText>
+                                        ) : (
+                                            <BreakdownList>
+                                                {report.sourceSummary.map(item => (
+                                                    <BreakdownItem key={item.source}>
+                                                        <BreakdownMain>
+                                                            <BreakdownTitle>{item.label}</BreakdownTitle>
+                                                            <BreakdownMeta>{item.count} evento(s)</BreakdownMeta>
+                                                        </BreakdownMain>
+                                                        <BreakdownValue>{item.volume}</BreakdownValue>
+                                                    </BreakdownItem>
+                                                ))}
+                                            </BreakdownList>
+                                        )}
+                                    </CatalogCard>
+
+                                    <CatalogCard>
+                                        <CatalogCardHeader>
+                                            <CatalogCardEyebrow>Por usuário</CatalogCardEyebrow>
+                                            <CatalogCardTitle>Quem mais operou</CatalogCardTitle>
+                                            <CatalogCardText>
+                                                Visualize a concentração de atividade por operador no período selecionado.
+                                            </CatalogCardText>
+                                        </CatalogCardHeader>
+
+                                        {!report.userSummary.length ? (
+                                            <CatalogCardText>Sem dados no período.</CatalogCardText>
+                                        ) : (
+                                            <BreakdownList>
+                                                {report.userSummary.map(item => (
+                                                    <BreakdownItem key={item.actor}>
+                                                        <BreakdownMain>
+                                                            <BreakdownTitle>{item.actor}</BreakdownTitle>
+                                                            <BreakdownMeta>{item.count} evento(s)</BreakdownMeta>
+                                                        </BreakdownMain>
+                                                        <BreakdownValue>{item.volume}</BreakdownValue>
+                                                    </BreakdownItem>
+                                                ))}
+                                            </BreakdownList>
+                                        )}
+                                    </CatalogCard>
+                                </StatsGrid>
+
                                 <CatalogCard>
                                     <CatalogCardHeader>
-                                        <CatalogCardEyebrow>Eventos</CatalogCardEyebrow>
+                                        <CatalogCardEyebrow>Últimos registros</CatalogCardEyebrow>
                                         <CatalogCardTitle>Atividade recente</CatalogCardTitle>
                                         <CatalogCardText>
-                                            Um recorte objetivo das movimentações mais recentes para auditoria rápida da operação.
+                                            Um recorte rápido das movimentações mais recentes do sistema.
                                         </CatalogCardText>
                                     </CatalogCardHeader>
 
                                     {!report.recentActivities.length ? (
-                                        <InlineNotice>
-                                            Ainda não existem atividades registradas neste período.
-                                        </InlineNotice>
+                                        <CatalogCardText>Sem dados no período.</CatalogCardText>
                                     ) : (
                                         <ActivityList>
                                             {report.recentActivities.map(item => (
@@ -200,144 +219,6 @@ export default function DashboardReports() {
                             </>
                         )}
                     </ReportsMain>
-
-                    <ReportsSidebar>
-                        <StatusCard $tone={access.canAccess ? "green" : "orange"}>
-                            <StatusBadge $tone={access.canAccess ? "green" : "orange"}>
-                                {access.canAccess ? "Gestão" : "Restrito"}
-                            </StatusBadge>
-                            <StatusTitle>
-                                {access.canAccess ? "Painel liberado" : "Acesso bloqueado"}
-                            </StatusTitle>
-                            <StatusText>
-                                {access.canAccess
-                                    ? `Dados consolidados para ${report.periodLabel.toLowerCase()}.`
-                                    : "Somente perfis gerenciais podem consultar os indicadores completos."}
-                            </StatusText>
-
-                            <SummaryGrid>
-                                <SummaryItem>
-                                    <SummaryLabel>Perfil</SummaryLabel>
-                                    <SummaryValue>{access.roleLabel}</SummaryValue>
-                                </SummaryItem>
-                                <SummaryItem>
-                                    <SummaryLabel>Período</SummaryLabel>
-                                    <SummaryValue>{report.periodLabel}</SummaryValue>
-                                </SummaryItem>
-                                <SummaryItem>
-                                    <SummaryLabel>Histórico</SummaryLabel>
-                                    <SummaryValue>{report.totals.historyEntries}</SummaryValue>
-                                </SummaryItem>
-                                <SummaryItem>
-                                    <SummaryLabel>Promoções</SummaryLabel>
-                                    <SummaryValue>{report.totals.promotions}</SummaryValue>
-                                </SummaryItem>
-                            </SummaryGrid>
-                        </StatusCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Fontes</CatalogCardEyebrow>
-                                <CatalogCardTitle>Origem dos eventos</CatalogCardTitle>
-                                <CatalogCardText>
-                                    Acompanhe quais fluxos estão puxando mais volume dentro do período selecionado.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            {!report.sourceSummary.length ? (
-                                <InlineNotice>
-                                    Ainda não existem fontes suficientes para análise neste período.
-                                </InlineNotice>
-                            ) : (
-                                <BreakdownList>
-                                    {report.sourceSummary.map(item => (
-                                        <BreakdownItem key={item.source}>
-                                            <BreakdownMain>
-                                                <BreakdownTitle>{item.label}</BreakdownTitle>
-                                                <BreakdownMeta>{item.count} evento(s)</BreakdownMeta>
-                                            </BreakdownMain>
-                                            <BreakdownValue>{item.volume}</BreakdownValue>
-                                        </BreakdownItem>
-                                    ))}
-                                </BreakdownList>
-                            )}
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Usuários</CatalogCardEyebrow>
-                                <CatalogCardTitle>Quem mais operou</CatalogCardTitle>
-                                <CatalogCardText>
-                                    A lista ajuda a entender concentração de atividade e apoiar redistribuição de carga.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            {!report.userSummary.length ? (
-                                <InlineNotice>
-                                    Ainda não existem usuários com eventos suficientes para ranking neste período.
-                                </InlineNotice>
-                            ) : (
-                                <BreakdownList>
-                                    {report.userSummary.map(item => (
-                                        <BreakdownItem key={item.actor}>
-                                            <BreakdownMain>
-                                                <BreakdownTitle>{item.actor}</BreakdownTitle>
-                                                <BreakdownMeta>{item.count} evento(s)</BreakdownMeta>
-                                            </BreakdownMain>
-                                            <BreakdownValue>{item.volume}</BreakdownValue>
-                                        </BreakdownItem>
-                                    ))}
-                                </BreakdownList>
-                            )}
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Seções</CatalogCardEyebrow>
-                                <CatalogCardTitle>Áreas com mais giro</CatalogCardTitle>
-                                <CatalogCardText>
-                                    Leitura rápida das seções mais presentes na precificação rastreada do período.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            {!report.sectionSummary.length ? (
-                                <InlineNotice>
-                                    Ainda não existem seções suficientes para montar este recorte.
-                                </InlineNotice>
-                            ) : (
-                                <BreakdownList>
-                                    {report.sectionSummary.map(item => (
-                                        <BreakdownItem key={item.sectionName}>
-                                            <BreakdownMain>
-                                                <BreakdownTitle>{item.sectionName}</BreakdownTitle>
-                                                <BreakdownMeta>{item.count} ocorrência(s)</BreakdownMeta>
-                                            </BreakdownMain>
-                                            <BreakdownValue>{item.volume}</BreakdownValue>
-                                        </BreakdownItem>
-                                    ))}
-                                </BreakdownList>
-                            )}
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Diretrizes</CatalogCardEyebrow>
-                                <CatalogCardTitle>Leitura recomendada</CatalogCardTitle>
-                                <CatalogCardText>
-                                    O objetivo desta tela é apoiar acompanhamento, auditoria e decisão operacional sem depender de planilhas paralelas.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
-                        </CatalogCard>
-                    </ReportsSidebar>
                 </ReportsLayout>
             </PageContent>
         </ContainerAuthenticated>

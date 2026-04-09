@@ -4,9 +4,22 @@ import { ReadMe } from 'services/me'
  
 export const CoreContext = createContext({})
 
+const readInitialSideState = () => {
+    const persisted = ReadObject('side')
+    if (typeof persisted === 'boolean') {
+        return persisted
+    }
+
+    if (typeof window !== 'undefined') {
+        return window.innerWidth >= 1024
+    }
+
+    return true
+}
+
 export const CoreState = ({ children }) => {
       
-	const [ side, setSide ] = useState(ReadObject('side') ? ReadObject('side') : false)  
+	const [ side, setSide ] = useState(readInitialSideState())  
 	const [ sideFilter, setSideFilter ] = useState(false)  
 	const [ modal, setModal ] = useState(null)  
 	const [ user, setUser ] = useState( ReadObject('user') ? ReadObject('user') : [])  

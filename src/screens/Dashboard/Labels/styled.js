@@ -286,12 +286,14 @@ export const PreviewLabelCard = styled.div.attrs({
     box-shadow: 0 8px 20px rgba(15,23,42,0.06);
     display: grid;
     gap: 8px;
+    text-align: ${props => props.$textAlign || "left"};
 `;
 
 export const PreviewLabelTitle = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 18px;
+    font-family: ${props => props.$fontFamily || "inherit"};
+    font-size: ${props => props.$fontSize ? `${props.$fontSize}px` : "18px"};
     font-weight: 800;
     line-height: 1.02;
     letter-spacing: -0.03em;
@@ -300,14 +302,16 @@ export const PreviewLabelTitle = styled.div.attrs({
 export const PreviewLabelText = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 12px;
+    font-family: ${props => props.$fontFamily || "inherit"};
+    font-size: ${props => props.$fontSize ? `${props.$fontSize}px` : "12px"};
     line-height: 18px;
 `;
 
 export const PreviewLabelPrice = styled.div.attrs({
 })`
-    color: ${props => props.theme.palette.primary.main};
-    font-size: 26px;
+    color: ${props => props.$accentColor || props.theme.palette.primary.main};
+    font-family: ${props => props.$fontFamily || "inherit"};
+    font-size: ${props => props.$fontSize ? `${props.$fontSize}px` : "26px"};
     font-weight: 800;
     line-height: 0.95;
     letter-spacing: -0.05em;
@@ -316,7 +320,8 @@ export const PreviewLabelPrice = styled.div.attrs({
 export const PreviewLabelMeta = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 11px;
+    font-family: ${props => props.$fontFamily || "inherit"};
+    font-size: ${props => props.$fontSize ? `${props.$fontSize}px` : "11px"};
     line-height: 16px;
 `;
 

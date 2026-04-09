@@ -17,44 +17,11 @@ import {
     CatalogInput,
     CatalogLabel,
     CatalogSelect,
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
     CreateItemLayout,
     CreateItemMain,
-    CreateItemSidebar,
-    ErrorSummary,
-    ErrorSummaryItem,
-    ErrorSummaryTitle,
     FieldCounter,
     FieldError,
     FieldMeta,
-    InlineNotice,
-    PreviewBadge,
-    PreviewCard,
-    PreviewMetaItem,
-    PreviewMetaLabel,
-    PreviewMetaList,
-    PreviewMetaValue,
-    PreviewSubtitle,
-    PreviewTitle,
-    RecentButton,
-    RecentHeader,
-    RecentItem,
-    RecentList,
-    RecentMeta,
-    RecentTitle,
-    StatusBadge,
-    StatusCard,
-    StatusText,
-    StatusTitle,
-    SummaryGrid,
-    SummaryItem,
-    SummaryLabel,
-    SummaryValue,
-    WarningItem,
-    WarningList,
 } from "./styled";
 
 export default function DashboardCreateItem() {
@@ -63,15 +30,9 @@ export default function DashboardCreateItem() {
         header,
         actions,
         form,
-        preview,
         validation,
-        statusCard,
-        summaryItems,
         sectionSuggestions,
-        recentItems,
-        guidelines,
         applyPatch,
-        handleUseRecentItem,
     } = useController();
 
     return (
@@ -80,76 +41,65 @@ export default function DashboardCreateItem() {
                 <PageHeader header={header} loading={loading} />
                 <FormSpacer />
 
-                <CreateItemLayout>
+                <CreateItemLayout $singleColumn>
                     <CreateItemMain>
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Identificacao</CatalogCardEyebrow>
-                                <CatalogCardTitle>Base do item</CatalogCardTitle>
+                                <CatalogCardEyebrow>Códigos</CatalogCardEyebrow>
+                                <CatalogCardTitle>Ao menos um identificador é obrigatório</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Cadastre os identificadores com rigor para que catalogo, precificacao e etapas futuras operem sobre a mesma base confiavel.
+                                    Informe código interno ou EAN-13 para manter o catálogo consistente e pronto para busca, impressão e integração.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
-                            {validation.errors.identifier ? (
-                                <ErrorSummary>
-                                    <ErrorSummaryTitle>Identificador obrigatorio</ErrorSummaryTitle>
-                                    <ErrorSummaryItem>{validation.errors.identifier}</ErrorSummaryItem>
-                                </ErrorSummary>
-                            ) : null}
-
                             <CatalogGrid>
                                 <CatalogField>
-                                    <CatalogLabel>Codigo interno</CatalogLabel>
+                                    <CatalogLabel>Código interno</CatalogLabel>
                                     <CatalogInput
                                         value={form.internalCode}
                                         maxLength={24}
-                                        placeholder="Ex: CAFE-500"
+                                        placeholder="Ex: PROD001"
                                         onChange={event => applyPatch({ internalCode: event.target.value })}
                                     />
                                     <FieldMeta>
-                                        <FieldError>{validation.errors.internalCode || ""}</FieldError>
+                                        <FieldError>{validation.errors.internalCode || validation.errors.identifier || ""}</FieldError>
                                         <FieldCounter>{form.internalCode.length}/24</FieldCounter>
                                     </FieldMeta>
                                 </CatalogField>
 
                                 <CatalogField>
-                                    <CatalogLabel>EAN-13</CatalogLabel>
+                                    <CatalogLabel>EAN-13 (código de barras)</CatalogLabel>
                                     <CatalogInput
                                         value={form.ean13}
                                         maxLength={13}
                                         inputMode="numeric"
-                                        placeholder="7891234567890"
+                                        placeholder="13 dígitos"
                                         onChange={event => applyPatch({ ean13: event.target.value })}
                                     />
                                     <FieldMeta>
-                                        <FieldError>{validation.errors.ean13 || ""}</FieldError>
+                                        <FieldError>{validation.errors.ean13 || validation.errors.identifier || ""}</FieldError>
                                         <FieldCounter>{form.ean13.length}/13</FieldCounter>
                                     </FieldMeta>
                                 </CatalogField>
                             </CatalogGrid>
-
-                            <InlineNotice>
-                                Duplicidade de EAN ou codigo interno e bloqueada para preservar integridade entre cadastro, busca e precificacao.
-                            </InlineNotice>
                         </CatalogCard>
 
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Descrição</CatalogCardEyebrow>
-                                <CatalogCardTitle>Linhas do produto</CatalogCardTitle>
+                                <CatalogCardEyebrow>Descrições</CatalogCardEyebrow>
+                                <CatalogCardTitle>Textos principais do item</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Organize a nomenclatura do item de forma pronta para impressao e manutencao por qualquer operador ou analista.
+                                    Organize o nome do produto de forma clara para cadastro, etiqueta e cartaz.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             <CatalogGrid>
                                 <CatalogField $full>
-                                    <CatalogLabel>Descrição principal</CatalogLabel>
+                                    <CatalogLabel>Descrição 1</CatalogLabel>
                                     <CatalogInput
                                         value={form.description1}
                                         maxLength={80}
-                                        placeholder="Ex: Cafe Pilao 500g"
+                                        placeholder="Nome principal do produto"
                                         onChange={event => applyPatch({ description1: event.target.value })}
                                     />
                                     <FieldMeta>
@@ -159,11 +109,11 @@ export default function DashboardCreateItem() {
                                 </CatalogField>
 
                                 <CatalogField $full>
-                                    <CatalogLabel>Descrição complementar</CatalogLabel>
+                                    <CatalogLabel>Descrição 2</CatalogLabel>
                                     <CatalogInput
                                         value={form.description2}
                                         maxLength={60}
-                                        placeholder="Ex: Torracao media"
+                                        placeholder="Opcional — exibida em destaque no preço"
                                         onChange={event => applyPatch({ description2: event.target.value })}
                                     />
                                     <FieldMeta>
@@ -173,11 +123,11 @@ export default function DashboardCreateItem() {
                                 </CatalogField>
 
                                 <CatalogField $full>
-                                    <CatalogLabel>Descrição adicional</CatalogLabel>
+                                    <CatalogLabel>Descrição 3</CatalogLabel>
                                     <CatalogInput
                                         value={form.description3}
                                         maxLength={60}
-                                        placeholder="Ex: Embalagem almofada"
+                                        placeholder="Opcional — informação adicional"
                                         onChange={event => applyPatch({ description3: event.target.value })}
                                     />
                                     <FieldMeta>
@@ -190,21 +140,21 @@ export default function DashboardCreateItem() {
 
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Classificacao</CatalogCardEyebrow>
-                                <CatalogCardTitle>Contexto do catalogo</CatalogCardTitle>
+                                <CatalogCardEyebrow>Categorização</CatalogCardEyebrow>
+                                <CatalogCardTitle>Seção e unidade de venda</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Esta classificacao sera reaproveitada nas proximas telas de listagem, importacao e criacao de cartazes.
+                                    Esses campos serão reutilizados na listagem, na criação de cartazes e na emissão de etiquetas.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             <CatalogGrid>
                                 <CatalogField>
-                                    <CatalogLabel>Secao</CatalogLabel>
+                                    <CatalogLabel>Seção</CatalogLabel>
                                     <CatalogInput
                                         value={form.section}
                                         maxLength={40}
                                         list="catalog-section-suggestions"
-                                        placeholder="Ex: Mercearia"
+                                        placeholder="Buscar ou criar seção..."
                                         onChange={event => applyPatch({ section: event.target.value })}
                                     />
                                     <datalist id="catalog-section-suggestions">
@@ -236,126 +186,6 @@ export default function DashboardCreateItem() {
                             </CatalogGrid>
                         </CatalogCard>
                     </CreateItemMain>
-
-                    <CreateItemSidebar>
-                        <StatusCard $tone={statusCard.tone}>
-                            <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Liberado" : "Revisao"}
-                            </StatusBadge>
-                            <StatusTitle>{statusCard.title}</StatusTitle>
-                            <StatusText>{statusCard.description}</StatusText>
-
-                            <SummaryGrid>
-                                {summaryItems.map(item => (
-                                    <SummaryItem key={item.label}>
-                                        <SummaryLabel>{item.label}</SummaryLabel>
-                                        <SummaryValue>{item.value}</SummaryValue>
-                                    </SummaryItem>
-                                ))}
-                            </SummaryGrid>
-                        </StatusCard>
-
-                        {validation.errorList.length ? (
-                            <ErrorSummary>
-                                <ErrorSummaryTitle>Pendencias do cadastro</ErrorSummaryTitle>
-                                {validation.errorList.map(item => (
-                                    <ErrorSummaryItem key={item}>{item}</ErrorSummaryItem>
-                                ))}
-                            </ErrorSummary>
-                        ) : null}
-
-                        {validation.warnings.length ? (
-                            <CatalogCard>
-                                <CatalogCardHeader>
-                                    <CatalogCardEyebrow>Melhorias</CatalogCardEyebrow>
-                                    <CatalogCardTitle>Ajustes recomendados</CatalogCardTitle>
-                                    <CatalogCardText>
-                                        Mesmo com cadastro valido, estes pontos ajudam a preparar melhor a base para os proximos modulos.
-                                    </CatalogCardText>
-                                </CatalogCardHeader>
-
-                                <WarningList>
-                                    {validation.warnings.map(item => (
-                                        <WarningItem key={item}>{item}</WarningItem>
-                                    ))}
-                                </WarningList>
-                            </CatalogCard>
-                        ) : null}
-
-                        <PreviewCard>
-                            <CatalogCardHeader>
-                                <PreviewBadge>Preview do item</PreviewBadge>
-                                <PreviewTitle>{preview.title}</PreviewTitle>
-                                {preview.subtitle ? <PreviewSubtitle>{preview.subtitle}</PreviewSubtitle> : null}
-                            </CatalogCardHeader>
-
-                            <PreviewMetaList>
-                                <PreviewMetaItem>
-                                    <PreviewMetaLabel>Identificacao</PreviewMetaLabel>
-                                    <PreviewMetaValue>{preview.identifierLine}</PreviewMetaValue>
-                                </PreviewMetaItem>
-                                <PreviewMetaItem>
-                                    <PreviewMetaLabel>Secao</PreviewMetaLabel>
-                                    <PreviewMetaValue>{preview.section}</PreviewMetaValue>
-                                </PreviewMetaItem>
-                                <PreviewMetaItem>
-                                    <PreviewMetaLabel>Unidade</PreviewMetaLabel>
-                                    <PreviewMetaValue>{preview.unit}</PreviewMetaValue>
-                                </PreviewMetaItem>
-                            </PreviewMetaList>
-                        </PreviewCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Boas praticas</CatalogCardEyebrow>
-                                <CatalogCardTitle>Checklist do catalogo</CatalogCardTitle>
-                                <CatalogCardText>
-                                    Diretrizes para construir uma base que suporte manutencao, expansao e operacao de alto volume.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
-                        </CatalogCard>
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Catálogo ativo</CatalogCardEyebrow>
-                                <CatalogCardTitle>Itens recentes</CatalogCardTitle>
-                                <CatalogCardText>
-                                    Use uma base existente como referencia para acelerar cadastro sem duplicar identificadores.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            <RecentList>
-                                {!recentItems.length ? (
-                                    <RecentItem>
-                                        <RecentTitle>Nenhum item salvo ainda</RecentTitle>
-                                        <RecentMeta>Assim que o primeiro item for cadastrado, ele aparecera aqui como referencia.</RecentMeta>
-                                    </RecentItem>
-                                ) : recentItems.map(item => (
-                                    <RecentItem key={item.id}>
-                                        <RecentHeader>
-                                            <div>
-                                                <RecentTitle>{item.description1}</RecentTitle>
-                                                <RecentMeta>{item.helper}</RecentMeta>
-                                                <RecentMeta>{item.relativeDate}</RecentMeta>
-                                            </div>
-                                            <RecentButton type="button" onClick={() => handleUseRecentItem(item)}>
-                                                Usar base
-                                            </RecentButton>
-                                        </RecentHeader>
-                                    </RecentItem>
-                                ))}
-                            </RecentList>
-                        </CatalogCard>
-                    </CreateItemSidebar>
                 </CreateItemLayout>
             </PageContent>
         </ContainerAuthenticated>

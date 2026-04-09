@@ -1,4 +1,10 @@
-import { canPlanAccessFeature, getPlanCapabilities, getPlanLabel, getSubscriptionStatusLabel, resolveUserSubscription } from "./platform";
+import {
+    canPlanAccessFeature,
+    getPlanCapabilities,
+    getPlanLabel,
+    getSubscriptionStatusLabel,
+    resolveUserSubscription,
+} from "./platform";
 import { normalizeUserRole } from "./users";
 
 export const ROUTE_KEYS = {
@@ -59,29 +65,34 @@ const ROUTE_RULES = {
     [ROUTE_KEYS.mePassword]: { roles: ["admin", "subadmin", "user"], feature: "account" },
     [ROUTE_KEYS.support]: { roles: ["admin", "subadmin", "user"], feature: "support" },
     [ROUTE_KEYS.supportForm]: { roles: ["admin", "subadmin", "user"], feature: "support" },
-    [ROUTE_KEYS.supportAccess]: { roles: ["admin"], feature: "support" },
+    [ROUTE_KEYS.supportAccess]: { roles: ["master", "admin"], feature: "support" },
 };
+
+function buildSettingsPath(tab = "platform") {
+    return `/dashboard/settings?tab=${tab}`;
+}
 
 export function buildAccessProfile(user = {}) {
     const role = normalizeUserRole(user);
     const subscription = resolveUserSubscription(user);
     const plan = subscription.plan;
     const capabilities = getPlanCapabilities(plan);
+    const isMaster = role === "master";
 
     return {
         role,
         roleLabel: getRoleLabel(role),
-        isMaster: role === "master",
+        isMaster,
         isAdmin: role === "admin",
         isSubadmin: role === "subadmin",
         isUser: role === "user",
         plan,
-        planLabel: getPlanLabel(plan),
+        planLabel: isMaster ? "Governança" : getPlanLabel(plan),
         subscription,
-        subscriptionStatusLabel: getSubscriptionStatusLabel(subscription.status),
+        subscriptionStatusLabel: isMaster ? "Conta master" : getSubscriptionStatusLabel(subscription.status),
         capabilities,
         defaultPath: getDefaultAuthenticatedPath(user),
-        settingsPath: role === "master" ? "/dashboard/settings?tab=platform" : "/dashboard/settings",
+        settingsPath: isMaster ? buildSettingsPath("platform") : "/dashboard/settings",
     };
 }
 
@@ -89,7 +100,7 @@ export function getDefaultAuthenticatedPath(user = {}) {
     const role = normalizeUserRole(user);
 
     if (role === "master") {
-        return "/dashboard/settings?tab=platform";
+        return buildSettingsPath("platform");
     }
 
     return "/dashboard";
@@ -97,7 +108,7 @@ export function getDefaultAuthenticatedPath(user = {}) {
 
 export function getAccountEntryPath(user = {}) {
     const role = normalizeUserRole(user);
-    return role === "master" ? "/dashboard/settings?tab=platform" : "/dashboard/me";
+    return role === "master" ? buildSettingsPath("platform") : "/dashboard/me";
 }
 
 export function resolveRouteAccess(routeKey, user = {}, isAuthenticated = false) {
@@ -181,49 +192,65 @@ export function buildSidebarSections(user = {}, isAuthenticated = true) {
     if (accessProfile.isMaster) {
         return {
             primary: [
-                { label: "Landing", icon: "home", path: "/" },
-                { label: "Master", icon: "training", path: "/dashboard/settings?tab=platform" },
-            ],
-            secondary: [
                 {
-                    label: "Conta",
-                    icon: "user",
+                    label: "Plataforma",
+                    iconToken: "master",
                     children: [
-                        { label: "Painel master", path: "/dashboard/settings?tab=platform" },
+                        { label: "Conta master", path: buildSettingsPath("platform") },
+                        { label: "Planos e cobrança", path: buildSettingsPath("billing") },
+                        { label: "Landing pública", path: "/" },
+                        { label: "Simular checkout", path: "/checkout?plan=profissional&billing=annual" },
+                    ],
+                },
+                {
+                    label: "Configurações globais",
+                    iconToken: "settings",
+                    children: [
+                        { label: "Impressão", path: buildSettingsPath("print") },
+                        { label: "Tipos de oferta", path: buildSettingsPath("offertypes") },
+                        { label: "Ofertas especiais", path: buildSettingsPath("special") },
+                        { label: "Seções", path: buildSettingsPath("sections") },
+                        { label: "Imagens de fundo", path: buildSettingsPath("backgrounds") },
+                        { label: "Páginas", path: buildSettingsPath("custompages") },
+                        { label: "Etiquetas", path: buildSettingsPath("labels") },
+                    ],
+                },
+                {
+                    label: "Governança",
+                    iconToken: "supportAccess",
+                    children: [
+                        { label: "Usuários", path: buildSettingsPath("users") },
+                        { label: "Grupos", path: buildSettingsPath("groups") },
+                        { label: "Suporte", path: buildSettingsPath("support") },
+                        { label: "Log de suporte", path: "/dashboard/support/access" },
                     ],
                 },
             ],
+            secondary: [],
         };
     }
 
     const primary = [
-        { key: ROUTE_KEYS.dashboardHome, label: "Home", icon: "home", path: "/dashboard", border: true },
-        { key: ROUTE_KEYS.createPrice, label: "Criar Pre\u00e7o", icon: "products", path: "/dashboard/prices/create" },
-        { key: ROUTE_KEYS.quickPrice, label: "Cria\u00e7\u00e3o R\u00e1pida", icon: "products", path: "/dashboard/prices/quick" },
-        { key: ROUTE_KEYS.batchPrint, label: "Impress\u00e3o em Lote", icon: "products", path: "/dashboard/prices/batch" },
-        { key: ROUTE_KEYS.history, label: "Hist\u00f3rico", icon: "products", path: "/dashboard/history" },
-        { key: ROUTE_KEYS.promotions, label: "Promo\u00e7\u00f5es", icon: "products", path: "/dashboard/promotions" },
-        { key: ROUTE_KEYS.labels, label: "Etiquetas", icon: "products", path: "/dashboard/labels" },
-        { key: ROUTE_KEYS.pdvIntegration, label: "Integra\u00e7\u00e3o PDV", icon: "products", path: "/dashboard/integration" },
-        { key: ROUTE_KEYS.items, label: "Itens", icon: "products", path: "/dashboard/items" },
-        { key: ROUTE_KEYS.createItem, label: "Criar Item", icon: "products", path: "/dashboard/items/create" },
-        { key: ROUTE_KEYS.importItems, label: "Importar", icon: "products", path: "/dashboard/items/import" },
-        { key: ROUTE_KEYS.settings, label: "Defini\u00e7\u00f5es", icon: "training", path: "/dashboard/settings" },
-        { key: ROUTE_KEYS.reports, label: "Relat\u00f3rios", icon: "training", path: "/dashboard/reports" },
-        { key: ROUTE_KEYS.support, label: "Suporte", icon: "proposal", path: "/dashboard/support" },
-        { key: ROUTE_KEYS.supportAccess, label: "Log de Suporte", icon: "training", path: "/dashboard/support/access" },
+        { key: ROUTE_KEYS.createPrice, label: "Criar Preço", iconToken: "createPrice", path: "/dashboard/prices/create" },
+        { key: ROUTE_KEYS.quickPrice, label: "Criação Rápida", iconToken: "quickPrice", path: "/dashboard/prices/quick" },
+        { key: ROUTE_KEYS.batchPrint, label: "Impressão em Lote", iconToken: "batchPrint", path: "/dashboard/prices/batch" },
+        { key: ROUTE_KEYS.promotions, label: "Promoções", iconToken: "promotions", path: "/dashboard/promotions" },
+        { key: ROUTE_KEYS.history, label: "Histórico", iconToken: "history", path: "/dashboard/history" },
+        { key: ROUTE_KEYS.labels, label: "Etiquetas", iconToken: "labels", path: "/dashboard/labels" },
+        { key: ROUTE_KEYS.createItem, label: "Criar Item", iconToken: "createItem", path: "/dashboard/items/create" },
+        { key: ROUTE_KEYS.items, label: "Itens", iconToken: "items", path: "/dashboard/items" },
+        { key: ROUTE_KEYS.importItems, label: "Importar", iconToken: "import", path: "/dashboard/items/import" },
+        { key: ROUTE_KEYS.reports, label: "Relatórios", iconToken: "reports", path: "/dashboard/reports" },
+        { key: ROUTE_KEYS.pdvIntegration, label: "Integração PDV", iconToken: "integration", path: "/dashboard/integration" },
+        { key: ROUTE_KEYS.settings, label: "Definições", iconToken: "settings", path: "/dashboard/settings" },
+        { key: ROUTE_KEYS.supportAccess, label: "Log de Suporte", iconToken: "supportAccess", path: "/dashboard/support/access" },
     ].filter(item => canAccessRoute(item.key, user, isAuthenticated));
 
     const secondary = [
-        {
-            label: "Minha Conta",
-            icon: "user",
-            children: [
-                { key: ROUTE_KEYS.me, label: "Meu Perfil", path: "/dashboard/me" },
-                { key: ROUTE_KEYS.mePassword, label: "Senha e seguran\u00e7a", path: "/dashboard/me/password" },
-            ].filter(item => canAccessRoute(item.key, user, isAuthenticated)),
-        },
-    ];
+        { key: ROUTE_KEYS.support, label: "Suporte", iconToken: "support", path: "/dashboard/support" },
+        { key: ROUTE_KEYS.me, label: "Minha Conta", iconToken: "account", path: "/dashboard/me" },
+        { key: ROUTE_KEYS.mePassword, label: "Segurança", iconToken: "security", path: "/dashboard/me/password" },
+    ].filter(item => canAccessRoute(item.key, user, isAuthenticated));
 
     return {
         primary,
@@ -235,5 +262,5 @@ function getRoleLabel(role = "user") {
     if (role === "master") return "Master";
     if (role === "admin") return "Administrador";
     if (role === "subadmin") return "Subadministrador";
-    return "Usu\u00e1rio";
+    return "Usuário";
 }

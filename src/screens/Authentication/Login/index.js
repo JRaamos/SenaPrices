@@ -7,6 +7,10 @@ import {
     BrandList,
     BrandListItem,
     BrandPanel,
+    BrandSignalCard,
+    BrandSignalGrid,
+    BrandSignalText,
+    BrandSignalValue,
     BrandText,
     BrandTitle,
     CredentialCard,
@@ -30,6 +34,9 @@ import {
     LoginLogoRow,
     LoginLogoText,
     LoginShell,
+    LoginSupportCard,
+    LoginSupportText,
+    LoginSupportTitle,
     LoginTab,
     LoginTabs,
     LoginTopBar,
@@ -47,6 +54,7 @@ export default function Login() {
         error,
         credentials,
         pin,
+        accessSignals,
         demoCredentials,
         handleModeChange,
         handleCredentialsChange,
@@ -87,6 +95,15 @@ export default function Login() {
                                 <BrandListItem>Usu\u00e1rios operacionais entram com menu enxuto para criar, consultar, imprimir e receber campanhas.</BrandListItem>
                                 <BrandListItem>A conta master fica isolada para governan\u00e7a da plataforma, temas sazonais e planos.</BrandListItem>
                             </BrandList>
+
+                            <BrandSignalGrid>
+                                {accessSignals.map(item => (
+                                    <BrandSignalCard key={item.key}>
+                                        <BrandSignalValue>{item.value}</BrandSignalValue>
+                                        <BrandSignalText>{item.description}</BrandSignalText>
+                                    </BrandSignalCard>
+                                ))}
+                            </BrandSignalGrid>
                         </BrandPanel>
 
                         <LoginCard>
@@ -193,6 +210,13 @@ export default function Login() {
                                     </CredentialCard>
                                 ))}
                             </CredentialGrid>
+
+                            <LoginSupportCard>
+                                <LoginSupportTitle>Como este acesso se comporta</LoginSupportTitle>
+                                <LoginSupportText>
+                                    O login respeita o perfil da conta, o plano liberado e a necessidade de PIN. Depois da autentica\u00e7\u00e3o, o redirecionamento j\u00e1 leva a pessoa para a \u00e1rea correta sem expor menus indevidos.
+                                </LoginSupportText>
+                            </LoginSupportCard>
                         </LoginCard>
                     </LoginGrid>
                 </LoginWrapper>

@@ -1,6 +1,8 @@
 import React from "react";
 
+import DashboardIconGlyph from "components/Dashboard/IconGlyph";
 import { ThemedComponent } from "ui/theme";
+
 import useController from "./controller";
 
 import {
@@ -17,15 +19,11 @@ import {
     ClosingSection,
     ClosingText,
     ClosingTitle,
-    FaqAnswer,
-    FaqCard,
-    FaqGrid,
-    FaqQuestion,
-    FaqQuestionIcon,
     FeatureCard,
     FeatureCardIcon,
     FeatureCardText,
     FeatureCardTitle,
+    FeatureFootnote,
     FeatureGrid,
     FooterBar,
     FooterCopy,
@@ -33,39 +31,43 @@ import {
     FooterLinks,
     HeroActions,
     HeroBadge,
+    HeroBrand,
     HeroChip,
     HeroChipIcon,
     HeroChipRow,
     HeroDescription,
-    HeroGrid,
-    HeroHighlightCard,
-    HeroHighlightText,
-    HeroHighlightTitle,
     HeroIndicator,
     HeroIndicatorRow,
-    HeroLabel,
-    HeroPanel,
+    HeroMetricCard,
+    HeroMetricGrid,
+    HeroMetricText,
+    HeroMetricValue,
     HeroPrimaryButton,
-    HeroQuickActionButton,
-    HeroQuickActionCard,
-    HeroQuickActionGrid,
-    HeroQuickActionText,
-    HeroQuickActionTitle,
-    HeroSection,
     HeroSecondaryButton,
+    HeroSection,
     HeroTitle,
     PageShell,
     PlanBadge,
+    PlanBilling,
     PlanButton,
     PlanCard,
     PlanDescription,
+    PlanDiscount,
     PlanGrid,
     PlanHighlights,
     PlanHighlightsItem,
     PlanMeta,
+    PlanModeBadge,
     PlanName,
+    PlanOriginalPrice,
     PlanPrice,
+    PlanPriceCycle,
+    PlanSeat,
+    PlatformBulletItem,
+    PlatformBulletList,
     PlatformCard,
+    PlatformCardBadge,
+    PlatformCardEyebrow,
     PlatformCardIcon,
     PlatformCardText,
     PlatformCardTitle,
@@ -86,25 +88,21 @@ export default function Landpage() {
         currentHeroSlide,
         currentSlide,
         heroSlides,
+        heroMetrics,
         isAnnual,
-        openFaqKey,
         heroChips,
-        quickLinks,
         platformFeatures,
         featureCards,
         planCards,
-        faqItems,
         seasonalLabel,
         contactEmail,
         contactPhone,
         contactWhatsApp,
         isAuthenticated,
         goLogin,
-        goRegister,
         goTop,
         scrollToPlans,
         toggleBilling,
-        toggleFaq,
     } = useController();
 
     return (
@@ -116,145 +114,167 @@ export default function Landpage() {
                             <BrandNameText>Sena</BrandNameText>
                             <BrandNameAccent>Prices</BrandNameAccent>
                         </div>
-                        <BrandCaption>Sistema promocional para varejo</BrandCaption>
+                        <BrandCaption>Sistema promocional</BrandCaption>
                     </BrandButton>
 
                     <TopActions>
                         <TopActionButton type="button" onClick={scrollToPlans}>
-                            Ver planos
+                            Planos
                         </TopActionButton>
                         <TopActionButton $primary type="button" onClick={goLogin}>
-                            {isAuthenticated ? "Abrir sistema" : "Entrar"}
+                            {isAuthenticated ? "Acessar o sistema" : "Acessar o sistema"}
                         </TopActionButton>
                     </TopActions>
                 </TopBar>
 
                 <HeroSection>
-                    <HeroGrid>
-                        <div>
-                            <HeroBadge>{`${seasonalLabel} \u00b7 cartazes, etiquetas e opera\u00e7\u00e3o`}</HeroBadge>
-                            <HeroTitle>{currentHeroSlide.title}</HeroTitle>
-                            <HeroDescription>{currentHeroSlide.description}</HeroDescription>
+                    <HeroBrand>
+                        <BrandButton type="button" onClick={goTop}>
+                            <div>
+                                <BrandNameText>Sena</BrandNameText>
+                                <BrandNameAccent>Prices</BrandNameAccent>
+                            </div>
+                            <BrandCaption>Sistema promocional</BrandCaption>
+                        </BrandButton>
+                    </HeroBrand>
 
-                            <HeroActions>
-                                <HeroPrimaryButton type="button" onClick={goLogin}>
-                                    Entrar no sistema
-                                </HeroPrimaryButton>
-                                <HeroSecondaryButton type="button" onClick={goRegister}>
-                                    Criar conta
-                                </HeroSecondaryButton>
-                            </HeroActions>
+                    <HeroBadge>{seasonalLabel}</HeroBadge>
+                    <HeroTitle>{currentHeroSlide.title}</HeroTitle>
+                    <HeroDescription>{currentHeroSlide.description}</HeroDescription>
 
-                            <HeroChipRow>
-                                {heroChips.map(item => (
-                                    <HeroChip key={item.key}>
-                                        <HeroChipIcon src={item.icon} alt={`${item.key}-icon`} />
-                                        {item.label}
-                                    </HeroChip>
-                                ))}
-                            </HeroChipRow>
-                        </div>
+                    <HeroActions>
+                        <HeroPrimaryButton type="button" onClick={goLogin}>
+                            Entrar no sistema
+                        </HeroPrimaryButton>
+                        <HeroSecondaryButton type="button" onClick={scrollToPlans}>
+                            Ver planos
+                        </HeroSecondaryButton>
+                    </HeroActions>
 
-                        <HeroPanel>
-                            <HeroHighlightCard>
-                                <HeroLabel>Slide atual</HeroLabel>
-                                <HeroHighlightTitle>{currentHeroSlide.title}</HeroHighlightTitle>
-                                <HeroHighlightText>{currentHeroSlide.description}</HeroHighlightText>
+                    <HeroChipRow>
+                        {heroChips.map(item => (
+                            <HeroChip key={item.key}>
+                                <HeroChipIcon>
+                                    <DashboardIconGlyph name={item.iconToken} size={16} color="#8ab4ff" />
+                                </HeroChipIcon>
+                                {item.label}
+                            </HeroChip>
+                        ))}
+                    </HeroChipRow>
 
-                                <HeroIndicatorRow>
-                                    {heroSlides.map((item, index) => (
-                                        <HeroIndicator
-                                            key={item.title}
-                                            $active={index === currentSlide}
-                                            aria-label={`slide-${index + 1}`}
-                                        />
-                                    ))}
-                                </HeroIndicatorRow>
-                            </HeroHighlightCard>
+                    <HeroIndicatorRow>
+                        {heroSlides.map((item, index) => (
+                            <HeroIndicator
+                                key={item.title}
+                                $active={index === currentSlide}
+                                aria-label={`slide-${index + 1}`}
+                            />
+                        ))}
+                    </HeroIndicatorRow>
 
-                            <HeroQuickActionGrid>
-                                {quickLinks.map(item => (
-                                    <HeroQuickActionCard key={item.key}>
-                                        <HeroQuickActionTitle>{item.title}</HeroQuickActionTitle>
-                                        <HeroQuickActionText>{item.description}</HeroQuickActionText>
-                                        <HeroQuickActionButton type="button" onClick={item.action}>
-                                            {item.buttonLabel}
-                                        </HeroQuickActionButton>
-                                    </HeroQuickActionCard>
-                                ))}
-                            </HeroQuickActionGrid>
-                        </HeroPanel>
-                    </HeroGrid>
+                    <HeroMetricGrid>
+                        {heroMetrics.map(item => (
+                            <HeroMetricCard key={item.key}>
+                                <HeroMetricValue>{item.value}</HeroMetricValue>
+                                <HeroMetricText>{item.label}</HeroMetricText>
+                            </HeroMetricCard>
+                        ))}
+                    </HeroMetricGrid>
                 </HeroSection>
 
                 <Section>
-                    <SectionHeader>
+                    <SectionHeader $center>
                         <SectionEyebrow>Plataforma</SectionEyebrow>
-                        <SectionTitle>Uma plataforma preparada para uso real de loja</SectionTitle>
+                        <SectionTitle>Escolha a forma certa de operar</SectionTitle>
                         <SectionDescription>
-                            Cadastro, precifica\u00e7\u00e3o, etiquetas, hist\u00f3rico, promo\u00e7\u00f5es e governan\u00e7a compartilham a mesma base para reduzir retrabalho e facilitar manuten\u00e7\u00e3o.
+                            O SenaPrices pode funcionar como programa de computador e também na web, respeitando o plano contratado e o ritmo real da operação.
                         </SectionDescription>
                     </SectionHeader>
 
                     <PlatformGrid>
                         {platformFeatures.map(item => (
                             <PlatformCard key={item.key}>
-                                <PlatformCardIcon src={item.icon} alt={`${item.key}-icon`} />
+                                <PlatformCardIcon>
+                                    <DashboardIconGlyph
+                                        name={item.iconToken}
+                                        size={28}
+                                        color={item.key === "desktop" ? "#10b981" : "#3b82f6"}
+                                    />
+                                </PlatformCardIcon>
                                 <PlatformCardTitle>{item.title}</PlatformCardTitle>
+                                <PlatformCardBadge $tone={item.key === "desktop" ? "green" : "blue"}>
+                                    {item.tag}
+                                </PlatformCardBadge>
+                                <PlatformCardEyebrow>{item.eyebrow}</PlatformCardEyebrow>
                                 <PlatformCardText>{item.description}</PlatformCardText>
+                                <PlatformBulletList>
+                                    {item.bullets.map(bullet => (
+                                        <PlatformBulletItem key={bullet}>{bullet}</PlatformBulletItem>
+                                    ))}
+                                </PlatformBulletList>
                             </PlatformCard>
                         ))}
                     </PlatformGrid>
                 </Section>
 
                 <Section>
-                    <SectionHeader>
-                        <SectionEyebrow>Recursos</SectionEyebrow>
-                        <SectionTitle>Fluxos centrais do SenaPrices j\u00e1 organizados</SectionTitle>
+                    <SectionHeader $center>
+                        <SectionTitle>Tudo que você precisa</SectionTitle>
                         <SectionDescription>
-                            A apresenta\u00e7\u00e3o p\u00fablica agora conversa com a mesma governan\u00e7a de papel, plano e configura\u00e7\u00e3o usada nos m\u00f3dulos internos.
+                            Desenvolvido especificamente para o varejo brasileiro: rápido, confiável, organizado e preparado para crescer sem burocracia.
                         </SectionDescription>
                     </SectionHeader>
 
                     <FeatureGrid>
                         {featureCards.map(item => (
                             <FeatureCard key={item.key}>
-                                <FeatureCardIcon src={item.icon} alt={`${item.key}-icon`} />
+                                <FeatureCardIcon>
+                                    <DashboardIconGlyph name={item.iconToken} size={24} color="#7c4dff" />
+                                </FeatureCardIcon>
                                 <FeatureCardTitle>{item.title}</FeatureCardTitle>
                                 <FeatureCardText>{item.description}</FeatureCardText>
                             </FeatureCard>
                         ))}
                     </FeatureGrid>
+
+                    <FeatureFootnote>Alguns recursos avançados exigem conexão com internet e plano compatível.</FeatureFootnote>
                 </Section>
 
-                <Section ref={plansRef}>
-                    <SectionHeader>
-                        <SectionEyebrow>Planos</SectionEyebrow>
-                        <SectionTitle>Escolha o n\u00edvel de maturidade da sua opera\u00e7\u00e3o</SectionTitle>
+                <Section ref={plansRef} $soft>
+                    <SectionHeader $center>
+                        <SectionTitle>Planos e preços</SectionTitle>
                         <SectionDescription>
-                            Os valores abaixo j\u00e1 leem a configura\u00e7\u00e3o global da plataforma. O fluxo comercial pode evoluir sem quebrar a camada de acesso j\u00e1 implantada.
+                            Escolha o plano ideal para o seu estabelecimento. Todos incluem atualizações e suporte por e-mail.
                         </SectionDescription>
                     </SectionHeader>
 
                     <BillingPill>
                         <BillingPillText>Mensal</BillingPillText>
-                        <BillingToggle type="button" onClick={toggleBilling} aria-label="Alternar cobran\u00e7a anual">
+                        <BillingToggle type="button" onClick={toggleBilling} aria-label="Alternar cobrança anual">
                             <BillingToggleThumb $active={isAnnual} />
                         </BillingToggle>
                         <BillingPillText $active={isAnnual}>Anual</BillingPillText>
-                        <BillingHelper>
-                            {isAnnual ? "Valores com desconto anual ativo" : "Compare mensalidade e desconto anual"}
-                        </BillingHelper>
+                        <BillingHelper>Economize com o faturamento anual</BillingHelper>
                     </BillingPill>
 
                     <PlanGrid>
                         {planCards.map(item => (
                             <PlanCard key={item.key} $featured={item.key === "profissional"}>
                                 {item.badge ? <PlanBadge>{item.badge}</PlanBadge> : null}
+                                <PlanModeBadge $featured={item.key === "profissional"}>{item.modeLabel}</PlanModeBadge>
                                 <PlanName>{item.name}</PlanName>
-                                <PlanPrice>{item.displayPrice}</PlanPrice>
-                                <PlanMeta>{item.displayMeta}</PlanMeta>
                                 <PlanDescription>{item.description}</PlanDescription>
+
+                                {item.displayDiscount ? <PlanDiscount>{item.displayDiscount}</PlanDiscount> : null}
+                                {item.displayOriginalPrice ? <PlanOriginalPrice>{item.displayOriginalPrice}</PlanOriginalPrice> : null}
+
+                                <PlanPrice>
+                                    {item.displayPrice}
+                                    {item.key !== "personalizado" ? <PlanPriceCycle>/mês</PlanPriceCycle> : null}
+                                </PlanPrice>
+                                <PlanBilling>{item.displayBillingLine}</PlanBilling>
+                                <PlanSeat>{item.seatLabel}</PlanSeat>
+                                <PlanMeta>{item.discountLabel}</PlanMeta>
 
                                 <PlanHighlights>
                                     {item.highlights.map(highlight => (
@@ -262,7 +282,7 @@ export default function Landpage() {
                                     ))}
                                 </PlanHighlights>
 
-                                <PlanButton type="button" onClick={item.action}>
+                                <PlanButton type="button" onClick={item.action} $featured={item.key === "profissional"}>
                                     {item.cta}
                                 </PlanButton>
                             </PlanCard>
@@ -270,61 +290,40 @@ export default function Landpage() {
                     </PlanGrid>
                 </Section>
 
-                <Section>
-                    <SectionHeader>
-                        <SectionEyebrow>D\u00favidas</SectionEyebrow>
-                        <SectionTitle>Perguntas frequentes sobre a opera\u00e7\u00e3o atual</SectionTitle>
-                        <SectionDescription>
-                            A proposta desta tela \u00e9 apresentar o produto com clareza, com governan\u00e7a real de acesso e sem prometer integra\u00e7\u00f5es que ainda n\u00e3o foram homologadas aqui.
-                        </SectionDescription>
-                    </SectionHeader>
-
-                    <FaqGrid>
-                        {faqItems.map(item => (
-                            <FaqCard
-                                key={item.key}
-                                type="button"
-                                $open={openFaqKey === item.key}
-                                onClick={() => toggleFaq(item.key)}
-                            >
-                                <FaqQuestion>
-                                    {item.question}
-                                    <FaqQuestionIcon $open={openFaqKey === item.key}>
-                                        {openFaqKey === item.key ? "-" : "+"}
-                                    </FaqQuestionIcon>
-                                </FaqQuestion>
-                                {openFaqKey === item.key ? <FaqAnswer>{item.answer}</FaqAnswer> : null}
-                            </FaqCard>
-                        ))}
-                    </FaqGrid>
-                </Section>
-
                 <ClosingSection>
                     <ClosingCard>
-                        <SectionEyebrow>Pronto para operar</SectionEyebrow>
-                        <ClosingTitle>Apresenta\u00e7\u00e3o p\u00fablica e acesso agora seguem a mesma governan\u00e7a</ClosingTitle>
+                        <DashboardIconGlyph name="quickPrice" size={30} color="#2f64ff" />
+                        <ClosingTitle>Pronto para otimizar seus cartazes?</ClosingTitle>
                         <ClosingText>
-                            Landing, login, retorno comercial, pap\u00e9is operacionais e conta master passaram a compartilhar a mesma l\u00f3gica de acesso para sustentar a expans\u00e3o do SenaPrices com menos risco.
+                            Acesse agora e veja como é simples criar cartazes promocionais profissionais, organizar promoções e manter a operação padronizada.
                         </ClosingText>
 
                         <HeroActions>
                             <HeroPrimaryButton type="button" onClick={goLogin}>
-                                Acessar agora
+                                Acessar o SenaPrices
                             </HeroPrimaryButton>
-                            <HeroSecondaryButton type="button" onClick={goRegister}>
-                                Solicitar acesso
-                            </HeroSecondaryButton>
                         </HeroActions>
                     </ClosingCard>
                 </ClosingSection>
 
                 <FooterBar>
+                    <BrandButton type="button" onClick={goTop}>
+                        <div>
+                            <BrandNameText>Sena</BrandNameText>
+                            <BrandNameAccent>Prices</BrandNameAccent>
+                        </div>
+                        <BrandCaption>Sistema promocional</BrandCaption>
+                    </BrandButton>
+
                     <FooterCopy>
-                        {`SenaPrices. Estrutura organizada para varejo, suporte e manuten\u00e7\u00e3o previs\u00edvel.${contactEmail ? ` Contato: ${contactEmail}.` : ""}${contactPhone ? ` Telefone: ${contactPhone}.` : ""}${contactWhatsApp ? ` WhatsApp: ${contactWhatsApp}.` : ""}`}
+                        Sistema de cartazes de preços promocionais para o varejo brasileiro.
+                        {contactEmail ? ` Contato: ${contactEmail}.` : ""}
+                        {contactPhone ? ` Telefone: ${contactPhone}.` : ""}
+                        {contactWhatsApp ? ` WhatsApp: ${contactWhatsApp}.` : ""}
                     </FooterCopy>
+
                     <FooterLinks>
-                        <FooterLink type="button" onClick={goLogin}>Login</FooterLink>
-                        <FooterLink type="button" onClick={goRegister}>Cadastro</FooterLink>
+                        <FooterLink type="button" onClick={goLogin}>Acessar o sistema</FooterLink>
                         <FooterLink type="button" onClick={scrollToPlans}>Planos</FooterLink>
                     </FooterLinks>
                 </FooterBar>

@@ -1,41 +1,28 @@
-import React from "react";  
+import React from "react";
 
 import ContainerAuthenticated from "containers/Authenticated";
-
-import { FormSpacer, PageContent } from "ui/styled";
-import useController from "./controller";
 import PageHeader from "components/Dashboard/PageHeader";
-import DashboardUserCard from "components/Dashboard/UserCard";
+import { FormSpacer, PageContent } from "ui/styled";
 
+import useController from "./controller";
 import {
-    DashboardContainer,
-    DashboardGrid,
-    DashboardSidebar,
-    DashboardMain,
     DashboardCard,
-    DashboardSectionTitle,
+    DashboardInfoGrid,
+    DashboardInfoLabel,
+    DashboardInfoNote,
+    DashboardInfoValue,
+    DashboardIdentifier,
+    DashboardMain,
     DashboardSectionText,
-    DashboardProfileName,
-    DashboardProfileEmail,
-    DashboardProfileMeta,
-    DashboardQuickActionGrid,
-    DashboardQuickActionCard,
-    DashboardQuickActionIcon,
-    DashboardQuickActionTitle,
-    DashboardQuickActionText,
-    DashboardQuickActionButton,
+    DashboardSectionTitle,
     DashboardSummaryGrid,
     DashboardSummaryItem,
     DashboardSummaryLabel,
     DashboardSummaryValue,
     StyledCore,
-    DashboardWarningCard,
-    DashboardWarningTitle,
-    DashboardWarningText,
 } from "./styled";
 
-export default function DashboardMe(){  
-    
+export default function DashboardMe() {
     const {
         user,
         formRef,
@@ -45,88 +32,60 @@ export default function DashboardMe(){
         actions,
         profile,
         summaryItems,
-        quickActions
-    } = useController()
+    } = useController();
 
-    return ( 
-        <>
-            <ContainerAuthenticated actions={actions} loading={loading}>  
-                <PageContent>
-                    <PageHeader header={header} loading={loading} />
-                    <FormSpacer />
+    return (
+        <ContainerAuthenticated actions={actions} loading={loading}>
+            <PageContent>
+                <PageHeader header={header} loading={loading} />
+                <FormSpacer />
 
-                    <DashboardGrid>
-                        <DashboardSidebar>
-                            <DashboardCard>
-                                <DashboardUserCard />
-                                <DashboardProfileName>{ profile.displayName }</DashboardProfileName>
-                                <DashboardProfileEmail>{ profile.email }</DashboardProfileEmail>
-                                <DashboardProfileMeta>
-                                    Conta criada em { profile.memberSince } • ID { profile.accountId }
-                                </DashboardProfileMeta>
-                            </DashboardCard>
+                <DashboardMain>
+                    <DashboardCard>
+                        <DashboardSectionTitle>Dados principais da conta</DashboardSectionTitle>
+                        <DashboardSectionText>
+                            Informações centrais para identificação, rastreabilidade e suporte da sua conta no SenaPrices.
+                        </DashboardSectionText>
 
-                            <DashboardCard>
-                                <DashboardSectionTitle>Acesso rápido</DashboardSectionTitle>
-                                <DashboardSectionText>
-                                    Use estes atalhos para cuidar da segurança da conta e falar com o suporte.
-                                </DashboardSectionText>
+                        <DashboardInfoGrid>
+                            <div>
+                                <DashboardInfoLabel>Nome</DashboardInfoLabel>
+                                <DashboardInfoValue>{profile.displayName}</DashboardInfoValue>
+                            </div>
+                            <div>
+                                <DashboardInfoLabel>E-mail</DashboardInfoLabel>
+                                <DashboardInfoValue>{profile.email}</DashboardInfoValue>
+                            </div>
+                            <div>
+                                <DashboardInfoLabel>Código de identificação</DashboardInfoLabel>
+                                <DashboardIdentifier>{profile.accountId}</DashboardIdentifier>
+                            </div>
+                        </DashboardInfoGrid>
 
-                                <DashboardQuickActionGrid>
-                                    {
-                                        quickActions.map(item => (
-                                            <DashboardQuickActionCard key={item.key}>
-                                                <DashboardQuickActionIcon src={item.icon} alt={`${item.title}-icon`} />
-                                                <DashboardQuickActionTitle>{ item.title }</DashboardQuickActionTitle>
-                                                <DashboardQuickActionText>{ item.description }</DashboardQuickActionText>
-                                                <DashboardQuickActionButton type="button" onClick={item.action}>
-                                                    { item.buttonLabel }
-                                                </DashboardQuickActionButton>
-                                            </DashboardQuickActionCard>
-                                        ))
-                                    }
-                                </DashboardQuickActionGrid>
-                            </DashboardCard>
-                        </DashboardSidebar>
+                        <DashboardInfoNote>
+                            Este código aparece nos registros vinculados à sua conta para reforçar a rastreabilidade operacional do sistema.
+                        </DashboardInfoNote>
 
-                        <DashboardMain>
-                            <DashboardCard>
-                                <DashboardSectionTitle>Resumo da conta</DashboardSectionTitle>
-                                <DashboardSectionText>
-                                    Informações principais para manutenção do perfil e rastreabilidade dos acessos.
-                                </DashboardSectionText>
+                        <DashboardSummaryGrid>
+                            {summaryItems.map(item => (
+                                <DashboardSummaryItem key={item.label}>
+                                    <DashboardSummaryLabel>{item.label}</DashboardSummaryLabel>
+                                    <DashboardSummaryValue>{item.value}</DashboardSummaryValue>
+                                </DashboardSummaryItem>
+                            ))}
+                        </DashboardSummaryGrid>
+                    </DashboardCard>
 
-                                <DashboardSummaryGrid>
-                                    {
-                                        summaryItems.map(item => (
-                                            <DashboardSummaryItem key={item.label}>
-                                                <DashboardSummaryLabel>{ item.label }</DashboardSummaryLabel>
-                                                <DashboardSummaryValue>{ item.value }</DashboardSummaryValue>
-                                            </DashboardSummaryItem>
-                                        ))
-                                    }
-                                </DashboardSummaryGrid>
-                            </DashboardCard>
+                    <DashboardCard>
+                        <DashboardSectionTitle>Atualizar perfil</DashboardSectionTitle>
+                        <DashboardSectionText>
+                            Ajuste apenas o nome exibido da conta. O e-mail permanece protegido como identificador principal de acesso.
+                        </DashboardSectionText>
 
-                            <DashboardContainer>
-                                <DashboardSectionTitle>Dados do perfil</DashboardSectionTitle>
-                                <DashboardSectionText>
-                                    Atualize o nome exibido na conta. O e-mail é o identificador principal de acesso e permanece protegido nesta etapa.
-                                </DashboardSectionText>
-
-                                <StyledCore register={user} ref={formRef} formItems={formItems} />
-                            </DashboardContainer>
-
-                            <DashboardWarningCard>
-                                <DashboardWarningTitle>Zona de atenção</DashboardWarningTitle>
-                                <DashboardWarningText>
-                                    A exclusão da conta remove o acesso e não poderá ser desfeita. Revise com cuidado antes de confirmar essa ação.
-                                </DashboardWarningText>
-                            </DashboardWarningCard>
-                        </DashboardMain>
-                    </DashboardGrid>
-                </PageContent>
-            </ContainerAuthenticated> 
-        </>
+                        <StyledCore register={user} ref={formRef} formItems={formItems} />
+                    </DashboardCard>
+                </DashboardMain>
+            </PageContent>
+        </ContainerAuthenticated>
     );
 }

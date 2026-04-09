@@ -8,24 +8,14 @@ import {
     duplicateCatalogItem,
     readCatalogItems,
     readCatalogSections,
-    saveCatalogPriceSeed,
     updateCatalogItem,
 } from "services/catalog";
 
-import { ITEM_DEFAULT_FORM_VALUES, ITEM_GUIDELINES, ITEM_UNIT_OPTIONS } from "../CreateItem/constants";
-import {
-    buildItemPreview,
-    buildRecentItemHelper,
-    sanitizeItemDraft,
-    validateItemDraft,
-} from "../CreateItem/helpers";
+import { ITEM_DEFAULT_FORM_VALUES, ITEM_UNIT_OPTIONS } from "../CreateItem/constants";
+import { sanitizeItemDraft, validateItemDraft } from "../CreateItem/helpers";
 
+import { DEFAULT_ITEMS_FILTERS } from "./constants";
 import {
-    DEFAULT_ITEMS_FILTERS,
-    ITEMS_GUIDELINES as LIST_GUIDELINES,
-} from "./constants";
-import {
-    buildCatalogStatus,
     countActiveFilters,
     filterCatalogItems,
     formatCatalogDate,
@@ -36,7 +26,6 @@ import {
 export default function useController() {
     const n = useNavigate();
     const navigate = useCallback((to) => n(`/${to}`), [n]);
-
     const { user, setModal } = useContext(CoreContext);
 
     const [loading, setLoading] = useState(false);
@@ -98,10 +87,6 @@ export default function useController() {
         validateItemDraft(editor, items, selectedItem?.id || null)
     ), [editor, items, selectedItem]);
 
-    const preview = useMemo(() => (
-        buildItemPreview(editor)
-    ), [editor]);
-
     const activeFiltersCount = useMemo(() => countActiveFilters(filters), [filters]);
 
     const sectionSuggestions = useMemo(() => (
@@ -113,30 +98,6 @@ export default function useController() {
             .slice(0, 8)
     ), [editor.section, sections]);
 
-    const recentItems = useMemo(() => (
-        items.slice(0, 5).map(item => ({
-            ...item,
-            helper: buildRecentItemHelper(item),
-            relativeDate: formatRelativeCatalogDate(item.updatedAt || item.createdAt),
-        }))
-    ), [items]);
-
-    const summaryItems = useMemo(() => {
-        const itemsWithEan = items.filter(item => !!item.ean13).length;
-        const itemsWithoutSection = items.filter(item => !item.section).length;
-
-        return [
-            { label: "Itens na base", value: `${items.length}` },
-            { label: "Na visao atual", value: `${filteredItems.length}` },
-            { label: "Com EAN", value: `${itemsWithEan}` },
-            { label: "Sem secao", value: `${itemsWithoutSection}` },
-        ];
-    }, [filteredItems.length, items]);
-
-    const statusCard = useMemo(() => (
-        buildCatalogStatus({ items, filteredItems, isEditorDirty })
-    ), [filteredItems, isEditorDirty, items]);
-
     const header = useMemo(() => ({
         title: "Itens",
         breadcrumbs: [
@@ -146,27 +107,11 @@ export default function useController() {
         ],
         actions: [
             {
-                label: "Criar item",
+                label: "Novo item",
                 icon: "products",
                 rounded: true,
-                outline: true,
                 color: "primary",
                 action: () => navigate("dashboard/items/create"),
-            },
-            {
-                label: "Importar",
-                icon: "products",
-                rounded: true,
-                outline: true,
-                color: "primary",
-                action: () => navigate("dashboard/items/import"),
-            },
-            {
-                label: "Painel",
-                icon: "home",
-                rounded: true,
-                color: "secondary",
-                action: () => navigate("dashboard"),
             },
         ],
     }), [navigate]);
@@ -181,7 +126,7 @@ export default function useController() {
         if (isEditorDirty) {
             setModal({
                 type: "confirm",
-                title: "Trocar item em edicao?",
+                title: "Trocar item em edição?",
                 text: "Existem alterações locais ainda não salvas. Se continuar, elas serão descartadas.",
                 action: changeSelection,
             });
@@ -217,7 +162,7 @@ export default function useController() {
         }
 
         if (!validation.isValid) {
-            toast.error(validation.errorList[0] || "Revise os campos antes de salvar as alteracoes.");
+            toast.error(validation.errorList[0] || "Revise os campos antes de salvar as alterações.");
             return false;
         }
 
@@ -274,7 +219,7 @@ export default function useController() {
             setItems(nextItems);
             setSections(readCatalogSections());
             commitSelection(nextSelected);
-            toast.success("Item removido do catalogo.");
+            toast.success("Item removido do catálogo.");
         } finally {
             setLoading(false);
         }
@@ -289,21 +234,10 @@ export default function useController() {
         setModal({
             type: "confirm",
             title: "Deseja excluir este item?",
-            text: "A exclusao remove este registro do catalogo local e pode afetar fluxos operacionais baseados nele.",
+            text: "A exclusão remove este registro do catálogo local e pode afetar fluxos operacionais baseados nele.",
             action: () => performDeleteItem(item),
         });
     }, [performDeleteItem, selectedItem, setModal]);
-
-    const handleCreatePriceFromItem = useCallback((item = selectedItem) => {
-        if (!item) {
-            toast.error("Selecione um item para enviar para a criação de preço.");
-            return;
-        }
-
-        saveCatalogPriceSeed(item);
-        toast.success("Item enviado para a criação de preço.");
-        navigate("dashboard/prices/create");
-    }, [navigate, selectedItem]);
 
     const visibleRows = useMemo(() => (
         filteredItems.map(item => ({
@@ -330,20 +264,13 @@ export default function useController() {
             action: () => handleDuplicateItem(selectedItem),
         },
         !selectedItem ? null : {
-            label: "Criar preço",
-            color: "primary",
-            outline: true,
-            rounded: true,
-            action: () => handleCreatePriceFromItem(selectedItem),
-        },
-        !selectedItem ? null : {
-            label: "Salvar alteracoes",
+            label: "Salvar alterações",
             color: "primary",
             rounded: true,
             loadable: true,
             action: handleSaveChanges,
         },
-    ].filter(Boolean)), [handleCreatePriceFromItem, handleDeleteItem, handleDuplicateItem, handleSaveChanges, selectedItem]);
+    ].filter(Boolean)), [handleDeleteItem, handleDuplicateItem, handleSaveChanges, selectedItem]);
 
     return {
         loading,
@@ -356,13 +283,8 @@ export default function useController() {
         selectedItemId,
         selectedItem,
         editor,
-        preview,
         validation,
         sectionSuggestions,
-        statusCard,
-        summaryItems,
-        recentItems,
-        guidelines: [...ITEM_GUIDELINES, ...LIST_GUIDELINES],
         unitOptions: ITEM_UNIT_OPTIONS,
         sections,
         isEditorDirty,
@@ -373,6 +295,5 @@ export default function useController() {
         handleSelectItem,
         handleDuplicateItem,
         handleDeleteItem,
-        handleCreatePriceFromItem,
     };
 }

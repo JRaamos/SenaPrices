@@ -1,6 +1,8 @@
 import { ReadObject, SaveObject } from "./storage";
 import { sanitizeBarcodeDigits, validateEan13 } from "utils/barcode";
 
+import { ALIGN_OPTIONS, PRINT_FONT_OPTIONS } from "./settings";
+
 const LABEL_SETTINGS_KEY = "label-settings";
 const LABEL_RECENT_JOBS_KEY = "label-recent-jobs";
 const LABEL_RECENT_LIMIT = 8;
@@ -26,12 +28,20 @@ export const DEFAULT_LABEL_SETTINGS = {
     heightMm: 30,
     dpi: 203,
     showDescription2: true,
+    showDescription3: false,
     showSection: true,
     showUnit: true,
     showBarcode: true,
     showEan: true,
     showInternalCode: true,
+    showPrice: true,
     defaultCopies: 1,
+    fontFamily: '"Montserrat", Arial, sans-serif',
+    textAlign: "left",
+    titleScale: 100,
+    priceScale: 100,
+    metaScale: 100,
+    accentColor: "#06346b",
 };
 
 export function sanitizeLabelSettings(values = {}) {
@@ -50,12 +60,28 @@ export function sanitizeLabelSettings(values = {}) {
         heightMm,
         dpi: pickAllowed(Number(next.dpi), LABEL_DPI_OPTIONS.map(item => item.value), DEFAULT_LABEL_SETTINGS.dpi),
         showDescription2: !!next.showDescription2,
+        showDescription3: !!next.showDescription3,
         showSection: !!next.showSection,
         showUnit: !!next.showUnit,
         showBarcode: !!next.showBarcode,
         showEan: !!next.showEan,
         showInternalCode: !!next.showInternalCode,
+        showPrice: !!next.showPrice,
         defaultCopies: sanitizeCopies(next.defaultCopies),
+        fontFamily: pickAllowed(
+            next.fontFamily,
+            PRINT_FONT_OPTIONS.map(item => item.value),
+            DEFAULT_LABEL_SETTINGS.fontFamily
+        ),
+        textAlign: pickAllowed(
+            next.textAlign,
+            ALIGN_OPTIONS.map(item => item.value),
+            DEFAULT_LABEL_SETTINGS.textAlign
+        ),
+        titleScale: sanitizeScale(next.titleScale, DEFAULT_LABEL_SETTINGS.titleScale, 80, 140),
+        priceScale: sanitizeScale(next.priceScale, DEFAULT_LABEL_SETTINGS.priceScale, 80, 180),
+        metaScale: sanitizeScale(next.metaScale, DEFAULT_LABEL_SETTINGS.metaScale, 80, 140),
+        accentColor: sanitizeHexColor(next.accentColor, DEFAULT_LABEL_SETTINGS.accentColor),
     };
 }
 
@@ -112,8 +138,29 @@ export function appendRecentLabelJob(values = {}) {
     return nextJobs;
 }
 
+export function buildLabelStyleTokens(settings = DEFAULT_LABEL_SETTINGS) {
+    const safeSettings = sanitizeLabelSettings(settings);
+    const titleFactor = safeSettings.titleScale / 100;
+    const priceFactor = safeSettings.priceScale / 100;
+    const metaFactor = safeSettings.metaScale / 100;
+
+    const baseTitle = safeSettings.heightMm >= 40 ? 14 : safeSettings.heightMm >= 30 ? 12 : 11;
+    const basePrice = safeSettings.heightMm >= 40 ? 24 : safeSettings.heightMm >= 30 ? 20 : 18;
+
+    return {
+        titleSizePx: Math.round(baseTitle * titleFactor),
+        subtitleSizePx: Math.max(10, Math.round(10 * metaFactor)),
+        metaSizePx: Math.max(9, Math.round(9 * metaFactor)),
+        priceSizePx: Math.round(basePrice * priceFactor),
+        fontFamily: safeSettings.fontFamily,
+        textAlign: safeSettings.textAlign,
+        accentColor: safeSettings.accentColor,
+    };
+}
+
 export function buildLabelPrintMarkup({ title = "Etiquetas SenaPrices", subtitle = "", items = [], settings = DEFAULT_LABEL_SETTINGS }) {
     const safeSettings = sanitizeLabelSettings(settings);
+    const style = buildLabelStyleTokens(safeSettings);
     const labels = expandLabelCopies(items);
 
     return `<!DOCTYPE html>
@@ -128,14 +175,14 @@ export function buildLabelPrintMarkup({ title = "Etiquetas SenaPrices", subtitle
             margin: 0;
             padding: 18px;
             background: #f3f6fb;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: ${style.fontFamily};
             color: #111827;
         }
         .header {
             margin-bottom: 16px;
             padding: 20px 22px;
             border-radius: 22px;
-            background: linear-gradient(180deg, #06346b 0%, #0f172a 100%);
+            background: linear-gradient(180deg, ${style.accentColor} 0%, #0f172a 100%);
             color: #ffffff;
         }
         .eyebrow {
@@ -158,7 +205,7 @@ export function buildLabelPrintMarkup({ title = "Etiquetas SenaPrices", subtitle
         .subtitle {
             margin: 10px 0 0;
             max-width: 720px;
-            color: rgba(255,255,255,0.76);
+            color: rgba(255,255,255,0.78);
             font-size: 14px;
             line-height: 22px;
         }
@@ -178,28 +225,33 @@ export function buildLabelPrintMarkup({ title = "Etiquetas SenaPrices", subtitle
             display: grid;
             gap: 1.5mm;
             break-inside: avoid;
+            text-align: ${style.textAlign};
         }
         .name {
-            font-size: ${safeSettings.heightMm >= 40 ? "14px" : safeSettings.heightMm >= 30 ? "12px" : "11px"};
+            font-family: ${style.fontFamily};
+            font-size: ${style.titleSizePx}px;
             line-height: 1.05;
             font-weight: 800;
             letter-spacing: -0.03em;
         }
         .subtitle-row {
             color: #475569;
-            font-size: 10px;
+            font-family: ${style.fontFamily};
+            font-size: ${style.subtitleSizePx}px;
             line-height: 1.3;
         }
         .price {
-            color: #06346b;
-            font-size: ${safeSettings.heightMm >= 40 ? "24px" : safeSettings.heightMm >= 30 ? "20px" : "18px"};
+            color: ${style.accentColor};
+            font-family: ${style.fontFamily};
+            font-size: ${style.priceSizePx}px;
             line-height: 0.95;
             font-weight: 800;
             letter-spacing: -0.05em;
         }
         .meta {
             color: #475569;
-            font-size: 9px;
+            font-family: ${style.fontFamily};
+            font-size: ${style.metaSizePx}px;
             line-height: 1.3;
         }
         .barcode {
@@ -207,7 +259,7 @@ export function buildLabelPrintMarkup({ title = "Etiquetas SenaPrices", subtitle
             padding-top: 1.6mm;
             border-top: 0.2mm dashed #cbd5e1;
             font-family: monospace;
-            font-size: 9px;
+            font-size: ${Math.max(9, style.metaSizePx)}px;
             line-height: 1.3;
             word-break: break-all;
         }
@@ -234,7 +286,7 @@ export function buildLabelPrintMarkup({ title = "Etiquetas SenaPrices", subtitle
         ${subtitle ? `<p class="subtitle">${escapeHtml(subtitle)}</p>` : ""}
     </section>
     <section class="grid">
-        ${labels.map(item => renderLabelMarkup(item, safeSettings)).join("")}
+        ${labels.map(item => renderLabelMarkup(item, safeSettings, style)).join("")}
     </section>
 </body>
 </html>`;
@@ -249,9 +301,10 @@ export function buildLabelsZpl({ items = [], settings = DEFAULT_LABEL_SETTINGS }
         .join("\n");
 }
 
-function renderLabelMarkup(item = {}, settings = DEFAULT_LABEL_SETTINGS) {
+function renderLabelMarkup(item = {}, settings = DEFAULT_LABEL_SETTINGS, style = buildLabelStyleTokens(settings)) {
     const subtitleParts = [
         settings.showDescription2 ? item.description2 : "",
+        settings.showDescription3 ? item.description3 : "",
         settings.showSection ? item.section : "",
         settings.showUnit ? item.unit : "",
     ].filter(Boolean);
@@ -263,15 +316,15 @@ function renderLabelMarkup(item = {}, settings = DEFAULT_LABEL_SETTINGS) {
     return `
         <article class="label">
             <div class="name">${escapeHtml(item.description1 || "Item sem descrição")}</div>
-            ${subtitleParts.length ? `<div class="subtitle-row">${escapeHtml(subtitleParts.join(" - "))}</div>` : ""}
-            <div class="price">${escapeHtml(item.priceLabel || "Sem preço")}</div>
-            ${item.secondaryPrice ? `<div class="meta">${escapeHtml(item.secondaryPrice)}</div>` : ""}
+            ${subtitleParts.length ? `<div class="subtitle-row">${escapeHtml(subtitleParts.join(" · "))}</div>` : ""}
+            ${settings.showPrice ? `<div class="price">${escapeHtml(item.priceLabel || "Sem preço")}</div>` : ""}
+            ${settings.showPrice && item.secondaryPrice ? `<div class="meta">${escapeHtml(item.secondaryPrice)}</div>` : ""}
             ${item.offerLabel ? `<div class="meta">${escapeHtml(item.offerLabel)}</div>` : ""}
             ${(settings.showBarcode || codeParts.length)
                 ? `<div class="barcode">${escapeHtml([
                     settings.showBarcode && item.ean13 ? item.ean13 : "",
                     ...codeParts,
-                ].filter(Boolean).join(" - "))}</div>`
+                ].filter(Boolean).join(" · "))}</div>`
                 : ""}
         </article>
     `;
@@ -282,6 +335,12 @@ function buildSingleLabelZpl(item = {}, settings = DEFAULT_LABEL_SETTINGS) {
     const widthDots = mmToDots(settings.widthMm, dpi);
     const heightDots = mmToDots(settings.heightMm, dpi);
     const baseX = mmToDots(2.2, dpi);
+    const titleHeight = Math.max(24, Math.round((widthDots > 700 ? 34 : 30) * (settings.titleScale / 100)));
+    const titleWidth = Math.max(20, Math.round((widthDots > 700 ? 28 : 24) * (settings.titleScale / 100)));
+    const priceHeight = Math.max(36, Math.round((widthDots > 700 ? 54 : 48) * (settings.priceScale / 100)));
+    const priceWidth = Math.max(28, Math.round((widthDots > 700 ? 42 : 36) * (settings.priceScale / 100)));
+    const metaHeight = Math.max(18, Math.round(20 * (settings.metaScale / 100)));
+    const metaWidth = Math.max(16, Math.round(18 * (settings.metaScale / 100)));
     let currentY = mmToDots(2.2, dpi);
     const lines = [];
 
@@ -292,35 +351,39 @@ function buildSingleLabelZpl(item = {}, settings = DEFAULT_LABEL_SETTINGS) {
     lines.push("^CI28");
 
     wrapTextForZpl(normalizeZplText(item.description1 || "Item sem descrição"), widthDots > 700 ? 28 : 24, 2).forEach((line, index) => {
-        lines.push(`^FO${baseX},${currentY + (index * mmToDots(3.8, dpi))}^A0N,${widthDots > 700 ? 34 : 30},${widthDots > 700 ? 28 : 24}^FD${escapeZpl(line)}^FS`);
+        lines.push(`^FO${baseX},${currentY + (index * mmToDots(3.8, dpi))}^A0N,${titleHeight},${titleWidth}^FD${escapeZpl(line)}^FS`);
     });
     currentY += mmToDots(9.4, dpi);
 
     const subtitleParts = [
         settings.showDescription2 ? normalizeZplText(item.description2) : "",
+        settings.showDescription3 ? normalizeZplText(item.description3) : "",
         settings.showSection ? normalizeZplText(item.section) : "",
         settings.showUnit ? normalizeZplText(item.unit) : "",
     ].filter(Boolean);
 
     if (subtitleParts.length) {
-        lines.push(`^FO${baseX},${currentY}^A0N,20,18^FD${escapeZpl(subtitleParts.join(" - "))}^FS`);
+        lines.push(`^FO${baseX},${currentY}^A0N,${metaHeight},${metaWidth}^FD${escapeZpl(subtitleParts.join(" - "))}^FS`);
         currentY += mmToDots(3.8, dpi);
     }
 
-    lines.push(`^FO${baseX},${currentY}^A0N,${widthDots > 700 ? 54 : 48},${widthDots > 700 ? 42 : 36}^FD${escapeZpl(normalizeZplText(item.priceLabel || "Sem preço"))}^FS`);
-    currentY += mmToDots(8.6, dpi);
+    if (settings.showPrice) {
+        lines.push(`^FO${baseX},${currentY}^A0N,${priceHeight},${priceWidth}^FD${escapeZpl(normalizeZplText(item.priceLabel || "Sem preço"))}^FS`);
+        currentY += mmToDots(8.6, dpi);
+    }
 
-    if (item.secondaryPrice) {
-        lines.push(`^FO${baseX},${currentY}^A0N,20,18^FD${escapeZpl(normalizeZplText(item.secondaryPrice))}^FS`);
+    if (settings.showPrice && item.secondaryPrice) {
+        lines.push(`^FO${baseX},${currentY}^A0N,${metaHeight},${metaWidth}^FD${escapeZpl(normalizeZplText(item.secondaryPrice))}^FS`);
         currentY += mmToDots(3.6, dpi);
     }
 
     if (item.offerLabel) {
-        lines.push(`^FO${baseX},${currentY}^A0N,20,18^FD${escapeZpl(normalizeZplText(item.offerLabel))}^FS`);
+        lines.push(`^FO${baseX},${currentY}^A0N,${metaHeight},${metaWidth}^FD${escapeZpl(normalizeZplText(item.offerLabel))}^FS`);
         currentY += mmToDots(3.6, dpi);
     }
 
     const ean = sanitizeBarcodeDigits(item.ean13, 13);
+
     if (settings.showBarcode && validateEan13(ean)) {
         const barcodeHeight = Math.max(mmToDots(8, dpi), 54);
         const barcodeY = Math.min(currentY + mmToDots(1.2, dpi), heightDots - barcodeHeight - mmToDots(7.2, dpi));
@@ -336,7 +399,7 @@ function buildSingleLabelZpl(item = {}, settings = DEFAULT_LABEL_SETTINGS) {
 
     if (footerParts.length) {
         const footerY = Math.min(currentY, heightDots - mmToDots(4.6, dpi));
-        lines.push(`^FO${baseX},${footerY}^A0N,18,16^FD${escapeZpl(footerParts.join(" - "))}^FS`);
+        lines.push(`^FO${baseX},${footerY}^A0N,${Math.max(16, metaHeight - 2)},${Math.max(14, metaWidth - 2)}^FD${escapeZpl(footerParts.join(" - "))}^FS`);
     }
 
     lines.push("^XZ");
@@ -354,6 +417,7 @@ function sanitizeLabelItem(values = {}) {
         id: `${values?.id || values?.itemId || ""}`.trim(),
         description1: `${values?.description1 || ""}`.trim().slice(0, 80),
         description2: `${values?.description2 || ""}`.trim().slice(0, 60),
+        description3: `${values?.description3 || ""}`.trim().slice(0, 60),
         section: `${values?.section || ""}`.trim().slice(0, 40),
         unit: `${values?.unit || ""}`.trim().slice(0, 24),
         internalCode: `${values?.internalCode || ""}`.trim().slice(0, 32),
@@ -376,11 +440,13 @@ function wrapTextForZpl(value, charsPerLine, maxLines) {
 
     words.forEach(word => {
         const next = current ? `${current} ${word}` : word;
+
         if (next.length > charsPerLine && current) {
             lines.push(current);
             current = word;
             return;
         }
+
         current = next;
     });
 
@@ -417,18 +483,37 @@ function escapeHtml(value) {
 
 function sanitizeDimension(value, fallback) {
     const parsed = Number(value);
+
     if (!Number.isFinite(parsed)) {
         return fallback;
     }
+
     return Math.min(Math.max(parsed, 20), 120);
 }
 
 function sanitizeCopies(value) {
     const parsed = parseInt(`${value || 0}`, 10);
+
     if (!Number.isInteger(parsed)) {
         return DEFAULT_LABEL_SETTINGS.defaultCopies;
     }
+
     return Math.min(Math.max(parsed, 1), 99);
+}
+
+function sanitizeScale(value, fallback, min, max) {
+    const parsed = Number(value);
+
+    if (!Number.isFinite(parsed)) {
+        return fallback;
+    }
+
+    return Math.min(max, Math.max(min, Math.round(parsed)));
+}
+
+function sanitizeHexColor(value, fallback) {
+    const normalized = `${value || ""}`.trim();
+    return /^#[0-9a-fA-F]{6}$/.test(normalized) ? normalized : fallback;
 }
 
 function pickAllowed(value, allowedValues, fallback) {

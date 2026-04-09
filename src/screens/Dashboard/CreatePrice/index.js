@@ -1,51 +1,70 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 
+import DashboardIconGlyph from "components/Dashboard/IconGlyph";
 import ContainerAuthenticated from "containers/Authenticated";
 import PageHeader from "components/Dashboard/PageHeader";
 import { FormSpacer, PageContent } from "ui/styled";
 
 import useController from "./controller";
+import { buildPreviewInfoGroups, buildPriceDisplayParts, withAlpha } from "./helpers";
 import {
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
     CreatePriceLayout,
     CreatePriceMain,
     CreatePriceSidebar,
-    ErrorSummary,
-    ErrorSummaryItem,
-    ErrorSummaryTitle,
+    CreatePriceTopGrid,
     FieldCounter,
     FieldError,
+    FieldInlineGrid,
     FieldMeta,
-    InlineGrid,
-    InlineNotice,
-    PreviewBadge,
-    PreviewCard,
-    PreviewMetaItem,
-    PreviewMetaLabel,
-    PreviewMetaList,
-    PreviewMetaValue,
-    PreviewPrice,
-    PreviewSpecialLabel,
-    PreviewSubtitle,
-    PreviewSupportPrice,
-    PreviewTitle,
-    PriceTypeButton,
-    PriceTypeButtonText,
-    PriceTypeButtonTitle,
-    PriceTypeGrid,
-    RecentButton,
-    RecentHeader,
-    RecentItem,
-    RecentList,
-    RecentMeta,
-    RecentTitle,
-    ShortcutItem,
-    ShortcutKey,
-    ShortcutList,
-    ShortcutText,
+    HelperText,
+    PosterBadge,
+    PosterBadgeRow,
+    PosterCard,
+    PosterCentsGroup,
+    PosterCurrencySymbol,
+    PosterFooter,
+    PosterHeader,
+    PosterHeaderMetaItem,
+    PosterHeaderMetaList,
+    PosterMetaCard,
+    PosterMetaGrid,
+    PosterMetaLabel,
+    PosterMetaValue,
+    PosterPriceCents,
+    PosterPriceComma,
+    PosterPriceInteger,
+    PosterPriceLine,
+    PosterPriceRaw,
+    PosterPriceSection,
+    PosterPriceUnit,
+    PosterSpecialLabel,
+    PosterSubtitle,
+    PosterSupportPrice,
+    PosterTitle,
+    PreviewCanvas,
+    PreviewCanvasHeader,
+    PreviewCanvasMeta,
+    PreviewCanvasWrap,
+    PreviewRail,
+    PreviewSection,
+    PreviewSectionEyebrow,
+    PreviewSectionHeader,
+    PreviewSectionText,
+    PreviewSectionTextWrap,
+    PreviewSectionTitle,
+    PreviewSheet,
+    PreviewSlot,
+    PreviewWorkspace,
+    SearchField,
+    SearchIconWrap,
+    SearchInput,
+    SearchInputWrap,
+    SearchPriceGrid,
+    SelectedItemHint,
+    SelectedItemMeta,
+    SelectedItemPanel,
+    SelectedItemTitle,
+    SheetModeBadge,
     StatusBadge,
     StatusCard,
     StatusText,
@@ -56,610 +75,742 @@ import {
     StudioCardText,
     StudioCardTitle,
     StudioField,
-    StudioGrid,
     StudioInput,
     StudioLabel,
     StudioSelect,
     StudioTextarea,
+    SuggestionButton,
+    SuggestionMeta,
+    SuggestionPanel,
+    SuggestionTitle,
     SummaryGrid,
     SummaryItem,
     SummaryLabel,
     SummaryValue,
-    ToggleGrid,
     ToggleInput,
-    ToggleItem,
+    ToggleList,
+    ToggleRow,
     ToggleText,
-    WarningItem,
-    WarningList,
+    ToggleTextWrap,
+    ToggleTitle,
 } from "./styled";
 
 export default function DashboardCreatePrice() {
-    const {
-        loading,
-        header,
-        actions,
-        form,
-        preview,
-        validation,
-        statusCard,
-        summaryItems,
-        recentItems,
-        shortcuts,
-        guidelines,
-        priceTypeOptions,
-        paperSizeOptions,
-        orientationOptions,
-        unitOptions,
-        specialLayoutOptions,
-        pdvPolicy,
-        pdvSuggestion,
-        pdvLockedFields,
-        applyPatch,
-        handleRestoreComposition,
-    } = useController();
+    const controller = useController();
+    const [searchFocused, setSearchFocused] = useState(false);
 
+    const previewPriceParts = useMemo(
+        () => buildPriceDisplayParts(controller.preview.primaryPrice, controller.form.unitLabel, controller.preview.mode),
+        [controller.form.unitLabel, controller.preview.mode, controller.preview.primaryPrice]
+    );
+    const previewInfoGroups = useMemo(
+        () => buildPreviewInfoGroups(controller.preview),
+        [controller.preview]
+    );
+
+    const selectedUnit = controller.selectedCatalogItem?.unit || controller.form.unitLabel;
+    const canAdjustUnit = selectedUnit === "kg" || selectedUnit === "100g";
     return (
-        <ContainerAuthenticated actions={actions} loading={loading}>
+        <ContainerAuthenticated actions={controller.actions} loading={controller.loading}>
             <PageContent>
-                <PageHeader header={header} loading={loading} />
+                <PageHeader header={controller.header} loading={controller.loading} />
                 <FormSpacer />
 
                 <CreatePriceLayout>
                     <CreatePriceMain>
-                        <StudioCard>
-                            <StudioCardHeader>
-                                <StudioCardEyebrow>Produto</StudioCardEyebrow>
-                                <StudioCardTitle>Base da composicao</StudioCardTitle>
-                                <StudioCardText>
-                                    Estruture os dados principais do item de forma limpa para que o cartaz fique legivel e facil de manter.
-                                </StudioCardText>
-                            </StudioCardHeader>
-
-                            <StudioGrid>
-                                <StudioField $full>
-                                    <StudioLabel>Descrição principal</StudioLabel>
-                                    <StudioInput
-                                        value={form.productName}
-                                        maxLength={80}
-                                        placeholder="Ex: Cafe torrado e moido 500g"
-                                        onChange={event => applyPatch({ productName: event.target.value })}
-                                    />
-                                    <FieldMeta>
-                                        <FieldError>{validation.errors.productName || ""}</FieldError>
-                                        <FieldCounter>{form.productName.length}/80</FieldCounter>
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField $full>
-                                    <StudioLabel>Descrição complementar</StudioLabel>
-                                    <StudioInput
-                                        value={form.productSubtitle}
-                                        maxLength={80}
-                                        placeholder="Ex: Embalagem almofada - Torracao media"
-                                        onChange={event => applyPatch({ productSubtitle: event.target.value })}
-                                    />
-                                    <FieldMeta>
-                                        <FieldError />
-                                        <FieldCounter>{form.productSubtitle.length}/80</FieldCounter>
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField>
-                                    <StudioLabel>Secao</StudioLabel>
-                                    <StudioInput
-                                        value={form.sectionName}
-                                        maxLength={40}
-                                        placeholder="Ex: Mercearia"
-                                        onChange={event => applyPatch({ sectionName: event.target.value })}
-                                    />
-                                    <FieldMeta>
-                                        <FieldError />
-                                        <FieldCounter>{form.sectionName.length}/40</FieldCounter>
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField>
-                                    <StudioLabel>Unidade</StudioLabel>
-                                    <StudioSelect
-                                        value={form.unitLabel}
-                                        onChange={event => applyPatch({ unitLabel: event.target.value })}
-                                    >
-                                        {unitOptions.map(item => (
-                                            <option key={item.value} value={item.value}>{item.label}</option>
-                                        ))}
-                                    </StudioSelect>
-                                    <FieldMeta>
-                                        <FieldError />
-                                        <FieldCounter />
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField>
-                                    <StudioLabel>Codigo interno</StudioLabel>
-                                    <StudioInput
-                                        value={form.internalCode}
-                                        maxLength={24}
-                                        placeholder="Ex: CAFE-500"
-                                        onChange={event => applyPatch({ internalCode: event.target.value })}
-                                    />
-                                    <FieldMeta>
-                                        <FieldError />
-                                        <FieldCounter>{form.internalCode.length}/24</FieldCounter>
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField>
-                                    <StudioLabel>EAN-13</StudioLabel>
-                                    <StudioInput
-                                        value={form.eanCode}
-                                        maxLength={13}
-                                        inputMode="numeric"
-                                        placeholder="7891234567890"
-                                        onChange={event => applyPatch({ eanCode: event.target.value })}
-                                    />
-                                    <FieldMeta>
-                                        <FieldError>{validation.errors.eanCode || ""}</FieldError>
-                                        <FieldCounter>{form.eanCode.length}/13</FieldCounter>
-                                    </FieldMeta>
-                                </StudioField>
-                            </StudioGrid>
-                        </StudioCard>
-
-                        <StudioCard>
-                            <StudioCardHeader>
-                                <StudioCardEyebrow>Oferta</StudioCardEyebrow>
-                                <StudioCardTitle>Regra comercial do cartaz</StudioCardTitle>
-                                <StudioCardText>
-                                    Escolha o modelo promocional e preencha somente os campos coerentes com o tipo selecionado.
-                                </StudioCardText>
-                            </StudioCardHeader>
-
-                            <PriceTypeGrid>
-                                {priceTypeOptions.map(item => (
-                                    <PriceTypeButton
-                                        key={item.value}
-                                        type="button"
-                                        $active={form.priceType === item.value}
-                                        onClick={() => applyPatch({ priceType: item.value })}
-                                    >
-                                        <PriceTypeButtonTitle>{item.label}</PriceTypeButtonTitle>
-                                        <PriceTypeButtonText>{item.helper}</PriceTypeButtonText>
-                                    </PriceTypeButton>
-                                ))}
-                            </PriceTypeGrid>
-
-                            {pdvPolicy.integrationEnabled ? (
-                                <InlineNotice>
-                                    {pdvSuggestion
-                                        ? `${pdvSuggestion.priceLabel} sugerido pelo ${pdvPolicy.sourceLabel}. ${pdvSuggestion.lockSuggestedField
-                                            ? "O campo principal fica protegido para este perfil."
-                                            : "Você pode ajustar manualmente se necessário."}`
-                                        : pdvPolicy.canSeeSuggestedPrice
-                                            ? "Quando houver preço rastreável por EAN-13, código interno ou item já precificado, o sistema pré-preenche o campo principal para acelerar a operação."
-                                            : "A integração PDV está ativa, mas a política atual não exibe preço sugerido para este perfil."}
-                                </InlineNotice>
-                            ) : null}
-
-                            {form.priceType === "avista" ? (
-                                <InlineGrid>
-                                    <StudioField $full>
-                                        <StudioLabel>Preco promocional</StudioLabel>
-                                        <StudioInput
-                                            value={form.cashPrice}
-                                            inputMode="decimal"
-                                            disabled={pdvLockedFields.includes("cashPrice")}
-                                            placeholder="Ex: 12,99"
-                                            onChange={event => applyPatch({ cashPrice: event.target.value })}
-                                        />
-                                        <FieldMeta>
-                                            <FieldError>{validation.errors.cashPrice || ""}</FieldError>
-                                            <FieldCounter>{pdvLockedFields.includes("cashPrice") ? "Protegido pela política PDV" : "Use vírgula para centavos"}</FieldCounter>
-                                        </FieldMeta>
-                                    </StudioField>
-                                </InlineGrid>
-                            ) : null}
-
-                            {form.priceType === "depor" ? (
-                                <InlineGrid>
-                                    <StudioField>
-                                        <StudioLabel>Preco original</StudioLabel>
-                                        <StudioInput
-                                            value={form.fromPrice}
-                                            inputMode="decimal"
-                                            placeholder="Ex: 15,90"
-                                            onChange={event => applyPatch({ fromPrice: event.target.value })}
-                                        />
-                                        <FieldMeta>
-                                            <FieldError>{validation.errors.fromPrice || ""}</FieldError>
-                                            <FieldCounter />
-                                        </FieldMeta>
-                                    </StudioField>
-
-                                    <StudioField>
-                                        <StudioLabel>Preco promocional</StudioLabel>
-                                        <StudioInput
-                                            value={form.toPrice}
-                                            inputMode="decimal"
-                                            disabled={pdvLockedFields.includes("toPrice")}
-                                            placeholder="Ex: 12,99"
-                                            onChange={event => applyPatch({ toPrice: event.target.value })}
-                                        />
-                                        <FieldMeta>
-                                            <FieldError>{validation.errors.toPrice || ""}</FieldError>
-                                            <FieldCounter />
-                                        </FieldMeta>
-                                    </StudioField>
-                                </InlineGrid>
-                            ) : null}
-
-                            {form.priceType === "clube" ? (
-                                <InlineGrid>
-                                    <StudioField>
-                                        <StudioLabel>Valor normal</StudioLabel>
-                                        <StudioInput
-                                            value={form.clubRegularPrice}
-                                            inputMode="decimal"
-                                            placeholder="Ex: 18,90"
-                                            onChange={event => applyPatch({ clubRegularPrice: event.target.value })}
-                                        />
-                                        <FieldMeta>
-                                            <FieldError>{validation.errors.clubRegularPrice || ""}</FieldError>
-                                            <FieldCounter />
-                                        </FieldMeta>
-                                    </StudioField>
-
-                                    <StudioField>
-                                        <StudioLabel>Valor clube</StudioLabel>
-                                        <StudioInput
-                                            value={form.clubPrice}
-                                            inputMode="decimal"
-                                            disabled={pdvLockedFields.includes("clubPrice")}
-                                            placeholder="Ex: 15,90"
-                                            onChange={event => applyPatch({ clubPrice: event.target.value })}
-                                        />
-                                        <FieldMeta>
-                                            <FieldError>{validation.errors.clubPrice || ""}</FieldError>
-                                            <FieldCounter />
-                                        </FieldMeta>
-                                    </StudioField>
-
-                                    <StudioField $full>
-                                        <StudioLabel>Chamada do clube</StudioLabel>
-                                        <StudioInput
-                                            value={form.clubLabel}
-                                            maxLength={28}
-                                            placeholder="Ex: Clube de vantagens"
-                                            onChange={event => applyPatch({ clubLabel: event.target.value })}
-                                        />
-                                        <FieldMeta>
-                                            <FieldError />
-                                            <FieldCounter>{form.clubLabel.length}/28</FieldCounter>
-                                        </FieldMeta>
-                                    </StudioField>
-                                </InlineGrid>
-                            ) : null}
-
-                            {form.priceType === "ofertaespecial" ? (
-                                <InlineGrid>
-                                    <StudioField>
-                                        <StudioLabel>Quantidade</StudioLabel>
-                                        <StudioInput
-                                            value={form.specialQuantity}
-                                            inputMode="numeric"
-                                            placeholder="Ex: 3"
-                                            onChange={event => applyPatch({ specialQuantity: event.target.value })}
-                                        />
-                                        <FieldMeta>
-                                            <FieldError>{validation.errors.specialQuantity || ""}</FieldError>
-                                            <FieldCounter />
-                                        </FieldMeta>
-                                    </StudioField>
-
-                                    <StudioField>
-                                        <StudioLabel>Preco da oferta</StudioLabel>
-                                        <StudioInput
-                                            value={form.specialPrice}
-                                            inputMode="decimal"
-                                            disabled={pdvLockedFields.includes("specialPrice")}
-                                            placeholder="Ex: 10,00"
-                                            onChange={event => applyPatch({ specialPrice: event.target.value })}
-                                        />
-                                        <FieldMeta>
-                                            <FieldError>{validation.errors.specialPrice || ""}</FieldError>
-                                            <FieldCounter />
-                                        </FieldMeta>
-                                    </StudioField>
-
-                                    <StudioField $full>
-                                        <StudioLabel>Layout da chamada</StudioLabel>
-                                        <StudioSelect
-                                            value={form.specialLayout}
-                                            onChange={event => applyPatch({ specialLayout: event.target.value })}
-                                        >
-                                            {specialLayoutOptions.map(item => (
-                                                <option key={item.value} value={item.value}>{item.label}</option>
-                                            ))}
-                                        </StudioSelect>
-                                        <FieldMeta>
-                                            <FieldError />
-                                            <FieldCounter />
-                                        </FieldMeta>
-                                    </StudioField>
-                                </InlineGrid>
-                            ) : null}
-                        </StudioCard>
-
-                        <StudioCard>
-                            <StudioCardHeader>
-                                <StudioCardEyebrow>Apresentacao</StudioCardEyebrow>
-                                <StudioCardTitle>Formato, validade e comunicacao</StudioCardTitle>
-                                <StudioCardText>
-                                    Configure o contexto visual do cartaz pensando na impressao, leitura rapida e padronizacao operacional.
-                                </StudioCardText>
-                            </StudioCardHeader>
-
-                            <StudioGrid>
-                                <StudioField>
-                                    <StudioLabel>Titulo da oferta</StudioLabel>
-                                    <StudioInput
-                                        value={form.offerTitle}
-                                        maxLength={30}
-                                        placeholder="Ex: Oferta do dia"
-                                        onChange={event => applyPatch({ offerTitle: event.target.value })}
-                                    />
-                                    <FieldMeta>
-                                        <FieldError />
-                                        <FieldCounter>{form.offerTitle.length}/30</FieldCounter>
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField>
-                                    <StudioLabel>Valido ate</StudioLabel>
-                                    <StudioInput
-                                        type="date"
-                                        value={form.validUntil}
-                                        onChange={event => applyPatch({ validUntil: event.target.value })}
-                                    />
-                                    <FieldMeta>
-                                        <FieldError>{validation.errors.validUntil || ""}</FieldError>
-                                        <FieldCounter />
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField>
-                                    <StudioLabel>Tamanho do papel</StudioLabel>
-                                    <StudioSelect
-                                        value={form.paperSize}
-                                        onChange={event => applyPatch({ paperSize: event.target.value })}
-                                    >
-                                        {paperSizeOptions.map(item => (
-                                            <option key={item.value} value={item.value}>{item.label}</option>
-                                        ))}
-                                    </StudioSelect>
-                                    <FieldMeta>
-                                        <FieldError />
-                                        <FieldCounter />
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField>
-                                    <StudioLabel>Orientacao</StudioLabel>
-                                    <StudioSelect
-                                        value={form.orientation}
-                                        onChange={event => applyPatch({ orientation: event.target.value })}
-                                    >
-                                        {orientationOptions.map(item => (
-                                            <option key={item.value} value={item.value}>{item.label}</option>
-                                        ))}
-                                    </StudioSelect>
-                                    <FieldMeta>
-                                        <FieldError />
-                                        <FieldCounter />
-                                    </FieldMeta>
-                                </StudioField>
-
-                                <StudioField $full>
-                                    <StudioLabel>Observacao visivel no cartaz</StudioLabel>
-                                    <StudioTextarea
-                                        value={form.observation}
-                                        maxLength={60}
-                                        placeholder="Ex: Oferta valida enquanto durarem os estoques."
-                                        onChange={event => applyPatch({ observation: event.target.value })}
-                                    />
-                                    <FieldMeta>
-                                        <FieldError />
-                                        <FieldCounter>{form.observation.length}/60</FieldCounter>
-                                    </FieldMeta>
-                                </StudioField>
-                            </StudioGrid>
-
-                            <ToggleGrid>
-                                <ToggleItem>
-                                    <ToggleInput
-                                        checked={form.showBarcode}
-                                        onChange={event => applyPatch({ showBarcode: event.target.checked })}
-                                    />
-                                    <ToggleText>
-                                        <strong>Exibir codigo no cartaz</strong>
-                                        Mostra o EAN-13 ou o codigo interno no rodape para facilitar conferencia durante a operacao.
-                                    </ToggleText>
-                                </ToggleItem>
-
-                                <ToggleItem>
-                                    <ToggleInput
-                                        checked={form.showValidity}
-                                        onChange={event => applyPatch({ showValidity: event.target.checked })}
-                                    />
-                                    <ToggleText>
-                                        <strong>Exibir validade da oferta</strong>
-                                        Recomendado para evitar ambiguidades e reforcar governanca na impressao de campanhas.
-                                    </ToggleText>
-                                </ToggleItem>
-                            </ToggleGrid>
-                        </StudioCard>
-                    </CreatePriceMain>
-
-                    <CreatePriceSidebar>
-                        <StatusCard $tone={statusCard.tone}>
-                            <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Validado" : "Revisao"}
-                            </StatusBadge>
-                            <StatusTitle>{statusCard.title}</StatusTitle>
-                            <StatusText>{statusCard.description}</StatusText>
-
-                            <SummaryGrid>
-                                {summaryItems.map(item => (
-                                    <SummaryItem key={item.label}>
-                                        <SummaryLabel>{item.label}</SummaryLabel>
-                                        <SummaryValue>{item.value}</SummaryValue>
-                                    </SummaryItem>
-                                ))}
-                            </SummaryGrid>
-                        </StatusCard>
-
-                        {!validation.isValid ? (
-                            <ErrorSummary>
-                                <ErrorSummaryTitle>Pendencias obrigatorias</ErrorSummaryTitle>
-                                {validation.errorList.map(item => (
-                                    <ErrorSummaryItem key={item}>{item}</ErrorSummaryItem>
-                                ))}
-                            </ErrorSummary>
-                        ) : null}
-
-                        {validation.warnings.length ? (
+                        <CreatePriceTopGrid>
                             <StudioCard>
                                 <StudioCardHeader>
-                                    <StudioCardEyebrow>Melhorias</StudioCardEyebrow>
-                                    <StudioCardTitle>Refinamentos recomendados</StudioCardTitle>
+                                    <StudioCardEyebrow>Configuração</StudioCardEyebrow>
+                                    <StudioCardTitle>Estrutura do cartaz</StudioCardTitle>
                                     <StudioCardText>
-                                        O cartaz ja pode estar valido, mas estas melhorias elevam padrao e rastreabilidade.
+                                        Defina o tipo de preço, tamanho e orientação antes de preencher o item. O preview abaixo acompanha tudo em tempo real.
                                     </StudioCardText>
                                 </StudioCardHeader>
 
-                                <WarningList>
-                                    {validation.warnings.map(item => (
-                                        <WarningItem key={item}>{item}</WarningItem>
-                                    ))}
-                                </WarningList>
+                                <FieldInlineGrid>
+                                    <StudioField>
+                                        <StudioLabel>Tipo de preço</StudioLabel>
+                                        <StudioSelect
+                                            value={controller.form.priceType}
+                                            onChange={event => controller.applyPatch({ priceType: event.target.value })}
+                                        >
+                                            {controller.priceTypeOptions.map(item => (
+                                                <option key={item.value} value={item.value}>{item.label}</option>
+                                            ))}
+                                        </StudioSelect>
+                                    </StudioField>
+
+                                    <StudioField>
+                                        <StudioLabel>Tamanho</StudioLabel>
+                                        <StudioSelect
+                                            value={controller.form.paperSize}
+                                            onChange={event => controller.applyPatch({ paperSize: event.target.value })}
+                                        >
+                                            {controller.paperSizeOptions.map(item => (
+                                                <option key={item.value} value={item.value}>{item.label}</option>
+                                            ))}
+                                        </StudioSelect>
+                                    </StudioField>
+
+                                    <StudioField>
+                                        <StudioLabel>Orientação</StudioLabel>
+                                        <StudioSelect
+                                            value={controller.form.orientation}
+                                            onChange={event => controller.applyPatch({ orientation: event.target.value })}
+                                        >
+                                            {controller.orientationOptions.map(item => (
+                                                <option key={item.value} value={item.value}>{item.label}</option>
+                                            ))}
+                                        </StudioSelect>
+                                    </StudioField>
+                                </FieldInlineGrid>
                             </StudioCard>
-                        ) : null}
 
-                        <PreviewCard>
+                            <SearchPriceGrid>
+                                <StudioCard>
+                                    <StudioCardHeader>
+                                        <StudioCardEyebrow>Buscar item</StudioCardEyebrow>
+                                        <StudioCardTitle>Catálogo com sugestão dinâmica</StudioCardTitle>
+                                        <StudioCardText>
+                                            Digite código interno, EAN ou descrição. Enter e Tab escolhem a melhor sugestão e avançam para o preço.
+                                        </StudioCardText>
+                                    </StudioCardHeader>
+
+                                    <SearchField>
+                                        <SearchInputWrap>
+                                            <SearchIconWrap>
+                                                <DashboardIconGlyph name="search" size={18} color="currentColor" />
+                                            </SearchIconWrap>
+                                            <SearchInput
+                                                ref={controller.bindFieldRef("itemSearch")}
+                                                value={controller.itemQuery}
+                                                placeholder="Buscar por nome, código ou EAN"
+                                                onFocus={() => setSearchFocused(true)}
+                                                onBlur={() => window.setTimeout(() => setSearchFocused(false), 120)}
+                                                onChange={event => controller.handleItemQueryChange(event.target.value)}
+                                                onKeyDown={controller.handleItemQueryKeyDown}
+                                            />
+                                            {searchFocused && controller.showSuggestions ? (
+                                                <SuggestionPanel>
+                                                    {controller.itemSuggestions.map((item, index) => (
+                                                        <SuggestionButton
+                                                            key={item.id}
+                                                            $active={index === controller.activeSuggestionIndex}
+                                                            onMouseDown={event => {
+                                                                event.preventDefault();
+                                                                controller.handleSelectCatalogItem(item);
+                                                                setSearchFocused(false);
+                                                            }}
+                                                            onMouseEnter={() => controller.setActiveSuggestionIndex(index)}
+                                                        >
+                                                            <SuggestionTitle>{item.description1 || item.internalCode || item.ean13}</SuggestionTitle>
+                                                            <SuggestionMeta>
+                                                                {[item.description2, item.internalCode || item.ean13, item.unit].filter(Boolean).join(" · ")}
+                                                            </SuggestionMeta>
+                                                        </SuggestionButton>
+                                                    ))}
+                                                </SuggestionPanel>
+                                            ) : null}
+                                        </SearchInputWrap>
+
+                                        {controller.selectedCatalogItem ? (
+                                            <SelectedItemPanel>
+                                                <SelectedItemTitle>{controller.selectedCatalogItem.description1}</SelectedItemTitle>
+                                                <SelectedItemMeta>
+                                                    {[
+                                                        controller.selectedCatalogItem.description2,
+                                                        controller.selectedCatalogItem.internalCode || controller.selectedCatalogItem.ean13,
+                                                        controller.form.unitLabel,
+                                                    ].filter(Boolean).join(" · ")}
+                                                </SelectedItemMeta>
+                                                {canAdjustUnit ? (
+                                                    <SelectedItemHint>Item por peso: você pode emitir por kg ou a cada 100g.</SelectedItemHint>
+                                                ) : (
+                                                    <SelectedItemHint>A unidade segue o cadastro do item para manter a consistência operacional.</SelectedItemHint>
+                                                )}
+                                            </SelectedItemPanel>
+                                        ) : null}
+                                    </SearchField>
+                                </StudioCard>
+
+                                <StudioCard>
+                                    <StudioCardHeader>
+                                        <StudioCardEyebrow>Preço</StudioCardEyebrow>
+                                        <StudioCardTitle>Entrada prática da oferta</StudioCardTitle>
+                                        <StudioCardText>
+                                            Digite apenas números no valor. O sistema formata automaticamente em reais e centavos.
+                                        </StudioCardText>
+                                    </StudioCardHeader>
+
+                                    {renderPriceFields(controller, canAdjustUnit)}
+
+                                </StudioCard>
+                            </SearchPriceGrid>
+                        </CreatePriceTopGrid>
+
+                        <PreviewSection>
+                            <PreviewSectionHeader>
+                                <PreviewSectionTextWrap>
+                                    <PreviewSectionEyebrow>Preview</PreviewSectionEyebrow>
+                                    <PreviewSectionTitle>Prévia simultânea do cartaz e da folha</PreviewSectionTitle>
+                                    <PreviewSectionText>
+                                        O preview se adapta ao espaço disponível e à orientação do cartaz. Quando A5 ou A6 estiverem configurados para sair em A4, a montagem da folha aparece aqui.
+                                    </PreviewSectionText>
+                                </PreviewSectionTextWrap>
+                                <SheetModeBadge>
+                                    {controller.preview.sheetLayout.sheetLabel}
+                                </SheetModeBadge>
+                            </PreviewSectionHeader>
+
+                            <PreviewWorkspace $orientation={controller.preview.orientation}>
+                                <PreviewRail>
+                                    <StatusCard $tone={controller.statusCard.tone}>
+                                        <StatusBadge $tone={controller.statusCard.tone}>
+                                            {controller.statusCard.tone === "green" ? "Pronto" : "Revisar"}
+                                        </StatusBadge>
+                                        <StatusTitle>{controller.statusCard.title}</StatusTitle>
+                                        <StatusText>{controller.statusCard.description}</StatusText>
+                                    </StatusCard>
+
+                                    <SummaryGrid>
+                                        {controller.summaryItems.map(item => (
+                                            <SummaryItem key={item.label}>
+                                                <SummaryLabel>{item.label}</SummaryLabel>
+                                                <SummaryValue>{item.value}</SummaryValue>
+                                            </SummaryItem>
+                                        ))}
+                                    </SummaryGrid>
+
+                                </PreviewRail>
+
+                                <PreviewCanvasWrap>
+                                    <PreviewCanvasHeader>
+                                        <PreviewCanvasMeta>{controller.preview.paperLabel}</PreviewCanvasMeta>
+                                        <PreviewCanvasMeta>{controller.preview.sheetLayout.helperText}</PreviewCanvasMeta>
+                                    </PreviewCanvasHeader>
+                                    <PreviewCanvas $orientation={controller.preview.orientation}>
+                                        <PreviewSheet
+                                            $aspectRatio={controller.preview.sheetAspectRatio}
+                                            $columns={controller.preview.sheetLayout.columns}
+                                            $rows={controller.preview.sheetLayout.rows}
+                                            $orientation={controller.preview.orientation}
+                                        >
+                                            {Array.from({ length: controller.preview.sheetLayout.copies }).map((_, index) => (
+                                                <PreviewSlot key={`${controller.preview.sheetLayout.mode}-${index}`}>
+                                                    {renderPoster({
+                                                        preview: controller.preview,
+                                                        previewPriceParts,
+                                                        previewInfoGroups,
+                                                    })}
+                                                </PreviewSlot>
+                                            ))}
+                                        </PreviewSheet>
+                                    </PreviewCanvas>
+                                </PreviewCanvasWrap>
+                            </PreviewWorkspace>
+                        </PreviewSection>
+                    </CreatePriceMain>
+
+                    <CreatePriceSidebar>
+                        <StudioCard>
                             <StudioCardHeader>
-                                <PreviewBadge>{preview.offerTitle}</PreviewBadge>
-                                <PreviewTitle>{preview.title}</PreviewTitle>
-                                {preview.subtitle ? <PreviewSubtitle>{preview.subtitle}</PreviewSubtitle> : null}
+                                <StudioCardEyebrow>Informações adicionais</StudioCardEyebrow>
+                                <StudioCardTitle>Vigência e observações</StudioCardTitle>
+                                <StudioCardText>
+                                    Defina os metadados da campanha e o título comercial que aparecerá no cartaz.
+                                </StudioCardText>
                             </StudioCardHeader>
 
-                            <PreviewPrice>{preview.primaryPrice}</PreviewPrice>
+                            <StudioField>
+                                <StudioLabel>Válido de</StudioLabel>
+                                <StudioInput
+                                    ref={controller.bindFieldRef("validFrom")}
+                                    type="date"
+                                    value={controller.form.validFrom}
+                                    onChange={event => controller.applyPatch({ validFrom: event.target.value })}
+                                    onKeyDown={event => controller.handleFieldAdvance("validFrom", event)}
+                                />
+                                <FieldMeta>
+                                    <FieldError>{controller.validation.errors.validFrom || ""}</FieldError>
+                                    <FieldCounter />
+                                </FieldMeta>
+                            </StudioField>
 
-                            {preview.supportingPrice ? (
-                                <PreviewSupportPrice $strike={form.priceType === "depor"}>
-                                    {preview.supportingPrice}
-                                </PreviewSupportPrice>
+                            <StudioField>
+                                <StudioLabel>Válido até</StudioLabel>
+                                <StudioInput
+                                    ref={controller.bindFieldRef("validUntil")}
+                                    type="date"
+                                    value={controller.form.validUntil}
+                                    onChange={event => controller.applyPatch({ validUntil: event.target.value })}
+                                    onKeyDown={event => controller.handleFieldAdvance("validUntil", event)}
+                                />
+                                <FieldMeta>
+                                    <FieldError>{controller.validation.errors.validUntil || ""}</FieldError>
+                                    <FieldCounter />
+                                </FieldMeta>
+                            </StudioField>
+
+                            <StudioField>
+                                <StudioLabel>Tipo de oferta</StudioLabel>
+                                <StudioSelect
+                                    ref={controller.bindFieldRef("offerTypeSelect")}
+                                    value={controller.offerTypeSelectValue}
+                                    onChange={event => controller.handleOfferTypeSelectChange(event.target.value)}
+                                    onKeyDown={event => controller.handleFieldAdvance("offerTypeSelect", event)}
+                                >
+                                    <option value="">Nenhum</option>
+                                    {controller.offerTypeOptions.map(item => (
+                                        <option key={item.value} value={item.value}>{item.label}</option>
+                                    ))}
+                                    <option value="__custom__">Personalizado</option>
+                                </StudioSelect>
+                            </StudioField>
+
+                            {controller.showCustomOfferInput ? (
+                                <StudioField>
+                                    <StudioLabel>Título personalizado</StudioLabel>
+                                    <StudioInput
+                                        ref={controller.bindFieldRef("offerTitleCustom")}
+                                        value={controller.form.offerTitle}
+                                        placeholder="Ex: Oferta da semana"
+                                        onChange={event => controller.applyPatch({ offerTitle: event.target.value })}
+                                        onKeyDown={event => controller.handleFieldAdvance("offerTitleCustom", event)}
+                                    />
+                                    <FieldMeta>
+                                        <FieldError />
+                                        <FieldCounter>{controller.form.offerTitle.length}/30</FieldCounter>
+                                    </FieldMeta>
+                                </StudioField>
                             ) : null}
 
-                            {preview.specialLabel ? (
-                                <PreviewSpecialLabel>{preview.specialLabel}</PreviewSpecialLabel>
-                            ) : null}
+                            <StudioField>
+                                <StudioLabel>Observação</StudioLabel>
+                                <StudioTextarea
+                                    ref={controller.bindFieldRef("observation")}
+                                    value={controller.form.observation}
+                                    placeholder="Texto complementar no rodapé"
+                                    onChange={event => controller.applyPatch({ observation: event.target.value })}
+                                    onKeyDown={event => controller.handleFieldAdvance("observation", event)}
+                                />
+                                <FieldMeta>
+                                    <FieldError />
+                                    <FieldCounter>{controller.form.observation.length}/60</FieldCounter>
+                                </FieldMeta>
+                            </StudioField>
 
-                            <PreviewMetaList>
-                                <PreviewMetaItem>
-                                    <PreviewMetaLabel>Formato</PreviewMetaLabel>
-                                    <PreviewMetaValue>{preview.paperLabel}</PreviewMetaValue>
-                                </PreviewMetaItem>
+                            <ToggleList>
+                                <ToggleRow>
+                                    <ToggleInput
+                                        checked={controller.form.showBarcode}
+                                        onChange={event => controller.applyPatch({ showBarcode: event.target.checked })}
+                                    />
+                                    <ToggleTextWrap>
+                                        <ToggleTitle>Exibir código de barras</ToggleTitle>
+                                        <ToggleText>Mostra EAN ou código interno conforme a disponibilidade do item.</ToggleText>
+                                    </ToggleTextWrap>
+                                </ToggleRow>
 
-                                <PreviewMetaItem>
-                                    <PreviewMetaLabel>Codigo</PreviewMetaLabel>
-                                    <PreviewMetaValue>{preview.barcodeLabel || "Nao exibido"}</PreviewMetaValue>
-                                </PreviewMetaItem>
-
-                                <PreviewMetaItem>
-                                    <PreviewMetaLabel>Validade</PreviewMetaLabel>
-                                    <PreviewMetaValue>{preview.validityLabel || "Sem validade"}</PreviewMetaValue>
-                                </PreviewMetaItem>
-
-                                {preview.observation ? (
-                                    <PreviewMetaItem>
-                                        <PreviewMetaLabel>Observacao</PreviewMetaLabel>
-                                        <PreviewMetaValue>{preview.observation}</PreviewMetaValue>
-                                    </PreviewMetaItem>
-                                ) : null}
-                            </PreviewMetaList>
-                        </PreviewCard>
-
-                        <StudioCard>
-                            <StudioCardHeader>
-                                <StudioCardEyebrow>Boas praticas</StudioCardEyebrow>
-                                <StudioCardTitle>Checklist de qualidade</StudioCardTitle>
-                                <StudioCardText>
-                                    Diretrizes de mercado aplicadas para manter padrão profissional na comunicação de preço.
-                                </StudioCardText>
-                            </StudioCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
+                                <ToggleRow>
+                                    <ToggleInput
+                                        checked={controller.form.showValidity}
+                                        onChange={event => controller.applyPatch({ showValidity: event.target.checked })}
+                                    />
+                                    <ToggleTextWrap>
+                                        <ToggleTitle>Exibir validade</ToggleTitle>
+                                        <ToggleText>Inclui a vigência programada no cartaz para reduzir trocas incorretas.</ToggleText>
+                                    </ToggleTextWrap>
+                                </ToggleRow>
+                            </ToggleList>
                         </StudioCard>
 
-                        <StudioCard>
-                            <StudioCardHeader>
-                                <StudioCardEyebrow>Histórico local</StudioCardEyebrow>
-                                <StudioCardTitle>Composicoes recentes</StudioCardTitle>
-                                <StudioCardText>
-                                    Versoes validas salvas neste navegador com criptografia da base atual do projeto.
-                                </StudioCardText>
-                            </StudioCardHeader>
-
-                            <RecentList>
-                                {!recentItems.length ? (
-                                    <RecentItem>
-                                        <RecentTitle>Nenhuma composicao salva ainda</RecentTitle>
-                                        <RecentMeta>Use "Salvar versao" para criar um ponto de restauracao local.</RecentMeta>
-                                    </RecentItem>
-                                ) : recentItems.map(item => (
-                                    <RecentItem key={item.id}>
-                                        <RecentHeader>
-                                            <div>
-                                                <RecentTitle>{item.title}</RecentTitle>
-                                                <RecentMeta>{item.helper}</RecentMeta>
-                                                <RecentMeta>{item.relativeDate}</RecentMeta>
-                                            </div>
-                                            <RecentButton type="button" onClick={() => handleRestoreComposition(item)}>
-                                                Restaurar
-                                            </RecentButton>
-                                        </RecentHeader>
-                                    </RecentItem>
-                                ))}
-                            </RecentList>
-                        </StudioCard>
-
-                        <StudioCard>
-                            <StudioCardHeader>
-                                <StudioCardEyebrow>Atalhos</StudioCardEyebrow>
-                                <StudioCardTitle>Produtividade da tela</StudioCardTitle>
-                                <StudioCardText>
-                                    Os atalhos reduzem fricção operacional e ajudam a manter o fluxo rápido durante a criação de cartazes.
-                                </StudioCardText>
-                            </StudioCardHeader>
-
-                            <ShortcutList>
-                                {shortcuts.map(item => (
-                                    <ShortcutItem key={item.label}>
-                                        <ShortcutKey>{item.label}</ShortcutKey>
-                                        <ShortcutText>{item.description}</ShortcutText>
-                                    </ShortcutItem>
-                                ))}
-                            </ShortcutList>
-                        </StudioCard>
                     </CreatePriceSidebar>
                 </CreatePriceLayout>
             </PageContent>
         </ContainerAuthenticated>
+    );
+}
+
+function renderPriceFields(controller, canAdjustUnit) {
+    const priceType = controller.form.priceType;
+    const isUnitLocked = !!controller.selectedCatalogItem && !canAdjustUnit;
+
+    return (
+        <>
+            <FieldInlineGrid>
+                {priceType === "avista" ? (
+                    <StudioField>
+                        <StudioLabel>Valor (R$)</StudioLabel>
+                        <StudioInput
+                            ref={controller.bindFieldRef("cashPrice")}
+                            inputMode="numeric"
+                            value={controller.form.cashPrice}
+                            placeholder="Digite apenas números"
+                            onChange={event => controller.applyPatch({ cashPrice: event.target.value })}
+                            onKeyDown={event => controller.handleFieldAdvance("cashPrice", event)}
+                        />
+                        <FieldMeta>
+                            <FieldError>{controller.validation.errors.cashPrice || ""}</FieldError>
+                            <FieldCounter />
+                        </FieldMeta>
+                    </StudioField>
+                ) : null}
+
+                {priceType === "depor" ? (
+                    <>
+                        <StudioField>
+                            <StudioLabel>De (R$)</StudioLabel>
+                            <StudioInput
+                                ref={controller.bindFieldRef("fromPrice")}
+                                inputMode="numeric"
+                                value={controller.form.fromPrice}
+                                placeholder="Digite apenas números"
+                                onChange={event => controller.applyPatch({ fromPrice: event.target.value })}
+                                onKeyDown={event => controller.handleFieldAdvance("fromPrice", event)}
+                            />
+                            <FieldMeta>
+                                <FieldError>{controller.validation.errors.fromPrice || ""}</FieldError>
+                                <FieldCounter />
+                            </FieldMeta>
+                        </StudioField>
+
+                        <StudioField>
+                            <StudioLabel>Por (R$)</StudioLabel>
+                            <StudioInput
+                                ref={controller.bindFieldRef("toPrice")}
+                                inputMode="numeric"
+                                value={controller.form.toPrice}
+                                placeholder="Digite apenas números"
+                                onChange={event => controller.applyPatch({ toPrice: event.target.value })}
+                                onKeyDown={event => controller.handleFieldAdvance("toPrice", event)}
+                            />
+                            <FieldMeta>
+                                <FieldError>{controller.validation.errors.toPrice || ""}</FieldError>
+                                <FieldCounter />
+                            </FieldMeta>
+                        </StudioField>
+                    </>
+                ) : null}
+
+                {priceType === "clube" ? (
+                    <>
+                        <StudioField>
+                            <StudioLabel>Preço normal (R$)</StudioLabel>
+                            <StudioInput
+                                ref={controller.bindFieldRef("clubRegularPrice")}
+                                inputMode="numeric"
+                                value={controller.form.clubRegularPrice}
+                                placeholder="Digite apenas números"
+                                onChange={event => controller.applyPatch({ clubRegularPrice: event.target.value })}
+                                onKeyDown={event => controller.handleFieldAdvance("clubRegularPrice", event)}
+                            />
+                            <FieldMeta>
+                                <FieldError>{controller.validation.errors.clubRegularPrice || ""}</FieldError>
+                                <FieldCounter />
+                            </FieldMeta>
+                        </StudioField>
+
+                        <StudioField>
+                            <StudioLabel>Preço clube (R$)</StudioLabel>
+                            <StudioInput
+                                ref={controller.bindFieldRef("clubPrice")}
+                                inputMode="numeric"
+                                value={controller.form.clubPrice}
+                                placeholder="Digite apenas números"
+                                onChange={event => controller.applyPatch({ clubPrice: event.target.value })}
+                                onKeyDown={event => controller.handleFieldAdvance("clubPrice", event)}
+                            />
+                            <FieldMeta>
+                                <FieldError>{controller.validation.errors.clubPrice || ""}</FieldError>
+                                <FieldCounter />
+                            </FieldMeta>
+                        </StudioField>
+
+                        <StudioField>
+                            <StudioLabel>Texto do selo</StudioLabel>
+                            <StudioInput
+                                ref={controller.bindFieldRef("clubLabel")}
+                                value={controller.form.clubLabel}
+                                placeholder="Ex: Oferta Clube"
+                                onChange={event => controller.applyPatch({ clubLabel: event.target.value })}
+                                onKeyDown={event => controller.handleFieldAdvance("clubLabel", event)}
+                            />
+                            <FieldMeta>
+                                <FieldError />
+                                <FieldCounter>{controller.form.clubLabel.length}/28</FieldCounter>
+                            </FieldMeta>
+                        </StudioField>
+                    </>
+                ) : null}
+
+                {priceType === "ofertaespecial" ? (
+                    <>
+                        <StudioField>
+                            <StudioLabel>Quantidade</StudioLabel>
+                            <StudioInput
+                                ref={controller.bindFieldRef("specialQuantity")}
+                                inputMode="numeric"
+                                value={controller.form.specialQuantity}
+                                placeholder="Ex: 3"
+                                onChange={event => controller.applyPatch({ specialQuantity: event.target.value })}
+                                onKeyDown={event => controller.handleFieldAdvance("specialQuantity", event)}
+                            />
+                            <FieldMeta>
+                                <FieldError>{controller.validation.errors.specialQuantity || ""}</FieldError>
+                                <FieldCounter />
+                            </FieldMeta>
+                        </StudioField>
+
+                        <StudioField>
+                            <StudioLabel>Valor da oferta (R$)</StudioLabel>
+                            <StudioInput
+                                ref={controller.bindFieldRef("specialPrice")}
+                                inputMode="numeric"
+                                value={controller.form.specialPrice}
+                                placeholder="Digite apenas números"
+                                onChange={event => controller.applyPatch({ specialPrice: event.target.value })}
+                                onKeyDown={event => controller.handleFieldAdvance("specialPrice", event)}
+                            />
+                            <FieldMeta>
+                                <FieldError>{controller.validation.errors.specialPrice || ""}</FieldError>
+                                <FieldCounter />
+                            </FieldMeta>
+                        </StudioField>
+
+                        <StudioField>
+                            <StudioLabel>Layout da oferta</StudioLabel>
+                            <StudioSelect
+                                ref={controller.bindFieldRef("specialLayout")}
+                                value={controller.form.specialLayout}
+                                onChange={event => controller.applyPatch({ specialLayout: event.target.value })}
+                                onKeyDown={event => controller.handleFieldAdvance("specialLayout", event)}
+                            >
+                                {controller.specialLayoutOptions.map(item => (
+                                    <option key={item.value} value={item.value}>{item.label}</option>
+                                ))}
+                            </StudioSelect>
+                        </StudioField>
+                    </>
+                ) : null}
+
+                <StudioField>
+                    <StudioLabel>Unidade de venda</StudioLabel>
+                    <StudioSelect
+                        ref={controller.bindFieldRef("unitLabel")}
+                        value={controller.form.unitLabel}
+                        disabled={isUnitLocked}
+                        onChange={event => controller.applyPatch({ unitLabel: event.target.value })}
+                        onKeyDown={event => controller.handleFieldAdvance("unitLabel", event)}
+                    >
+                        {controller.unitOptions.map(item => (
+                            <option key={item.value} value={item.value}>{item.label}</option>
+                        ))}
+                    </StudioSelect>
+                    <FieldMeta>
+                        <FieldError />
+                        <FieldCounter />
+                    </FieldMeta>
+                </StudioField>
+            </FieldInlineGrid>
+
+            <HelperText>
+                {canAdjustUnit
+                    ? "Itens vendidos por peso podem alternar entre kg e cada 100g sem perder a base do cadastro."
+                    : "A unidade principal vem do cadastro do item para manter o cartaz coerente com o catálogo."}
+            </HelperText>
+        </>
+    );
+}
+
+function renderPoster({ preview, previewPriceParts, previewInfoGroups }) {
+    const titleSize = preview.style?.titleSizePx ? Math.max(18, Math.round(preview.style.titleSizePx * 0.58)) : 28;
+    const subtitleSize = preview.style?.subtitleSizePx ? Math.max(11, Math.round(preview.style.subtitleSizePx * 0.74)) : 13;
+    const priceSize = preview.style?.priceSizePx ? Math.max(34, Math.round(preview.style.priceSizePx * 0.72)) : 54;
+    const supportSize = preview.style?.supportSizePx ? Math.max(12, Math.round(preview.style.supportSizePx * 0.78)) : 16;
+    const priceColor = preview.style?.accentColor;
+    const specialBackground = withAlpha(preview.style?.highlightColor, 0.14);
+    const badgeBackground = withAlpha(preview.style?.accentColor, 0.08);
+
+    return (
+        <PosterCard $padding={preview.style?.framePadding} $radius={preview.style?.frameRadius}>
+            <PosterHeader>
+                <PosterBadgeRow>
+                    <PosterBadge $background={badgeBackground} $color={priceColor}>
+                        {preview.offerTitle}
+                    </PosterBadge>
+                    {previewInfoGroups.badgeItems.map(item => (
+                        <PosterBadge key={`${item.label}-${item.value}`} $background="rgba(255,255,255,0.46)" $color="#334155">
+                            {item.value}
+                        </PosterBadge>
+                    ))}
+                </PosterBadgeRow>
+
+                <PosterTitle
+                    $fontFamily={preview.style?.titleFontFamily}
+                    $fontSize={titleSize}
+                    $align={preview.style?.titleAlign}
+                    $transform={preview.style?.titleTransform}
+                >
+                    {preview.title}
+                </PosterTitle>
+
+                {preview.subtitle ? (
+                    <PosterSubtitle
+                        $fontFamily={preview.style?.infoFontFamily}
+                        $fontSize={subtitleSize}
+                        $align={preview.style?.titleAlign}
+                    >
+                        {preview.subtitle}
+                    </PosterSubtitle>
+                ) : null}
+
+                {previewInfoGroups.headerItems.length ? (
+                    <PosterHeaderMetaList>
+                        {previewInfoGroups.headerItems.map(item => (
+                            <PosterHeaderMetaItem key={`${item.label}-${item.value}`}>
+                                <PosterMetaLabel>{item.label}</PosterMetaLabel>
+                                <PosterMetaValue>{item.value}</PosterMetaValue>
+                            </PosterHeaderMetaItem>
+                        ))}
+                    </PosterHeaderMetaList>
+                ) : null}
+            </PosterHeader>
+
+            <PosterPriceSection $align={preview.style?.priceAlign}>
+                {!previewPriceParts.structured ? (
+                    <PosterPriceRaw
+                        $color={priceColor}
+                        $fontFamily={preview.style?.priceFontFamily}
+                        $fontSize={priceSize}
+                        $align={preview.style?.priceAlign}
+                    >
+                        {preview.primaryPrice}
+                    </PosterPriceRaw>
+                ) : (
+                    <>
+                        {preview.style?.priceSymbolPosition === "top" ? (
+                            <PosterCurrencySymbol
+                                $color={priceColor}
+                                $fontFamily={preview.style?.priceFontFamily}
+                                $fontSize={Math.max(14, Math.round(priceSize * 0.22))}
+                                $offsetX={preview.style?.priceSymbolOffsetX}
+                                $offsetY={preview.style?.priceSymbolOffsetY}
+                            >
+                                {previewPriceParts.symbol}
+                            </PosterCurrencySymbol>
+                        ) : null}
+
+                        <PosterPriceLine>
+                            {preview.style?.priceSymbolPosition === "left" ? (
+                                <PosterCurrencySymbol
+                                    $color={priceColor}
+                                    $fontFamily={preview.style?.priceFontFamily}
+                                    $fontSize={Math.max(14, Math.round(priceSize * 0.22))}
+                                    $offsetX={preview.style?.priceSymbolOffsetX}
+                                    $offsetY={preview.style?.priceSymbolOffsetY}
+                                >
+                                    {previewPriceParts.symbol}
+                                </PosterCurrencySymbol>
+                            ) : null}
+
+                            <PosterPriceInteger
+                                $color={priceColor}
+                                $fontFamily={preview.style?.priceFontFamily}
+                                $fontSize={priceSize}
+                            >
+                                {previewPriceParts.integer}
+                            </PosterPriceInteger>
+
+                            <PosterCentsGroup
+                                $align={preview.style?.centsAlign}
+                                $offsetX={preview.style?.centsOffsetX}
+                                $offsetY={preview.style?.centsOffsetY}
+                            >
+                                <PosterPriceComma
+                                    $color={priceColor}
+                                    $fontFamily={preview.style?.priceFontFamily}
+                                    $fontSize={Math.max(14, Math.round(priceSize * 0.28))}
+                                    $offsetX={preview.style?.commaOffsetX}
+                                    $offsetY={preview.style?.commaOffsetY}
+                                >
+                                    {previewPriceParts.comma}
+                                </PosterPriceComma>
+                                <PosterPriceCents
+                                    $color={priceColor}
+                                    $fontFamily={preview.style?.priceFontFamily}
+                                    $fontSize={Math.max(18, Math.round(priceSize * 0.34))}
+                                >
+                                    {previewPriceParts.cents}
+                                </PosterPriceCents>
+                            </PosterCentsGroup>
+
+                            {preview.style?.unitPosition === "inline" && previewPriceParts.unitLabel ? (
+                                <PosterPriceUnit
+                                    $fontFamily={preview.style?.infoFontFamily}
+                                    $fontSize={supportSize}
+                                    $offsetX={preview.style?.unitOffsetX}
+                                    $offsetY={preview.style?.unitOffsetY}
+                                >
+                                    {previewPriceParts.unitLabel}
+                                </PosterPriceUnit>
+                            ) : null}
+                        </PosterPriceLine>
+
+                        {preview.style?.unitPosition === "below" && previewPriceParts.unitLabel ? (
+                            <PosterPriceUnit
+                                $fontFamily={preview.style?.infoFontFamily}
+                                $fontSize={supportSize}
+                                $offsetX={preview.style?.unitOffsetX}
+                                $offsetY={preview.style?.unitOffsetY}
+                            >
+                                {previewPriceParts.unitLabel}
+                            </PosterPriceUnit>
+                        ) : null}
+                    </>
+                )}
+
+                {preview.supportingPrice ? (
+                    <PosterSupportPrice
+                        $strike={preview.mode === "compare"}
+                        $fontFamily={preview.style?.infoFontFamily}
+                        $fontSize={supportSize}
+                        $align={preview.style?.priceAlign}
+                    >
+                        {preview.supportingPrice}
+                    </PosterSupportPrice>
+                ) : null}
+
+                {preview.specialLabel ? (
+                    <PosterSpecialLabel $background={specialBackground} $color={preview.style?.highlightColor}>
+                        {preview.specialLabel}
+                    </PosterSpecialLabel>
+                ) : null}
+            </PosterPriceSection>
+
+            <PosterFooter>
+                {previewInfoGroups.metaItems.length ? (
+                    <PosterMetaGrid $layout={preview.style?.metaLayout}>
+                        {previewInfoGroups.metaItems.map(item => (
+                            <PosterMetaCard key={`${item.label}-${item.value}`}>
+                                <PosterMetaLabel>{item.label}</PosterMetaLabel>
+                                <PosterMetaValue>{item.value}</PosterMetaValue>
+                            </PosterMetaCard>
+                        ))}
+                    </PosterMetaGrid>
+                ) : null}
+
+                {previewInfoGroups.footerItems.length ? (
+                    <PosterMetaGrid $layout="stacked">
+                        {previewInfoGroups.footerItems.map(item => (
+                            <PosterMetaCard key={`${item.label}-${item.value}`}>
+                                <PosterMetaLabel>{item.label}</PosterMetaLabel>
+                                <PosterMetaValue>{item.value}</PosterMetaValue>
+                            </PosterMetaCard>
+                        ))}
+                    </PosterMetaGrid>
+                ) : null}
+            </PosterFooter>
+        </PosterCard>
     );
 }

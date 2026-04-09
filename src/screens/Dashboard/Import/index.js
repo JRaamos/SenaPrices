@@ -15,10 +15,7 @@ import {
     CatalogField,
     CatalogLabel,
     CatalogSelect,
-    ChecklistItem,
-    ChecklistList,
-    ChecklistText,
-    ChecklistTitle,
+    ColumnBadge,
     DatasetColumns,
     DatasetMetaCard,
     DatasetMetaGrid,
@@ -28,9 +25,6 @@ import {
     DropzoneMeta,
     DropzoneText,
     DropzoneTitle,
-    ErrorSummary,
-    ErrorSummaryItem,
-    ErrorSummaryTitle,
     FieldCounter,
     FieldError,
     FieldMeta,
@@ -40,12 +34,10 @@ import {
     ImportLayout,
     ImportMain,
     ImportMessage,
-    ImportSidebar,
     ImportTable,
     ImportTableHeader,
     ImportTableHeaderCell,
     ImportTableRow,
-    InlineNotice,
     MappingGrid,
     MappingRow,
     MappingText,
@@ -53,17 +45,6 @@ import {
     MetaBadge,
     ResultItem,
     ResultList,
-    StatusBadge,
-    StatusCard,
-    StatusText,
-    StatusTitle,
-    SummaryGrid,
-    SummaryItem,
-    SummaryLabel,
-    SummaryValue,
-    WarningItem,
-    WarningList,
-    ColumnBadge,
 } from "./styled";
 
 export default function DashboardImport() {
@@ -81,17 +62,13 @@ export default function DashboardImport() {
         conflictOptions,
         targetFields,
         importPlan,
-        statusCard,
-        summaryItems,
         lastImportResult,
-        guidelines,
         handleFileAccepted,
         applyMappingPatch,
         setConflictMode,
     } = useController();
 
     const previewRows = importPlan.previewRows || [];
-    const missingRequiredMappings = mappingSummary.requiredMissing || [];
     const importCounters = useMemo(() => ([
         {
             label: "Criar",
@@ -109,7 +86,7 @@ export default function DashboardImport() {
             tone: "neutral",
         },
         {
-            label: "Invalidas",
+            label: "Inválidas",
             value: `${importPlan.summary.invalid}`,
             tone: importPlan.summary.invalid ? "danger" : "neutral",
         },
@@ -152,14 +129,14 @@ export default function DashboardImport() {
                     style={{ display: "none" }}
                 />
 
-                <ImportLayout>
+                <ImportLayout $singleColumn>
                     <ImportMain>
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Entrada</CatalogCardEyebrow>
-                                <CatalogCardTitle>Importacao da base de itens</CatalogCardTitle>
+                                <CatalogCardTitle>Importação da base de itens</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Esta tela alimenta a mesma base já usada por cadastro, listagem e criação de preço. Importe com revisão e estratégia de conflito bem definida.
+                                    Carregue um arquivo CSV ou XLSX para revisar o mapeamento antes de atualizar o catálogo.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -178,7 +155,7 @@ export default function DashboardImport() {
                                     {dataset ? "Substituir arquivo atual" : "Carregar CSV ou XLSX"}
                                 </DropzoneTitle>
                                 <DropzoneText>
-                                    Arraste o arquivo para esta area ou clique para selecionar. O preview sempre passa por mapeamento e validacao antes de gravar qualquer linha no catalogo.
+                                    Arraste o arquivo para esta área ou clique para selecionar.
                                 </DropzoneText>
                                 <DropzoneMeta>
                                     <MetaBadge $tone="blue">CSV</MetaBadge>
@@ -186,10 +163,6 @@ export default function DashboardImport() {
                                     <MetaBadge $tone="neutral">TXT delimitado</MetaBadge>
                                 </DropzoneMeta>
                             </Dropzone>
-
-                            <InlineNotice>
-                                Arquivos importados aqui nunca pulam a validacao do catalogo. EAN, codigo interno e descricao principal continuam protegidos pelas mesmas regras ja adotadas no cadastro manual.
-                            </InlineNotice>
 
                             <DatasetMetaGrid>
                                 <DatasetMetaCard>
@@ -201,7 +174,7 @@ export default function DashboardImport() {
                                     <DatasetMetaValue>{dataset?.columns?.length || 0}</DatasetMetaValue>
                                 </DatasetMetaCard>
                                 <DatasetMetaCard>
-                                    <DatasetMetaLabel>Linhas validas no arquivo</DatasetMetaLabel>
+                                    <DatasetMetaLabel>Linhas do arquivo</DatasetMetaLabel>
                                     <DatasetMetaValue>{dataset?.rows?.length || 0}</DatasetMetaValue>
                                 </DatasetMetaCard>
                             </DatasetMetaGrid>
@@ -220,29 +193,12 @@ export default function DashboardImport() {
                                 <CatalogCardEyebrow>Mapeamento</CatalogCardEyebrow>
                                 <CatalogCardTitle>Relacionamento das colunas</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Confirme como cada coluna do arquivo entra na estrutura do catalogo. Isso evita importacao parcial, ambigua ou dificil de manter depois.
+                                    Defina como cada coluna entra na estrutura do catálogo antes de processar a carga.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
-                            {!dataset ? (
-                                <InlineNotice>
-                                    Carregue um arquivo para liberar o mapeamento automatico e revisar os campos antes da carga.
-                                </InlineNotice>
-                            ) : null}
-
-                            {missingRequiredMappings.length ? (
-                                <ErrorSummary>
-                                    <ErrorSummaryTitle>Campos obrigatorios sem origem</ErrorSummaryTitle>
-                                    {missingRequiredMappings.map(field => (
-                                        <ErrorSummaryItem key={field.key}>
-                                            {field.label} ainda não foi mapeado para nenhuma coluna do arquivo.
-                                        </ErrorSummaryItem>
-                                    ))}
-                                </ErrorSummary>
-                            ) : null}
-
                             <CatalogField>
-                                <CatalogLabel>Estrategia de conflito</CatalogLabel>
+                                <CatalogLabel>Estratégia de conflito</CatalogLabel>
                                 <CatalogSelect
                                     value={conflictMode}
                                     onChange={event => setConflictMode(event.target.value)}
@@ -256,7 +212,7 @@ export default function DashboardImport() {
                                         {conflictOptions.find(option => option.value === conflictMode)?.helper || ""}
                                     </FieldError>
                                     <FieldCounter>
-                                        {mappingSummary.requiredMappedCount}/{mappingSummary.requiredCount} obrigatorios
+                                        {mappingSummary.requiredMappedCount}/{mappingSummary.requiredCount} obrigatórios
                                     </FieldCounter>
                                 </FieldMeta>
                             </CatalogField>
@@ -272,8 +228,8 @@ export default function DashboardImport() {
                                             <MappingTitle>{field.label}</MappingTitle>
                                             <MappingText>
                                                 {field.required
-                                                    ? "Campo obrigatorio para gravar um item consistente no catalogo."
-                                                    : "Campo opcional, mas importante para busca, filtro ou manutencao futura."}
+                                                    ? "Campo obrigatório para gravar um item consistente no catálogo."
+                                                    : "Campo opcional, mas importante para busca, filtro ou manutenção futura."}
                                             </MappingText>
                                         </div>
 
@@ -284,16 +240,16 @@ export default function DashboardImport() {
                                                 onChange={event => applyMappingPatch({ [field.key]: event.target.value })}
                                                 disabled={!dataset}
                                             >
-                                                <option value="">Nao mapear</option>
+                                                <option value="">Não mapear</option>
                                                 {(dataset?.columns || []).map(column => (
                                                     <option key={column.key} value={column.key}>{column.label}</option>
                                                 ))}
                                             </CatalogSelect>
                                             <FieldMeta>
                                                 <FieldError>
-                                                    {field.required && !mapping?.[field.key] ? "Obrigatorio para importacao." : ""}
+                                                    {field.required && !mapping?.[field.key] ? "Obrigatório para importação." : ""}
                                                 </FieldError>
-                                                <FieldCounter>{field.required ? "Obrigatorio" : "Opcional"}</FieldCounter>
+                                                <FieldCounter>{field.required ? "Obrigatório" : "Opcional"}</FieldCounter>
                                             </FieldMeta>
                                         </CatalogField>
                                     </MappingRow>
@@ -303,18 +259,12 @@ export default function DashboardImport() {
 
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Preview</CatalogCardEyebrow>
-                                <CatalogCardTitle>Plano de importacao</CatalogCardTitle>
+                                <CatalogCardEyebrow>Prévia</CatalogCardEyebrow>
+                                <CatalogCardTitle>Plano de importação</CatalogCardTitle>
                                 <CatalogCardText>
-                                    O sistema simula cada linha contra a base atual antes de escrever no catalogo. Assim evitamos surpresas e mantemos a operacao rastreavel.
+                                    Revise o que será criado, atualizado, ignorado ou bloqueado antes de confirmar a carga.
                                 </CatalogCardText>
                             </CatalogCardHeader>
-
-                            {!dataset ? (
-                                <InlineNotice>
-                                    Quando um arquivo for carregado, esta area vai mostrar o que sera criado, atualizado, ignorado ou bloqueado.
-                                </InlineNotice>
-                            ) : null}
 
                             <DropzoneMeta>
                                 {importCounters.map(item => (
@@ -322,11 +272,15 @@ export default function DashboardImport() {
                                 ))}
                             </DropzoneMeta>
 
+                            {!dataset ? (
+                                <CatalogCardText>Carregue um arquivo para visualizar o plano de importação.</CatalogCardText>
+                            ) : null}
+
                             {!previewRows.length ? null : (
                                 <ImportTable>
                                     <ImportTableHeader>
                                         <ImportTableHeaderCell>Linha</ImportTableHeaderCell>
-                                        <ImportTableHeaderCell>Acao</ImportTableHeaderCell>
+                                        <ImportTableHeaderCell>Ação</ImportTableHeaderCell>
                                         <ImportTableHeaderCell>Descrição</ImportTableHeaderCell>
                                         <ImportTableHeaderCell>Identificadores</ImportTableHeaderCell>
                                         <ImportTableHeaderCell>Resultado</ImportTableHeaderCell>
@@ -349,7 +303,7 @@ export default function DashboardImport() {
                                                 </ImportCell>
 
                                                 <ImportCell>
-                                                    <ImportCellTitle>{row.values.description1 || "Sem descricao"}</ImportCellTitle>
+                                                    <ImportCellTitle>{row.values.description1 || "Sem descrição"}</ImportCellTitle>
                                                     <ImportCellText>
                                                         {[row.values.description2, row.values.description3, row.values.section].filter(Boolean).join(" - ") || "Sem complemento adicional"}
                                                     </ImportCellText>
@@ -363,11 +317,7 @@ export default function DashboardImport() {
                                                 <ImportCell>
                                                     <ImportMessage>{row.message}</ImportMessage>
                                                     {row.warnings?.length ? (
-                                                        <WarningList>
-                                                            {row.warnings.map(warning => (
-                                                                <WarningItem key={`${row.id}-${warning}`}>{warning}</WarningItem>
-                                                            ))}
-                                                        </WarningList>
+                                                        <ImportMessage>{row.warnings.join(" • ")}</ImportMessage>
                                                     ) : null}
                                                 </ImportCell>
                                             </ImportTableRow>
@@ -375,40 +325,15 @@ export default function DashboardImport() {
                                     })}
                                 </ImportTable>
                             )}
-
-                            {dataset?.rows?.length > previewRows.length ? (
-                                <InlineNotice>
-                                    O preview mostra as primeiras {previewRows.length} linha(s) para manter a leitura objetiva. O processamento final continua considerando o arquivo completo.
-                                </InlineNotice>
-                            ) : null}
                         </CatalogCard>
-                    </ImportMain>
 
-                    <ImportSidebar>
-                        <StatusCard $tone={statusCard.tone}>
-                            <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Pronto" : "Revisao"}
-                            </StatusBadge>
-                            <StatusTitle>{statusCard.title}</StatusTitle>
-                            <StatusText>{statusCard.description}</StatusText>
-
-                            <SummaryGrid>
-                                {summaryItems.map(item => (
-                                    <SummaryItem key={item.label}>
-                                        <SummaryLabel>{item.label}</SummaryLabel>
-                                        <SummaryValue>{item.value}</SummaryValue>
-                                    </SummaryItem>
-                                ))}
-                            </SummaryGrid>
-                        </StatusCard>
-
-                        {lastImportResult ? (
+                        {!lastImportResult ? null : (
                             <CatalogCard>
                                 <CatalogCardHeader>
                                     <CatalogCardEyebrow>Resultado</CatalogCardEyebrow>
-                                    <CatalogCardTitle>Ultima importacao</CatalogCardTitle>
+                                    <CatalogCardTitle>Última importação</CatalogCardTitle>
                                     <CatalogCardText>
-                                        Resumo persistido da ultima carga processada nesta sessao.
+                                        Resumo persistido da última carga processada nesta sessão.
                                     </CatalogCardText>
                                 </CatalogCardHeader>
 
@@ -417,40 +342,12 @@ export default function DashboardImport() {
                                     <ResultItem>Atualizados: {lastImportResult.updated}</ResultItem>
                                     <ResultItem>Ignorados: {lastImportResult.skipped}</ResultItem>
                                     <ResultItem $tone={lastImportResult.invalid ? "danger" : "neutral"}>
-                                        Pendencias: {lastImportResult.invalid}
+                                        Pendências: {lastImportResult.invalid}
                                     </ResultItem>
                                 </ResultList>
-
-                                {lastImportResult.errors?.length ? (
-                                    <ErrorSummary>
-                                        <ErrorSummaryTitle>Falhas registradas</ErrorSummaryTitle>
-                                        {lastImportResult.errors.map(item => (
-                                            <ErrorSummaryItem key={item}>{item}</ErrorSummaryItem>
-                                        ))}
-                                    </ErrorSummary>
-                                ) : null}
                             </CatalogCard>
-                        ) : null}
-
-                        <CatalogCard>
-                            <CatalogCardHeader>
-                                <CatalogCardEyebrow>Checklist</CatalogCardEyebrow>
-                                <CatalogCardTitle>Boas praticas da carga</CatalogCardTitle>
-                                <CatalogCardText>
-                                    O objetivo aqui e manter a base central consistente para que os proximos modulos se comuniquem sem retrabalho.
-                                </CatalogCardText>
-                            </CatalogCardHeader>
-
-                            <ChecklistList>
-                                {guidelines.map(item => (
-                                    <ChecklistItem key={item.title}>
-                                        <ChecklistTitle>{item.title}</ChecklistTitle>
-                                        <ChecklistText>{item.description}</ChecklistText>
-                                    </ChecklistItem>
-                                ))}
-                            </ChecklistList>
-                        </CatalogCard>
-                    </ImportSidebar>
+                        )}
+                    </ImportMain>
                 </ImportLayout>
             </PageContent>
         </ContainerAuthenticated>

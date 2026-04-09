@@ -26,7 +26,7 @@ export function buildLabelItemRow(item = {}, priceRecords = []) {
         offerLabel: latestPriceRecord?.offerTitle || "",
         sectionLabel,
         unitLabel,
-        helper: [sectionLabel, unitLabel, item.internalCode ? `#${item.internalCode}` : ""].filter(Boolean).join(" - "),
+        helper: [sectionLabel, unitLabel, item.internalCode ? `#${item.internalCode}` : ""].filter(Boolean).join(" · "),
         searchIndex: [
             item.description1,
             item.description2,
@@ -78,7 +78,7 @@ export function buildLabelStatus({ rows = [], visibleRows = [], selectedItems = 
 
     if (!selectedItems.length) {
         return {
-            tone: pricedRows ? "orange" : "orange",
+            tone: "orange",
             title: pricedRows ? "Seleção pronta para montar" : "Itens sem precificação rastreável",
             description: pricedRows
                 ? `${pricedRows} item(ns) desta visão possuem preço válido para gerar etiqueta.`
@@ -98,7 +98,7 @@ export function buildLabelStatus({ rows = [], visibleRows = [], selectedItems = 
 export function buildLabelRecentJobRow(job = {}) {
     return {
         ...job,
-        helper: `${job.totalItems} item(ns) - ${job.totalLabels} etiqueta(s)`,
+        helper: `${job.totalItems} item(ns) · ${job.totalLabels} etiqueta(s)`,
         createdLabel: formatDateTime(job.createdAt),
         relativeDate: formatRelativeDate(job.createdAt),
     };
@@ -111,6 +111,7 @@ export function buildSelectedLabelItems(rows = [], selectedQuantities = {}) {
             id: item.id,
             description1: item.description1,
             description2: item.description2,
+            description3: item.description3,
             section: item.section,
             unit: item.unit,
             internalCode: item.internalCode,
@@ -130,6 +131,7 @@ export function createRestoredSelection(selectedItemIds = [], defaultCopies = 1,
         if (!available.has(itemId)) {
             return;
         }
+
         register[itemId] = defaultCopies;
     });
 
@@ -164,7 +166,7 @@ export function formatDateTime(value) {
     const parsed = moment(value);
     if (!parsed.isValid()) return "--";
 
-    return parsed.format("DD/MM/YYYY [as] HH:mm");
+    return parsed.format("DD/MM/YYYY [às] HH:mm");
 }
 
 export function formatRelativeDate(value) {
