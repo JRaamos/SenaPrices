@@ -1,21 +1,24 @@
-import React, { useEffect } from "react";  
+import React, { useEffect } from "react";
 
 import Header from 'components/Landpage/Header'
-import Footer from 'components/Landpage/Footer' 
+import Footer from 'components/Landpage/Footer'
 
-import { 
-    Content
-} from "./styled"; 
+import {
+    Content,
+    ContentBody
+} from "./styled";
 import { ThemedComponent } from "ui/theme";
 
-export default function ContainerLandpage({ children }){ 
-    useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }) ;},[])
-    return ( 
+export default function ContainerLandpage({ children }) {
+    useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [])
+    return (
         <ThemedComponent>
             <Content>
                 <Header />
-                    { children }
-                <Footer /> 
+                <ContentBody>
+                    {children}
+                    {/* <Footer />  */}
+                </ContentBody>
             </Content>
         </ThemedComponent>
     );

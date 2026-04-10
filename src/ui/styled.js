@@ -1,75 +1,75 @@
-import styled from 'styled-components' 
+import styled from 'styled-components'
 import { RingLoader } from "react-spinners";
 import Lottie from 'react-lottie';
 
 export const hexToRgb = (hex) => {
     var c;
-    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
-        c= hex.substring(1).split('');
-        if(c.length === 3){
-            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+        c = hex.substring(1).split('');
+        if (c.length === 3) {
+            c = [c[0], c[0], c[1], c[1], c[2], c[2]];
         }
-        c= '0x'+c.join('');
-        return [(c>>16)&255, (c>>8)&255, c&255].join(',') ;
+        c = '0x' + c.join('');
+        return [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',');
     }
     return `255,255,255`
-}  
+}
 
-export const Touch = styled.div.attrs({ 
-})`         
+export const Touch = styled.div.attrs({
+})`
     cursor: pointer;
     &:hover{
-        box-shadow: 0px 1px 3px ${ props => props.theme.palette.colors.shadow };
+        box-shadow: 0px 1px 3px ${props => props.theme.palette.colors.shadow};
     }
 `;
 
-export const Load = styled(RingLoader).attrs( props => ({
-    color:  props.theme.palette[ props.theme.palette[props?.color] ? props?.color : "primary"]?.[props.outline ? "main" : "contrastText"],
+export const Load = styled(RingLoader).attrs(props => ({
+    color: props.theme.palette[props.theme.palette[props?.color] ? props?.color : "primary"]?.[props.outline ? "main" : "contrastText"],
     loading: true,
-    cssOverride:{},
-    size:20,
-    'aria-label':"Loading Spinner"
+    cssOverride: {},
+    size: 20,
+    'aria-label': "Loading Spinner"
 }))`
 `;
- 
-export const Animation = styled(Lottie).attrs( props => ({  
-    options:{
+
+export const Animation = styled(Lottie).attrs(props => ({
+    options: {
         loop: true,
-        autoplay: true, 
+        autoplay: true,
         rendererSettings: {
             preserveAspectRatio: 'xMidYMid slice'
         },
         animationData: props.animationData
-    }, 
+    },
     width: props.width ? props.width : 320
-}))`        
+}))`
     max-width: 100%;
-`;  
-
-export const EmptyMessage = styled.div.attrs({ 
-})`         
-    padding: 32px; 
-    text-align: center;
-    font-size: 14px;
-    color: ${ props => props.theme.palette.colors.black };
 `;
 
-export const LoadCenter = styled.div.attrs({ 
-})`         
+export const EmptyMessage = styled.div.attrs({
+})`
+    padding: 32px;
+    text-align: center;
+    font-size: 14px;
+    color: ${props => props.theme.palette.colors.black};
+`;
+
+export const LoadCenter = styled.div.attrs({
+})`
     width: 20px;
-    margin: 32px auto; 
+    margin: 32px auto;
     display: flex;
     justify-content: center;
 `;
 
-export const DecoratedScroll = styled.div.attrs({ 
+export const DecoratedScroll = styled.div.attrs({
 })`
 
-    overflow: auto; 
+    overflow: auto;
 
     ::-webkit-scrollbar-thumb {
-        background-color: ${ props => props.theme.palette.secondary.main };
-        outline: 0 solid ${ props => props.theme.palette.secondary.main };
+        background-color: ${props => props.theme.palette.secondary.main};
+        outline: 0 solid ${props => props.theme.palette.secondary.main};
     }
 
     ::-webkit-scrollbar {
@@ -77,30 +77,29 @@ export const DecoratedScroll = styled.div.attrs({
         height: .2rem;
     }
 
-    ::-webkit-scrollbar-track {  
+    ::-webkit-scrollbar-track {
     }
 `;
 
 
 export const Icon = styled.img.attrs((props) => ({
     src: `/icons/${props.icon}.svg`,
-}))` 
+}))`
     margin: ${props => props.nomargin ? `0` : `0 2px`} ;
     z-index: 1;
     ${props => props.pointer ? `cursor: pointer;` : ``}
-    ${props => props.inverted ? `transform: rotate(180deg);` : ``  }
+    ${props => props.inverted ? `transform: rotate(180deg);` : ``}
 `;
 
-
 export const Title = styled.div.attrs({
-})`           
-
-    font-size: ${props => props.small ? `20px` : `32px`};
+})`
+    font-family: Inter;
+    font-size: ${props => props.small ? `20px` : `46px`};
     font-weight: 900;
     text-align: ${props => props.centred ? `center` : `left`};
     margin-bottom: ${props => props.nomargin ? `0` : `16px`};
     text-transform: ${props => props.upper ? `uppercase` : `none`};
-    color: ${props => props.theme.palette.colors.black };
+    color: ${props => props.theme.palette.colors.white};
 `;
 
 export const ButtonContainer = styled.div.attrs({
@@ -108,15 +107,15 @@ export const ButtonContainer = styled.div.attrs({
     display: flex;
     ${p => p.column ? `
         flex-direction: column;
-        ${ p.start ? `align-items: flex-start;` : ``}
-        ${ p.center ? `align-items: center;` : ``}
-        ${ p.end ? `align-items: flex-end;` : ``}
-    ` : ``};    
+        ${p.start ? `align-items: flex-start;` : ``}
+        ${p.center ? `align-items: center;` : ``}
+        ${p.end ? `align-items: flex-end;` : ``}
+    ` : ``};
 
     justify-content: space-between;
-    ${ p => p.start ? `justify-content: flex-start;` : ``}
-    ${ p => p.center ? `justify-content: center;` : ``}
-    ${ p => p.end ? `justify-content: flex-end;` : ``}
+    ${p => p.start ? `justify-content: flex-start;` : ``}
+    ${p => p.center ? `justify-content: center;` : ``}
+    ${p => p.end ? `justify-content: flex-end;` : ``}
 
     width: 100%;
     ${p => p.space ? `gap: 24px` : ``}
@@ -129,7 +128,7 @@ export const FormTitle = styled.div.attrs({
     letter-spacing: -0.005em;
     text-align: left;
     text-transform: uppercase;
-    color: ${props => props.theme.palette.colors.black };
+    color: ${props => props.theme.palette.colors.black};
 `;
 
 export const FormText = styled.div.attrs({
@@ -139,7 +138,7 @@ export const FormText = styled.div.attrs({
     text-align: left;
     color: ${props => props.theme.palette.colors.black};
     margin-bottom: 8px;
-    ${ p => p.big ? `font-size: 20px;` : ``}
+    ${p => p.big ? `font-size: 20px;` : ``}
 `;
 
 export const FormSpacer = styled.div.attrs({
@@ -183,7 +182,7 @@ export const ModalContent = styled.div.attrs({
 })`
     gap: 16px;
     width: 100%;
-    overflow-y: auto; 
+    overflow-y: auto;
     max-height: 90vh;
     box-sizing: border-box;
     animation: slideDown 0.3s ease-out;
@@ -237,7 +236,7 @@ export const FullLoad = styled.div.attrs({
     position: fixed;
     inset: 0 0 0 0;
     z-index: 999;
-    background: ${ ({theme}) => theme.palette.colors.shadow };
+    background: ${({ theme }) => theme.palette.colors.shadow};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -267,8 +266,7 @@ export const DashboardActions = styled.div.attrs({
 
 export const DashboardActionsItem = styled.div.attrs({
 })`
-    ${
-        p => p.big ? `
+    ${p => p.big ? `
             max-width: 320px;
             width: 100%;
         ` : ``
@@ -289,35 +287,35 @@ export const PageContent = styled.div.attrs({
 `;
 
 export const IconButton = styled.div.attrs({
-})`       
+})`
     display: flex;
     justify-content: flex-end;
     width: 100%;
 `;
 
-export const TableLabelContainer = styled.div.attrs({ 
-})`            
+export const TableLabelContainer = styled.div.attrs({
+})`
     display: flex;
 `;
 
-export const TableLabel = styled.div.attrs({ 
-})`            
+export const TableLabel = styled.div.attrs({
+})`
     padding: 4px 12px;
     border-radius: 4px;
-    background: ${ props => props.theme.palette.colors.oddtable };
-    border: 1px solid ${ props => props.theme.palette.colors.grey };
-    color: ${ props => props.theme.palette.colors.grey };
+    background: ${props => props.theme.palette.colors.oddtable};
+    border: 1px solid ${props => props.theme.palette.colors.grey};
+    color: ${props => props.theme.palette.colors.grey};
     margin: 0 0 0 auto;
     text-transform: uppercase;
 `;
 
-export const TableLabelColor = styled.div.attrs({ 
-})`            
+export const TableLabelColor = styled.div.attrs({
+})`
     padding: 4px 12px;
     border-radius: 4px;
-    background: ${ props => props.theme.palette.colors?.[props.color] };
-    border: 1px solid ${ props => props.theme.palette.colors?.[props.color] };
-    color: ${ props => props.theme.palette.colors.white };
+    background: ${props => props.theme.palette.colors?.[props.color]};
+    border: 1px solid ${props => props.theme.palette.colors?.[props.color]};
+    color: ${props => props.theme.palette.colors.white};
     margin: 0 0 0 auto;
     text-transform: uppercase;
 `;

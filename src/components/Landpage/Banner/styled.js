@@ -1,42 +1,24 @@
-import styled from 'styled-components' 
+import styled from 'styled-components'
 
-export const BannerImage = styled.div.attrs({ 
-})`           
-
-    position: relative;
-    min-height: 770px;
+export const BannerImage = styled.div.attrs({
+})`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     width: 100%;
+    min-height: 1104px;
+    padding: 269.36px 40px;
+    background: ${p => p.theme.palette.blueStrong.main};
+`;
 
-    background: white url(https://loremflickr.com/1920/1024/art,grafite?random=8) no-repeat top +35% right +30% / cover;
+export const TextContainer = styled.div.attrs({
+})`
+    max-width: 760px;
+    padding: 0px 43px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
 
-    border-bottom-left-radius: 50% 80px;
-    border-bottom-right-radius: 50% 80px;
-    overflow: hidden;
-`; 
-
-export const BannerOut = styled.div.attrs({ 
-})`            
-    min-height: 770px;
-    width: 100%;
-
-    background: ${props => props.theme.palette.colors.shadow }; 
-    mix-blend-mode: multiply;
-`; 
-
-export const BannerContent = styled.div.attrs({ 
-})`           
-    min-height: 770px;
-    width: 100%; 
-
-    background: -moz-linear-gradient(90deg, ${ props => props.theme.palette.secondary.main } 17%, rgba(41,28,68,0) 60%);
-    background: -webkit-linear-gradient(90deg, ${ props => props.theme.palette.secondary.main } 17%, rgba(41,28,68,0) 60%);
-    background: linear-gradient(90deg, ${ props => props.theme.palette.secondary.main } 17%, rgba(41,28,68,0) 60%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="${ props => props.theme.palette.secondary.main }",endColorstr="rgba(41,28,68,0)",GradientType=1);
-    position: absolute;
-    top: 0;
-    left: 0;
-`; 
-
-export const BannerCard = styled.div.attrs({ 
-})`           
-`; 

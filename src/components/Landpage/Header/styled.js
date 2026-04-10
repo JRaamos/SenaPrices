@@ -1,12 +1,20 @@
 import styled from 'styled-components'
+import { Container } from 'reactstrap';
 
 export const HeaderContainer = styled.div.attrs({
 })`
     background-color: ${props => props.theme.palette.header.main};
     min-height: 73px;
     width: 100%;
-
+    padding: 0px 32px;
     box-shadow: 0px 3px 6px ${props => props.theme.palette.colors.shadow};
+    display: flex;
+    justify-content: center;
+`;
+
+export const HeaderContainerExtend = styled(Container).attrs({
+})`
+    max-width: 1920px;
 `;
 
 export const RowCenter = styled.div.attrs({

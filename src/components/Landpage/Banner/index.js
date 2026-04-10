@@ -1,29 +1,27 @@
-import React from "react"; 
+import React from "react";
 
-import { Row, Col, Container } from 'reactstrap'; 
- 
+import { Row, Col, Container } from 'reactstrap';
+
 import CardSelect from 'components/Landpage/Card/Select'
 
-import { 
+import {
     BannerImage,
     BannerOut,
-    BannerContent
-} from "./styled"; 
+    BannerContent,
+    TextContainer
+} from "./styled";
+import { Icon, Title } from "ui/styled";
+import LineInfo from "components/LineInfo";
 
-export default function Banner(){
-    return ( 
-        <> 
+export default function Banner() {
+    return (
+        <>
             <BannerImage>
-                <BannerOut />
-                <BannerContent>
-                    <Container>
-                        <Row>
-                            <Col md={{ size: 6 }}> 
-                                <CardSelect /> 
-                            </Col>
-                        </Row>
-                    </Container>
-                </BannerContent>
+                <Icon icon='logo2' />
+                <LineInfo text={'Sistema profissional para supermercados e varejos'} icon={'star'} />
+                <TextContainer>
+                    <Title centred>Crie cartazes promocionais em segundos</Title>
+                </TextContainer>
             </BannerImage>
         </>
     );
