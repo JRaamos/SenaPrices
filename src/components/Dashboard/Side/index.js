@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 
 import {
@@ -9,6 +9,7 @@ import {
     DashboardBrandMono,
     DashboardBrandName,
     DashboardBrandRow,
+    DashboardCollapsedToggle,
     DashboardFooterAvatar,
     DashboardFooterCard,
     DashboardFooterHint,
@@ -20,22 +21,47 @@ import {
     DashboardMenuFooter,
     DashboardMenuHeader,
     DashboardMenuToggle,
+    DashboardMobileBar,
+    DashboardMobileItem,
+    DashboardMobileItemActiveBar,
+    DashboardMobileItemIconWrap,
+    DashboardMobileItemLabel,
     DashboardVersionContent,
     DashboardVersionText,
 } from "./styled";
 
 import DashboardSideCollapse from "../SideCollapse";
+import DashboardIconGlyph from "../IconGlyph";
 import { CoreContext } from "context/CoreContext";
 import { buildAccessProfile, buildSidebarSections, getAccountEntryPath } from "services/access";
 import { DoLogout } from "services/authentication";
 
 export default function DashboardSide({ fluid }) {
     const n = useNavigate();
+    const location = useLocation();
     const navigate = useCallback((to) => n(`${to || ""}`.startsWith("/") ? to : `/${to}`), [n]);
 
     const { side, setSide, user } = useContext(CoreContext);
+    const [isMobile, setIsMobile] = useState(() => (
+        typeof window !== "undefined" ? window.innerWidth < 768 : false
+    ));
     const accessProfile = useMemo(() => buildAccessProfile(user), [user]);
     const navigation = useMemo(() => buildSidebarSections(user, true), [user]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") {
+            return undefined;
+        }
+
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const handleBackdropClose = useCallback((event) => {
         if (!fluid) {
@@ -72,6 +98,59 @@ export default function DashboardSide({ fluid }) {
         `${accountLabel || "S"}`.trim().charAt(0) || "S"
     ), [accountLabel]);
 
+    const mobilePrimaryItems = useMemo(() => (
+        navigation.primary.slice(0, 4)
+    ), [navigation.primary]);
+
+    const isPathActive = useCallback((path = "") => {
+        if (!path) {
+            return false;
+        }
+
+        try {
+            const url = new URL(path, "http://localhost");
+            const targetPath = url.pathname.replace(/\/+$/, "") || "/";
+            const targetSearch = url.search || "";
+            const currentPath = (location.pathname || "/").replace(/\/+$/, "") || "/";
+            const currentSearch = location.search || "";
+
+            if (targetSearch) {
+                return currentPath === targetPath && currentSearch === targetSearch;
+            }
+
+            return currentPath === targetPath;
+        } catch (error) {
+            return false;
+        }
+    }, [location.pathname, location.search]);
+
+    const activeOutsidePrimary = useMemo(() => {
+        const visiblePrimary = mobilePrimaryItems.some(item => isPathActive(item.path));
+        if (visiblePrimary) {
+            return false;
+        }
+
+        const allVisibleOptions = [...navigation.primary, ...navigation.secondary];
+        return allVisibleOptions.some(item => isPathActive(item.path));
+    }, [isPathActive, mobilePrimaryItems, navigation.primary, navigation.secondary]);
+
+    const handleMobileNavigate = useCallback((item) => {
+        if (!item) {
+            return;
+        }
+
+        if (typeof item.action === "function") {
+            item.action();
+            setSide(false);
+            return;
+        }
+
+        if (item.path) {
+            setSide(false);
+            navigate(item.path);
+        }
+    }, [navigate, setSide]);
+
     const collapsed = !side;
 
     return (
@@ -79,7 +158,7 @@ export default function DashboardSide({ fluid }) {
             {!side && !fluid ? null : (
                 <DashboardMenuContainer fluid={fluid} opened={side} onClick={handleBackdropClose}>
                     <DashboardMenu fluid={fluid} opened={side}>
-                        <DashboardMenuHeader>
+                        <DashboardMenuHeader $collapsed={collapsed}>
                             <DashboardBrandButton
                                 type="button"
                                 onClick={() => navigate(accessProfile.defaultPath)}
@@ -92,17 +171,32 @@ export default function DashboardSide({ fluid }) {
                                 <DashboardBrandMeta $collapsed={collapsed}>Sistema promocional</DashboardBrandMeta>
                             </DashboardBrandButton>
 
-                            <DashboardMenuToggle type="button" onClick={() => setSide(!side)}>
+                            {!collapsed ? (
+                                <DashboardMenuToggle type="button" onClick={() => setSide(!side)}>
+                                    <ChevronLeftRoundedIcon
+                                        sx={{
+                                            fontSize: 20,
+                                            color: "#cbd5e1",
+                                            transform: side ? "rotate(0deg)" : "rotate(180deg)",
+                                            transition: "transform .24s ease",
+                                        }}
+                                    />
+                                </DashboardMenuToggle>
+                            ) : null}
+                        </DashboardMenuHeader>
+
+                        {collapsed ? (
+                            <DashboardCollapsedToggle type="button" onClick={() => setSide(true)}>
                                 <ChevronLeftRoundedIcon
                                     sx={{
-                                        fontSize: 20,
+                                        fontSize: 18,
                                         color: "#cbd5e1",
-                                        transform: side ? "rotate(0deg)" : "rotate(180deg)",
+                                        transform: "rotate(180deg)",
                                         transition: "transform .24s ease",
                                     }}
                                 />
-                            </DashboardMenuToggle>
-                        </DashboardMenuHeader>
+                            </DashboardCollapsedToggle>
+                        ) : null}
 
                         <DashboardMenuContent>
                             <DashboardSideCollapse options={navigation.primary} fluid={fluid} />
@@ -131,6 +225,49 @@ export default function DashboardSide({ fluid }) {
                         </DashboardMenuFooter>
                     </DashboardMenu>
                 </DashboardMenuContainer>
+            )}
+
+            {!isMobile ? null : (
+                <DashboardMobileBar>
+                    {mobilePrimaryItems.map(item => {
+                        const active = isPathActive(item.path);
+
+                        return (
+                            <DashboardMobileItem
+                                key={item.path}
+                                type="button"
+                                $active={active}
+                                onClick={() => handleMobileNavigate(item)}
+                            >
+                                <DashboardMobileItemIconWrap>
+                                    <DashboardIconGlyph
+                                        name={item.iconToken}
+                                        size={18}
+                                        color={active ? "#93c5fd" : "#64748b"}
+                                    />
+                                </DashboardMobileItemIconWrap>
+                                <DashboardMobileItemLabel>{item.label}</DashboardMobileItemLabel>
+                                {active ? <DashboardMobileItemActiveBar /> : null}
+                            </DashboardMobileItem>
+                        );
+                    })}
+
+                    <DashboardMobileItem
+                        type="button"
+                        $active={side || activeOutsidePrimary}
+                        onClick={() => setSide(true)}
+                    >
+                        <DashboardMobileItemIconWrap>
+                            <DashboardIconGlyph
+                                name="settings"
+                                size={18}
+                                color={side || activeOutsidePrimary ? "#93c5fd" : "#64748b"}
+                            />
+                        </DashboardMobileItemIconWrap>
+                        <DashboardMobileItemLabel>Mais</DashboardMobileItemLabel>
+                        {side || activeOutsidePrimary ? <DashboardMobileItemActiveBar /> : null}
+                    </DashboardMobileItem>
+                </DashboardMobileBar>
             )}
         </>
     );

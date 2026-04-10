@@ -1,10 +1,18 @@
 import styled from "styled-components";
 
+const MENU_WIDTH = {
+    open: "220px",
+    collapsed: "60px",
+    mobile: "260px",
+};
+
+const MENU_HEADER_HEIGHT = "64px";
+
 export const DashboardMenuContainer = styled.div`
     ${({ fluid, opened }) => fluid ? `
         position: relative;
-        width: ${opened ? "248px" : "84px"};
-        min-width: ${opened ? "248px" : "84px"};
+        width: ${opened ? MENU_WIDTH.open : MENU_WIDTH.collapsed};
+        min-width: ${opened ? MENU_WIDTH.open : MENU_WIDTH.collapsed};
         transition: width .24s ease, min-width .24s ease;
         z-index: 20;
 
@@ -29,22 +37,22 @@ export const DashboardMenu = styled.aside.attrs({
     className: "menu-contant",
 })`
     height: calc(100vh - 64px);
-    background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+    background: #0f172a;
     color: #e2e8f0;
     display: flex;
     flex-direction: column;
     border-right: 1px solid rgba(148, 163, 184, 0.12);
-    box-shadow: 18px 0 40px rgba(15, 23, 42, 0.14);
     overflow: hidden;
 
     ${({ fluid, opened }) => fluid ? `
-        width: ${opened ? "248px" : "84px"};
+        width: ${opened ? MENU_WIDTH.open : MENU_WIDTH.collapsed};
         transition: width .24s ease, transform .24s ease;
 
         @media (max-width: 1023px) {
-            width: 248px;
+            width: ${MENU_WIDTH.mobile};
             transform: translateX(${opened ? "0" : "-100%"});
             height: calc(100vh - 64px);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
         }
     ` : `
         width: 296px;
@@ -52,11 +60,12 @@ export const DashboardMenu = styled.aside.attrs({
 `;
 
 export const DashboardMenuHeader = styled.div`
-    padding: 18px 14px 12px;
+    min-height: ${MENU_HEADER_HEIGHT};
+    padding: ${({ $collapsed }) => $collapsed ? "16px 0" : "16px 14px"};
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
+    align-items: center;
+    justify-content: ${({ $collapsed }) => $collapsed ? "center" : "space-between"};
+    gap: 10px;
     border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 `;
 
@@ -72,70 +81,75 @@ export const DashboardBrandButton = styled.button`
 
 export const DashboardBrandRow = styled.div`
     display: flex;
-    align-items: center;
-    gap: 2px;
+    align-items: baseline;
+    gap: 1px;
 `;
 
 export const DashboardBrandName = styled.span`
     color: #e2e8f0;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 300;
-    line-height: 22px;
+    line-height: 18px;
     letter-spacing: -0.04em;
     ${({ $collapsed }) => $collapsed ? "display: none;" : ""}
 `;
 
 export const DashboardBrandAccent = styled.span`
-    color: #3b82f6;
-    font-size: 17px;
+    color: #2f86ff;
+    font-size: 14px;
     font-weight: 800;
-    line-height: 22px;
+    line-height: 18px;
     letter-spacing: -0.04em;
     ${({ $collapsed }) => $collapsed ? "display: none;" : ""}
 `;
 
 export const DashboardBrandMono = styled.div`
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(59, 130, 246, 0.12) 100%);
-    color: #e2e8f0;
-    font-size: 15px;
+    background: linear-gradient(135deg, #1d4ed8 0%, #0ea5e9 100%);
+    color: #ffffff;
+    font-size: 14px;
     font-weight: 800;
     letter-spacing: -0.04em;
     ${({ $collapsed }) => $collapsed ? "" : "display: none;"}
 `;
 
 export const DashboardBrandMeta = styled.div`
-    margin-top: 6px;
-    color: rgba(148, 163, 184, 0.88);
-    font-size: 11px;
-    font-weight: 700;
-    line-height: 16px;
-    letter-spacing: 0.14em;
+    margin-top: 1px;
+    color: #475569;
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 12px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     ${({ $collapsed }) => $collapsed ? "display: none;" : ""}
 `;
 
 export const DashboardMenuToggle = styled.button`
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    border: 1px solid rgba(148, 163, 184, 0.14);
-    background: rgba(255, 255, 255, 0.04);
+    padding: 4px;
+    border: 0;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background .2s ease, border-color .2s ease, transform .2s ease;
+`;
 
-    &:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(148, 163, 184, 0.22);
-    }
+export const DashboardCollapsedToggle = styled.button`
+    width: 100%;
+    min-height: 35px;
+    padding: 10px 0;
+    border: 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 `;
 
 export const DashboardMenuHeaderUserContent = styled.div`
@@ -163,55 +177,56 @@ export const DashboardContextPill = styled.span`
 export const DashboardMenuContent = styled.div`
     flex: 1;
     min-height: 0;
-    padding: 10px 10px 8px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none;
+    padding: 6px 8px;
+    overflow: hidden;
 
-    &::-webkit-scrollbar {
-        width: 0;
-        height: 0;
+    @media (max-height: 860px) {
+        padding: 5px 8px;
     }
 `;
 
 export const DashboardMenuFooter = styled.div`
     flex-shrink: 0;
-    padding: 6px 10px 12px;
+    padding: 8px;
     border-top: 1px solid rgba(148, 163, 184, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
+
+    @media (max-height: 860px) {
+        padding: 6px 8px;
+        gap: 3px;
+    }
 `;
 
 export const DashboardFooterCard = styled.button`
     width: 100%;
-    border: 1px solid rgba(148, 163, 184, 0.12);
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 16px;
-    padding: ${({ $collapsed }) => $collapsed ? "10px 8px" : "12px"};
+    border: 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    padding: ${({ $collapsed }) => $collapsed ? "6px 0" : "6px 8px"};
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     color: #e2e8f0;
     cursor: pointer;
-    transition: background .2s ease, border-color .2s ease;
+    transition: background .2s ease;
 
     &:hover {
         background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(148, 163, 184, 0.22);
     }
 
     ${({ $collapsed }) => $collapsed ? "justify-content: center;" : ""}
 `;
 
 export const DashboardFooterAvatar = styled.div`
-    width: 34px;
-    height: 34px;
-    border-radius: 11px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #eff6ff;
-    font-size: 15px;
-    font-weight: 800;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #1e3a5f;
+    color: #93c5fd;
+    font-size: 10px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,15 +239,15 @@ export const DashboardFooterInfo = styled.div`
     display: ${({ $collapsed }) => $collapsed ? "none" : "flex"};
     flex-direction: column;
     align-items: flex-start;
-    gap: 3px;
+    gap: 2px;
 `;
 
 export const DashboardFooterName = styled.div`
     max-width: 100%;
     color: #f8fafc;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -240,9 +255,9 @@ export const DashboardFooterName = styled.div`
 
 export const DashboardFooterHint = styled.div`
     color: rgba(148, 163, 184, 0.92);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
-    line-height: 16px;
+    line-height: 12px;
 `;
 
 export const DashboardVersionContent = styled.div`
@@ -251,7 +266,63 @@ export const DashboardVersionContent = styled.div`
 
 export const DashboardVersionText = styled.div`
     text-align: center;
-    color: rgba(148, 163, 184, 0.78);
-    font-size: 10px;
-    line-height: 15px;
+    color: #334155;
+    font-size: 9px;
+    line-height: 12px;
+`;
+
+export const DashboardMobileBar = styled.nav`
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 35;
+    height: calc(56px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: #0f172a;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: none;
+    align-items: stretch;
+
+    @media (max-width: 767px) {
+        display: flex;
+    }
+`;
+
+export const DashboardMobileItem = styled.button`
+    position: relative;
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: ${({ $active }) => $active ? "#93c5fd" : "#475569"};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+`;
+
+export const DashboardMobileItemIconWrap = styled.span`
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+export const DashboardMobileItemLabel = styled.span`
+    font-size: 9px;
+    font-weight: ${({ $active }) => $active ? "700" : "400"};
+    line-height: 1;
+`;
+
+export const DashboardMobileItemActiveBar = styled.span`
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2px;
+    border-radius: 0 0 2px 2px;
+    background: #3b82f6;
 `;

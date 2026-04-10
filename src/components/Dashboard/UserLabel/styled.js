@@ -3,14 +3,14 @@ import styled from "styled-components";
 export const UserContent = styled.button`
     min-width: 0;
     max-width: min(44vw, 320px);
-    min-height: 42px;
-    padding: 6px 8px 6px 6px;
-    border-radius: 16px;
-    border: 1px solid rgba(148, 163, 184, 0.18);
+    min-height: 38px;
+    padding: 4px 8px 4px 4px;
+    border-radius: 10px;
+    border: 1px solid rgba(203, 213, 225, 0.92);
     background: #ffffff;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
     transition: background .2s ease, border-color .2s ease;
 
@@ -41,9 +41,9 @@ export const UserTextGroup = styled.div`
 export const UserName = styled.div`
     min-width: 0;
     color: #0f172a;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
-    line-height: 18px;
+    line-height: 17px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -51,22 +51,22 @@ export const UserName = styled.div`
 
 export const UserMeta = styled.div`
     color: #64748b;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    line-height: 16px;
+    line-height: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 `;
 
 export const UserInitial = styled.div`
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    font-size: 14px;
-    font-weight: 800;
-    color: #ffffff;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: #1e3a5f;
+    font-size: 12px;
+    font-weight: 700;
+    color: #93c5fd;
     display: flex;
     align-items: center;
     justify-content: center;

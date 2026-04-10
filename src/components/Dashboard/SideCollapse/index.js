@@ -120,7 +120,7 @@ export default function DashboardSideCollapse({ fluid, options }) {
                                 {item.iconToken ? (
                                     <DashboardIconGlyph
                                         name={item.iconToken}
-                                        size={20}
+                                        size={16}
                                         color={active ? "#f8fafc" : "#94a3b8"}
                                     />
                                 ) : null}

@@ -15,6 +15,10 @@ import {
     CatalogInput,
     CatalogLabel,
     CatalogSelect,
+    ChecklistItem,
+    ChecklistList,
+    ChecklistText,
+    ChecklistTitle,
     EmptyState,
     FieldCounter,
     FieldError,
@@ -36,7 +40,14 @@ import {
     HistorySidebar,
     HistoryText,
     HistoryTitle,
+    InlineNotice,
     MetaBadge,
+    RecentButton,
+    RecentHeader,
+    RecentItem,
+    RecentList,
+    RecentMeta,
+    RecentTitle,
     StatusBadge,
     StatusCard,
     StatusText,
@@ -59,6 +70,8 @@ export default function DashboardHistory() {
         statusOptions,
         statusCard,
         summaryItems,
+        recentEntries,
+        guidelines,
         applyFiltersPatch,
         clearFilters,
         setSearch,
@@ -79,9 +92,9 @@ export default function DashboardHistory() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Consulta</CatalogCardEyebrow>
-                                <CatalogCardTitle>Histórico de impressão</CatalogCardTitle>
+                                <CatalogCardTitle>Historico de impressao</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Consulte, restaure e reimprima registros já produzidos pela operação.
+                                    Consulte, restaure e reimprima registros ja produzidos pela operacao.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -90,7 +103,7 @@ export default function DashboardHistory() {
                                     <CatalogLabel>Buscar registro</CatalogLabel>
                                     <CatalogInput
                                         value={search}
-                                        placeholder="Buscar por título, oferta, resumo ou operador"
+                                        placeholder="Buscar por titulo, oferta, resumo ou operador"
                                         onChange={event => setSearch(event.target.value)}
                                     />
                                     <FieldMeta>
@@ -137,12 +150,16 @@ export default function DashboardHistory() {
                                     <HistoryActionButton onClick={clearFilters}>Limpar filtros</HistoryActionButton>
                                 </HistoryActions>
                             ) : null}
+
+                            <InlineNotice>
+                                O historico reaproveita os mesmos registros usados na criacao, na reimpressao e no envio para promocoes, sem duplicar cartazes manualmente.
+                            </InlineNotice>
                         </CatalogCard>
 
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Registros</CatalogCardEyebrow>
-                                <CatalogCardTitle>Histórico consolidado</CatalogCardTitle>
+                                <CatalogCardTitle>Historico consolidado</CatalogCardTitle>
                                 <CatalogCardText>
                                     Cada linha pode voltar para o fluxo original ou ser reimpressa sem remontar o cartaz do zero.
                                 </CatalogCardText>
@@ -150,7 +167,7 @@ export default function DashboardHistory() {
 
                             {!entries.length ? (
                                 <EmptyState>
-                                    Nenhum registro encontrado nesta visão. Salve ou imprima um cartaz para iniciar o histórico compartilhado.
+                                    Nenhum registro encontrado nesta visao. Salve ou imprima um cartaz para iniciar o historico compartilhado.
                                 </EmptyState>
                             ) : (
                                 <HistoryList>
@@ -169,7 +186,7 @@ export default function DashboardHistory() {
 
                                                 <HistoryActions>
                                                     <HistoryActionButton onClick={() => handleSendToPromotions(entry)}>
-                                                        Promoções
+                                                        Promocoes
                                                     </HistoryActionButton>
                                                     <HistoryActionButton onClick={() => handleRestoreEntry(entry)}>
                                                         Restaurar
@@ -186,7 +203,7 @@ export default function DashboardHistory() {
                                             <HistoryDetails>
                                                 <HistoryDetail>
                                                     <HistoryDetailLabel>Oferta</HistoryDetailLabel>
-                                                    <HistoryDetailValue>{entry.offerTitle || "Não informado"}</HistoryDetailValue>
+                                                    <HistoryDetailValue>{entry.offerTitle || "Nao informado"}</HistoryDetailValue>
                                                 </HistoryDetail>
                                                 <HistoryDetail>
                                                     <HistoryDetailLabel>Formato</HistoryDetailLabel>
@@ -211,7 +228,7 @@ export default function DashboardHistory() {
                     <HistorySidebar>
                         <StatusCard $tone={statusCard.tone}>
                             <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Ativo" : "Atenção"}
+                                {statusCard.tone === "green" ? "Ativo" : "Atencao"}
                             </StatusBadge>
                             <StatusTitle>{statusCard.title}</StatusTitle>
                             <StatusText>{statusCard.description}</StatusText>
@@ -225,6 +242,59 @@ export default function DashboardHistory() {
                                 ))}
                             </SummaryGrid>
                         </StatusCard>
+
+                        <CatalogCard>
+                            <CatalogCardHeader>
+                                <CatalogCardEyebrow>Mais recentes</CatalogCardEyebrow>
+                                <CatalogCardTitle>Reentrada rapida</CatalogCardTitle>
+                                <CatalogCardText>
+                                    Os registros mais recentes ficam prontos para restauracao sem remontar o cartaz desde o inicio.
+                                </CatalogCardText>
+                            </CatalogCardHeader>
+
+                            {!recentEntries.length ? (
+                                <CatalogCardText>
+                                    Ainda nao existem registros recentes visiveis com os filtros atuais.
+                                </CatalogCardText>
+                            ) : (
+                                <RecentList>
+                                    {recentEntries.map(entry => (
+                                        <RecentItem key={entry.id}>
+                                            <RecentHeader>
+                                                <div>
+                                                    <RecentTitle>{entry.title}</RecentTitle>
+                                                    <RecentMeta>{entry.sourceLabel} - {entry.statusLabel}</RecentMeta>
+                                                </div>
+                                                <RecentButton onClick={() => handleRestoreEntry(entry)}>
+                                                    Restaurar
+                                                </RecentButton>
+                                            </RecentHeader>
+                                            <RecentMeta>{entry.cardsLabel} - {entry.paperLabel || "--"}</RecentMeta>
+                                            <RecentMeta>{entry.savedLabel} - {entry.relativeSavedAt}</RecentMeta>
+                                        </RecentItem>
+                                    ))}
+                                </RecentList>
+                            )}
+                        </CatalogCard>
+
+                        <CatalogCard>
+                            <CatalogCardHeader>
+                                <CatalogCardEyebrow>Boas praticas</CatalogCardEyebrow>
+                                <CatalogCardTitle>Governanca do historico</CatalogCardTitle>
+                                <CatalogCardText>
+                                    A trilha operacional fica mais confiavel quando restauracao, reimpressao e exclusao seguem o mesmo criterio.
+                                </CatalogCardText>
+                            </CatalogCardHeader>
+
+                            <ChecklistList>
+                                {guidelines.map(item => (
+                                    <ChecklistItem key={item.title}>
+                                        <ChecklistTitle>{item.title}</ChecklistTitle>
+                                        <ChecklistText>{item.description}</ChecklistText>
+                                    </ChecklistItem>
+                                ))}
+                            </ChecklistList>
+                        </CatalogCard>
                     </HistorySidebar>
                 </HistoryLayout>
             </PageContent>

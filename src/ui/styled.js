@@ -144,9 +144,9 @@ export const FormText = styled.div.attrs({
 
 export const FormSpacer = styled.div.attrs({
 })`
-    margin-top: 24px;
-    ${props => props.large ? `margin-top: 40px;` : ``}
-    ${props => props.extraLarge ? `margin-top: 80px;` : ``};
+    margin-top: 22px;
+    ${props => props.large ? `margin-top: 34px;` : ``}
+    ${props => props.extraLarge ? `margin-top: 64px;` : ``};
     ${props => props.border ? `
         border-top: 0.5px solid ${props.theme.palette.colors.border};
         margin-bottom: 32px;
@@ -285,7 +285,7 @@ export const PageContent = styled.div.attrs({
 })`
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 0;
 `;
 
 export const IconButton = styled.div.attrs({

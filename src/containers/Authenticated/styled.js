@@ -2,13 +2,13 @@ import styled from "styled-components";
 
 export const DashboardPage = styled.div`
     min-height: 100vh;
-    background: #eef3f8;
+    background: #f8fafc;
 `;
 
 export const DashboardBody = styled.div`
     position: relative;
     min-height: calc(100vh - 64px);
-    background: #eef3f8;
+    background: #f8fafc;
     display: flex;
     align-items: stretch;
     overflow: hidden;
@@ -26,15 +26,15 @@ export const DashboardBodyContainer = styled.div.attrs({
 `;
 
 export const DashboardBodyContent = styled.div`
-    padding: 28px 28px 120px;
+    padding: clamp(12px, 4vw, 28px) clamp(12px, 4.5vw, 32px) 108px;
     min-height: calc(100vh - 64px);
 
     @media(max-width: 767px){
-        padding: 18px 16px 112px;
+        padding: 16px 14px 106px;
     }
 
     @media(max-width: 480px){
-        padding: 14px 12px 104px;
+        padding: 14px 12px 102px;
     }
 `;
 

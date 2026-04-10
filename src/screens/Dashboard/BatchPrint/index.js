@@ -30,12 +30,23 @@ import {
     CatalogInput,
     CatalogLabel,
     CatalogSelect,
+    ChecklistItem,
+    ChecklistList,
+    ChecklistText,
+    ChecklistTitle,
     EmptyState,
     FieldCounter,
     FieldError,
     FieldMeta,
     FilterToolbar,
+    InlineNotice,
     MetaBadge,
+    RecentButton,
+    RecentHeader,
+    RecentItem,
+    RecentList,
+    RecentMeta,
+    RecentTitle,
     StatusBadge,
     StatusCard,
     StatusText,
@@ -56,15 +67,23 @@ export default function DashboardBatchPrint() {
         draft,
         candidates,
         selectedCandidates,
+        recentJobs,
         statusCard,
         summaryItems,
+        guidelines,
         sourceOptions,
         paperOptions,
         applyPatch,
         handleToggleCandidate,
         handleToggleVisible,
         handleClearSelection,
+        handleRestoreRecentJob,
     } = useController();
+
+    const allVisibleSelected = (
+        candidates.length
+        && candidates.every(item => draft.selectedKeys.includes(item.key))
+    );
 
     return (
         <ContainerAuthenticated actions={actions} loading={loading}>
@@ -77,9 +96,9 @@ export default function DashboardBatchPrint() {
                         <CatalogCard>
                             <CatalogCardHeader>
                                 <CatalogCardEyebrow>Consulta</CatalogCardEyebrow>
-                                <CatalogCardTitle>Impressão em lote</CatalogCardTitle>
+                                <CatalogCardTitle>Impressao em lote</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Selecione registros reais do histórico e das promoções para montar o lote de impressão.
+                                    Selecione registros reais do historico e das promocoes para montar um lote consistente de impressao.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
@@ -88,7 +107,7 @@ export default function DashboardBatchPrint() {
                                     <CatalogLabel>Buscar no lote</CatalogLabel>
                                     <CatalogInput
                                         value={draft.search}
-                                        placeholder="Buscar por título, descrição, período ou origem"
+                                        placeholder="Buscar por titulo, descricao, periodo ou origem"
                                         onChange={event => applyPatch({ search: event.target.value })}
                                     />
                                     <FieldMeta>
@@ -132,28 +151,26 @@ export default function DashboardBatchPrint() {
 
                             <ToolbarActions>
                                 <ToolbarButton $tone="primary" onClick={handleToggleVisible} disabled={!candidates.length}>
-                                    {candidates.length && candidates.every(item => draft.selectedKeys.includes(item.key))
-                                        ? "Desmarcar visíveis"
-                                        : "Selecionar visíveis"}
+                                    {allVisibleSelected ? "Desmarcar visiveis" : "Selecionar visiveis"}
                                 </ToolbarButton>
                                 <ToolbarButton onClick={handleClearSelection} disabled={!selectedCandidates.length}>
-                                    Limpar seleção
+                                    Limpar selecao
                                 </ToolbarButton>
                             </ToolbarActions>
                         </CatalogCard>
 
                         <CatalogCard>
                             <CatalogCardHeader>
-                                <CatalogCardEyebrow>Seleção</CatalogCardEyebrow>
-                                <CatalogCardTitle>Cartazes disponíveis</CatalogCardTitle>
+                                <CatalogCardEyebrow>Selecao</CatalogCardEyebrow>
+                                <CatalogCardTitle>Cartazes disponiveis</CatalogCardTitle>
                                 <CatalogCardText>
-                                    Monte o lote reaproveitando o que já foi criado ou programado para a operação.
+                                    Monte o lote reaproveitando o que ja foi criado ou programado para a operacao.
                                 </CatalogCardText>
                             </CatalogCardHeader>
 
                             {!candidates.length ? (
                                 <EmptyState>
-                                    Nenhum registro disponível nesta visão. Gere cartazes ou aguarde promoções atribuídas para alimentar a fila.
+                                    Nenhum registro disponivel nesta visao. Gere cartazes ou aguarde promocoes atribuidas para alimentar a fila.
                                 </EmptyState>
                             ) : (
                                 <BatchList>
@@ -184,12 +201,12 @@ export default function DashboardBatchPrint() {
                                                     <BatchDetailValue>{candidate.detailValue || "--"}</BatchDetailValue>
                                                 </BatchDetail>
                                                 <BatchDetail>
-                                                    <BatchDetailLabel>Período operacional</BatchDetailLabel>
+                                                    <BatchDetailLabel>Periodo operacional</BatchDetailLabel>
                                                     <BatchDetailValue>{candidate.periodLabel || "--"}</BatchDetailValue>
                                                 </BatchDetail>
                                                 <BatchDetail>
                                                     <BatchDetailLabel>Origem dos cartazes</BatchDetailLabel>
-                                                    <BatchDetailValue>{candidate.entryTitles.join(" - ") || "Sem títulos adicionais"}</BatchDetailValue>
+                                                    <BatchDetailValue>{candidate.entryTitles.join(" - ") || "Sem titulos adicionais"}</BatchDetailValue>
                                                 </BatchDetail>
                                                 <BatchDetail>
                                                     <BatchDetailLabel>Chave da fila</BatchDetailLabel>
@@ -206,7 +223,7 @@ export default function DashboardBatchPrint() {
                     <BatchPrintSidebar>
                         <StatusCard $tone={statusCard.tone}>
                             <StatusBadge $tone={statusCard.tone}>
-                                {statusCard.tone === "green" ? "Pronto" : "Atenção"}
+                                {statusCard.tone === "green" ? "Pronto" : "Atencao"}
                             </StatusBadge>
                             <StatusTitle>{statusCard.title}</StatusTitle>
                             <StatusText>{statusCard.description}</StatusText>
@@ -220,6 +237,65 @@ export default function DashboardBatchPrint() {
                                 ))}
                             </SummaryGrid>
                         </StatusCard>
+
+                        <InlineNotice>
+                            {selectedCandidates.length
+                                ? `${selectedCandidates.length} selecao(oes) estao prontas para reuso em lote. Use Ctrl+P para imprimir e Ctrl+Shift+A para marcar a visao atual.`
+                                : "A fila de lote fica mais segura quando voce reutiliza apenas historico validado e promocoes ativas da operacao."}
+                        </InlineNotice>
+
+                        <CatalogCard>
+                            <CatalogCardHeader>
+                                <CatalogCardEyebrow>Ultimos lotes</CatalogCardEyebrow>
+                                <CatalogCardTitle>Recuperacao rapida</CatalogCardTitle>
+                                <CatalogCardText>
+                                    Reaplique uma selecao recente para repetir o mesmo lote sem refazer toda a triagem manual.
+                                </CatalogCardText>
+                            </CatalogCardHeader>
+
+                            {!recentJobs.length ? (
+                                <CatalogCardText>
+                                    Nenhum lote recente foi salvo ainda nesta base operacional.
+                                </CatalogCardText>
+                            ) : (
+                                <RecentList>
+                                    {recentJobs.map(job => (
+                                        <RecentItem key={job.id}>
+                                            <RecentHeader>
+                                                <div>
+                                                    <RecentTitle>{job.title}</RecentTitle>
+                                                    <RecentMeta>{job.sourceSummary || "Selecao manual"}</RecentMeta>
+                                                </div>
+                                                <RecentButton onClick={() => handleRestoreRecentJob(job)}>
+                                                    Restaurar
+                                                </RecentButton>
+                                            </RecentHeader>
+                                            <RecentMeta>{job.helper}</RecentMeta>
+                                            <RecentMeta>{job.createdLabel} - {job.relativeDate}</RecentMeta>
+                                        </RecentItem>
+                                    ))}
+                                </RecentList>
+                            )}
+                        </CatalogCard>
+
+                        <CatalogCard>
+                            <CatalogCardHeader>
+                                <CatalogCardEyebrow>Boas praticas</CatalogCardEyebrow>
+                                <CatalogCardTitle>Cuidados na operacao</CatalogCardTitle>
+                                <CatalogCardText>
+                                    O lote deve refletir o fluxo real da loja para preservar rastreabilidade e evitar reimpressao desnecessaria.
+                                </CatalogCardText>
+                            </CatalogCardHeader>
+
+                            <ChecklistList>
+                                {guidelines.map(item => (
+                                    <ChecklistItem key={item.title}>
+                                        <ChecklistTitle>{item.title}</ChecklistTitle>
+                                        <ChecklistText>{item.description}</ChecklistText>
+                                    </ChecklistItem>
+                                ))}
+                            </ChecklistList>
+                        </CatalogCard>
                     </BatchPrintSidebar>
                 </BatchPrintLayout>
             </PageContent>

@@ -31,70 +31,76 @@ export {
 
 export const SettingsLayout = styled.div.attrs({})`
     display: grid;
-    grid-template-columns: 188px minmax(0, 1fr);
-    gap: 22px;
+    grid-template-columns: 168px minmax(0, 1fr);
+    gap: 18px;
     align-items: start;
-    padding-bottom: 120px;
+    padding-bottom: 96px;
 
     @media(max-width: 1080px){
         grid-template-columns: 1fr;
-        padding-bottom: 132px;
+        padding-bottom: 112px;
     }
 `;
 
 export const SettingsSidebar = styled.aside.attrs({})`
     position: sticky;
     top: 0;
-    padding: 18px 12px 14px;
-    border-radius: 18px;
-    border: 1px solid ${({ theme }) => theme.palette.colors.mystic};
+    padding: 24px 0;
+    border-radius: 0;
+    border-right: 1px solid ${({ theme }) => theme.palette.colors.mystic};
+    border-top: 0;
+    border-left: 0;
+    border-bottom: 0;
     background: ${({ theme }) => theme.palette.colors.white};
-    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
     display: grid;
-    gap: 12px;
+    gap: 10px;
 
     @media(max-width: 1080px){
         position: static;
+        padding: 16px 12px 12px;
+        border: 1px solid ${({ theme }) => theme.palette.colors.mystic};
+        border-radius: 12px;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
     }
 `;
 
 export const SettingsMain = styled.main.attrs({})`
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 18px;
     min-width: 0;
 `;
 
 export const SettingsNavTitle = styled.h2.attrs({})`
     margin: 0;
-    padding: 4px 8px 2px;
+    padding: 0 14px 3px;
     color: ${({ theme }) => theme.palette.colors.ebony};
-    font-size: 17px;
-    font-weight: 800;
-    line-height: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18px;
     letter-spacing: -0.03em;
 `;
 
 export const SettingsNavList = styled.div.attrs({})`
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0;
 `;
 
 export const SettingsNavButton = styled.button.attrs({
     type: "button",
 })`
     width: 100%;
-    min-height: 42px;
-    padding: 10px 12px;
+    min-height: 34px;
+    padding: 8px 14px;
     border: 0;
     border-left: 3px solid ${({ $active, theme }) => $active ? theme.palette.primary.main : "transparent"};
-    border-radius: 0 12px 12px 0;
+    border-radius: 0;
     background: ${({ $active }) => $active ? "rgba(59,130,246,0.08)" : "transparent"};
     color: ${({ $active, theme }) => $active ? theme.palette.primary.main : theme.palette.colors.slate};
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 7px;
     cursor: pointer;
     text-align: left;
     transition: background .2s ease, color .2s ease, border-color .2s ease;
@@ -106,8 +112,8 @@ export const SettingsNavButton = styled.button.attrs({
 `;
 
 export const SettingsNavIconWrap = styled.span.attrs({})`
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -115,9 +121,9 @@ export const SettingsNavIconWrap = styled.span.attrs({})`
 `;
 
 export const SettingsNavLabel = styled.span.attrs({})`
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 17px;
 `;
 
 export const TabsGrid = styled.div.attrs({})`
@@ -133,12 +139,12 @@ export const TabsGrid = styled.div.attrs({})`
 export const TabButton = styled.button.attrs({
     type: "button",
 })`
-    padding: 16px;
-    border-radius: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: 1px solid ${props => props.$active ? "rgba(59,130,246,0.22)" : props.theme.palette.colors.mystic};
     background: ${props => props.$active ? "rgba(59,130,246,0.08)" : "rgba(248,250,252,0.92)"};
     display: grid;
-    gap: 8px;
+    gap: 6px;
     text-align: left;
     cursor: pointer;
 `;
@@ -146,44 +152,44 @@ export const TabButton = styled.button.attrs({
 export const TabHeader = styled.div.attrs({})`
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 `;
 
 export const TabIcon = styled.img.attrs({})`
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 `;
 
 export const TabTitle = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 19px;
 `;
 
 export const TabText = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 11px;
+    line-height: 16px;
 `;
 
 export const ActionRow = styled.div.attrs({})`
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 `;
 
 export const ActionButton = styled.button.attrs({
     type: "button",
 })`
-    min-height: 40px;
-    padding: 10px 14px;
-    border-radius: 12px;
+    min-height: 38px;
+    padding: 9px 14px;
+    border-radius: 8px;
     border: 1px solid ${props => props.$primary ? "rgba(59,130,246,0.18)" : props.theme.palette.colors.mystic};
     background: ${props => props.$primary ? props.theme.palette.primary.main : "rgba(248,250,252,0.92)"};
     color: ${props => props.$primary ? props.theme.palette.colors.white : props.theme.palette.colors.slate};
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
     line-height: 18px;
     cursor: pointer;
     opacity: ${props => props.disabled ? 0.56 : 1};
@@ -191,15 +197,15 @@ export const ActionButton = styled.button.attrs({
 
 export const ToggleList = styled.div.attrs({})`
     display: grid;
-    gap: 12px;
+    gap: 8px;
 `;
 
 export const ToggleRow = styled.label.attrs({})`
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    padding: 14px 16px;
-    border-radius: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
     cursor: pointer;
@@ -221,29 +227,29 @@ export const ToggleMain = styled.div.attrs({})`
 
 export const ToggleTitle = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 21px;
+    line-height: 19px;
 `;
 
 export const ToggleText = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 13px;
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 18px;
 `;
 
 export const SectionList = styled.div.attrs({})`
     display: grid;
-    gap: 12px;
+    gap: 8px;
 `;
 
 export const SectionRow = styled.div.attrs({})`
-    padding: 16px;
-    border-radius: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
     display: grid;
-    gap: 12px;
+    gap: 10px;
 `;
 
 export const SectionHeader = styled.div.attrs({})`
@@ -260,9 +266,9 @@ export const SectionMain = styled.div.attrs({})`
 
 export const SectionTitle = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 19px;
 `;
 
 export const SectionMeta = styled.div.attrs({})`
@@ -273,12 +279,12 @@ export const SectionMeta = styled.div.attrs({})`
 
 export const SectionBadge = styled.span.attrs({})`
     width: fit-content;
-    padding: 7px 10px;
+    padding: 5px 10px;
     border-radius: 999px;
     background: ${props => props.$tone === "orange" ? "rgba(249,115,22,0.12)" : "rgba(59,130,246,0.12)"};
     color: ${props => props.$tone === "orange" ? "#c2410c" : props.theme.palette.primary.main};
-    font-size: 11px;
-    font-weight: 800;
+    font-size: 10px;
+    font-weight: 700;
     line-height: 16px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -316,8 +322,8 @@ export const MatrixGrid = styled.div.attrs({})`
 `;
 
 export const MatrixCard = styled.div.attrs({})`
-    padding: 16px;
-    border-radius: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
     display: grid;
@@ -326,9 +332,9 @@ export const MatrixCard = styled.div.attrs({})`
 
 export const MatrixTitle = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 19px;
 `;
 
 export const MatrixRow = styled.div.attrs({})`
@@ -343,7 +349,7 @@ export const MatrixRow = styled.div.attrs({})`
 
 export const MatrixCell = styled.div.attrs({})`
     padding: 12px;
-    border-radius: 12px;
+    border-radius: 8px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(255,255,255,0.92);
 `;
@@ -360,7 +366,7 @@ export const MatrixLabel = styled.div.attrs({})`
 export const PermissionBadge = styled.div.attrs({})`
     margin-top: 8px;
     width: fit-content;
-    padding: 7px 10px;
+    padding: 5px 10px;
     border-radius: 999px;
     background: ${props => props.$tone === "green"
         ? "rgba(22,163,74,0.12)"
@@ -372,8 +378,8 @@ export const PermissionBadge = styled.div.attrs({})`
         : props.$tone === "blue"
             ? props.theme.palette.primary.main
             : "#c2410c"};
-    font-size: 11px;
-    font-weight: 800;
+    font-size: 10px;
+    font-weight: 700;
     line-height: 16px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -381,12 +387,12 @@ export const PermissionBadge = styled.div.attrs({})`
 
 export const UserList = styled.div.attrs({})`
     display: grid;
-    gap: 12px;
+    gap: 8px;
 `;
 
 export const UserRow = styled.div.attrs({})`
-    padding: 14px 16px;
-    border-radius: 14px;
+    padding: 13px 14px;
+    border-radius: 10px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
     display: grid;
@@ -395,25 +401,25 @@ export const UserRow = styled.div.attrs({})`
 
 export const UserName = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 19px;
 `;
 
 export const UserMeta = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 11px;
+    line-height: 16px;
 `;
 
 export const ShortcutGrid = styled.div.attrs({})`
     display: grid;
-    gap: 12px;
+    gap: 8px;
 `;
 
 export const ShortcutCard = styled.div.attrs({})`
-    padding: 16px;
-    border-radius: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
     display: grid;
@@ -422,9 +428,9 @@ export const ShortcutCard = styled.div.attrs({})`
 
 export const ShortcutTitle = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 19px;
 `;
 
 export const ShortcutText = styled.div.attrs({})`

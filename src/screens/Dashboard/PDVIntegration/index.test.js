@@ -19,7 +19,7 @@ const ADMIN_USER = {
 const OPERATOR_USER = {
     id: 2,
     documentId: "user-doc-02",
-    name: "João Operador",
+    name: "Joao Operador",
     email: "joao@senaprices.com",
     role: { name: "user" },
 };
@@ -74,10 +74,11 @@ describe("Dashboard PDV Integration page", () => {
 
         mountPage();
 
-        cy.contains("Integração PDV").should("exist");
-        cy.contains("Configuração").should("exist");
-        cy.contains("Salvar configuração").should("exist");
-        cy.contains("Endpoint").should("exist");
+        cy.contains("Integracao PDV").should("exist");
+        cy.contains("Origem").should("exist");
+        cy.contains("Salvar").should("exist");
+        cy.contains("Conexao").click();
+        cy.contains("Endpoint, conexao ou caminho principal").should("exist");
     });
 
     it("shows read-only guidance for regular users", () => {
@@ -91,8 +92,9 @@ describe("Dashboard PDV Integration page", () => {
 
         mountPage();
 
-        cy.contains("modo leitura").should("exist");
-        cy.contains("Governança por perfil").should("exist");
-        cy.contains("Salvar configuração").should("not.exist");
+        cy.contains("modo somente leitura").should("exist");
+        cy.contains("Politica").click();
+        cy.contains("Como cada perfil usa o preco do PDV").should("exist");
+        cy.contains("Salvar").should("not.exist");
     });
 });

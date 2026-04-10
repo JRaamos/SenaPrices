@@ -40,13 +40,13 @@ export const Dropzone = styled.button.attrs({
     type: "button",
 })`
     width: 100%;
-    padding: 28px;
-    border-radius: 18px;
-    border: 1px dashed ${props => props.$dragging ? "rgba(59,130,246,0.4)" : props.theme.palette.colors.geyser};
+    padding: 48px;
+    border-radius: 10px;
+    border: 2px dashed ${props => props.$dragging ? "rgba(59,130,246,0.4)" : props.theme.palette.colors.geyser};
     background: ${props => props.$dragging ? "rgba(59,130,246,0.05)" : "rgba(248,250,252,0.94)"};
     display: grid;
     gap: 12px;
-    text-align: left;
+    text-align: center;
     cursor: pointer;
     transition: border-color .2s ease, background .2s ease, transform .2s ease;
 
@@ -64,16 +64,16 @@ export const Dropzone = styled.button.attrs({
 export const DropzoneTitle = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 26px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 22px;
 `;
 
 export const DropzoneText = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 14px;
-    line-height: 22px;
+    font-size: 13px;
+    line-height: 20px;
 `;
 
 export const DropzoneMeta = styled.div.attrs({
@@ -88,7 +88,7 @@ export const MetaBadge = styled.span.attrs({
     display: inline-flex;
     align-items: center;
     width: fit-content;
-    padding: 7px 12px;
+    padding: 5px 12px;
     border-radius: 999px;
     background: ${props => props.$tone === "blue"
         ? "rgba(59,130,246,0.08)"
@@ -115,7 +115,7 @@ export const DatasetMetaGrid = styled.div.attrs({
 })`
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    gap: 10px;
 
     @media(max-width: 720px){
         grid-template-columns: 1fr;
@@ -124,8 +124,8 @@ export const DatasetMetaGrid = styled.div.attrs({
 
 export const DatasetMetaCard = styled.div.attrs({
 })`
-    padding: 14px;
-    border-radius: 14px;
+    padding: 12px;
+    border-radius: 8px;
     background: rgba(248,250,252,0.92);
     border: 1px solid ${props => props.theme.palette.colors.mystic};
 `;
@@ -133,8 +133,8 @@ export const DatasetMetaCard = styled.div.attrs({
 export const DatasetMetaLabel = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.gull};
-    font-size: 11px;
-    font-weight: 800;
+    font-size: 10px;
+    font-weight: 600;
     line-height: 16px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -142,11 +142,11 @@ export const DatasetMetaLabel = styled.div.attrs({
 
 export const DatasetMetaValue = styled.div.attrs({
 })`
-    margin-top: 8px;
+    margin-top: 6px;
     color: ${props => props.theme.palette.colors.ebony};
     font-size: 14px;
     font-weight: 700;
-    line-height: 21px;
+    line-height: 20px;
     word-break: break-word;
 `;
 
@@ -161,7 +161,7 @@ export const ColumnBadge = styled.span.attrs({
 })`
     display: inline-flex;
     align-items: center;
-    padding: 8px 12px;
+    padding: 5px 12px;
     border-radius: 999px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
@@ -179,8 +179,8 @@ export const MappingGrid = styled.div.attrs({
 
 export const MappingRow = styled.div.attrs({
 })`
-    padding: 16px;
-    border-radius: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: 1px solid ${props => props.$required && !props.$mapped
         ? "rgba(249,115,22,0.18)"
         : props.theme.palette.colors.mystic};
@@ -189,7 +189,7 @@ export const MappingRow = styled.div.attrs({
         : "rgba(248,250,252,0.92)"};
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
-    gap: 16px;
+    gap: 12px;
     align-items: center;
 
     @media(max-width: 720px){
@@ -200,29 +200,29 @@ export const MappingRow = styled.div.attrs({
 export const MappingTitle = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 22px;
+    line-height: 19px;
 `;
 
 export const MappingText = styled.div.attrs({
 })`
-    margin-top: 6px;
+    margin-top: 4px;
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 13px;
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 18px;
 `;
 
 export const ResultList = styled.div.attrs({
 })`
     display: grid;
-    gap: 8px;
+    gap: 10px;
 `;
 
 export const ResultItem = styled.div.attrs({
 })`
-    padding: 12px 14px;
-    border-radius: 14px;
+    padding: 11px 13px;
+    border-radius: 8px;
     border: 1px solid ${props => props.$tone === "danger" ? "rgba(248,113,113,0.18)" : props.theme.palette.colors.mystic};
     background: ${props => props.$tone === "danger" ? "rgba(254,242,242,0.96)" : "rgba(248,250,252,0.92)"};
     color: ${props => props.$tone === "danger" ? "#991b1b" : props.theme.palette.colors.ebony};
@@ -233,14 +233,14 @@ export const ResultItem = styled.div.attrs({
 export const ImportTable = styled.div.attrs({
 })`
     display: grid;
-    gap: 12px;
+    gap: 10px;
 `;
 
 export const ImportTableHeader = styled.div.attrs({
 })`
     display: grid;
     grid-template-columns: 88px 124px minmax(220px, 1fr) minmax(220px, 1.2fr) minmax(180px, 0.9fr);
-    gap: 12px;
+    gap: 10px;
     padding: 0 4px;
 
     @media(max-width: 1120px){
@@ -260,8 +260,8 @@ export const ImportTableHeaderCell = styled.div.attrs({
 
 export const ImportTableRow = styled.div.attrs({
 })`
-    padding: 18px;
-    border-radius: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: 1px solid ${props => props.$tone === "danger"
         ? "rgba(248,113,113,0.18)"
         : props.$tone === "green"
@@ -278,7 +278,7 @@ export const ImportTableRow = styled.div.attrs({
                 : "rgba(248,250,252,0.92)"};
     display: grid;
     grid-template-columns: 88px 124px minmax(220px, 1fr) minmax(220px, 1.2fr) minmax(180px, 0.9fr);
-    gap: 12px;
+    gap: 10px;
     align-items: start;
 
     @media(max-width: 1120px){
@@ -289,27 +289,27 @@ export const ImportTableRow = styled.div.attrs({
 export const ImportCell = styled.div.attrs({
 })`
     display: grid;
-    gap: 8px;
+    gap: 6px;
 `;
 
 export const ImportCellTitle = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 22px;
+    line-height: 19px;
 `;
 
 export const ImportCellText = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 13px;
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 18px;
 `;
 
 export const ImportMessage = styled.div.attrs({
 })`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 13px;
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 18px;
 `;

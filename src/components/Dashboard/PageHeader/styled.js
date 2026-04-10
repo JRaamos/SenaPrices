@@ -30,23 +30,23 @@ const TONES = {
 export const HeaderWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 12px;
 `;
 
 export const HeaderLead = styled.div`
     display: flex;
-    align-items: flex-start;
-    gap: 16px;
+    align-items: center;
+    gap: 12px;
     min-width: 0;
     flex: 1;
 `;
 
 export const HeaderBadge = styled.div`
-    width: 56px;
-    height: 56px;
-    border-radius: 18px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,27 +58,27 @@ export const HeaderBadge = styled.div`
 export const HeaderTextContent = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
     min-width: 0;
     flex: 1;
 `;
 
 export const Title = styled.div`
-    font-weight: 800;
-    font-size: 32px;
-    line-height: 1.08;
-    letter-spacing: -0.04em;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
     color: ${p => p.theme.palette.colors.black};
 
     @media (max-width: 767px) {
-        font-size: 26px;
+        font-size: 20px;
     }
 `;
 
 export const Subtitle = styled.div`
     color: #64748b;
-    font-size: 15px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.45;
     max-width: 820px;
 `;
 
@@ -87,5 +87,5 @@ export const ButtonContent = styled.div`
     align-items: center;
     justify-content: flex-end;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
 `;

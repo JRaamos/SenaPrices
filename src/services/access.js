@@ -246,10 +246,10 @@ export function buildSidebarSections(user = {}, isAuthenticated = true) {
         { key: ROUTE_KEYS.supportAccess, label: "Log de Suporte", iconToken: "supportAccess", path: "/dashboard/support/access" },
     ].filter(item => canAccessRoute(item.key, user, isAuthenticated));
 
+    // Account access is already exposed through the footer profile card and
+    // the dedicated internal account navigation, so we keep the footer lean.
     const secondary = [
         { key: ROUTE_KEYS.support, label: "Suporte", iconToken: "support", path: "/dashboard/support" },
-        { key: ROUTE_KEYS.me, label: "Minha Conta", iconToken: "account", path: "/dashboard/me" },
-        { key: ROUTE_KEYS.mePassword, label: "Segurança", iconToken: "security", path: "/dashboard/me/password" },
     ].filter(item => canAccessRoute(item.key, user, isAuthenticated));
 
     return {

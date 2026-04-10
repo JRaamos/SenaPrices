@@ -4,7 +4,7 @@ export const DashboardGrid = styled.div.attrs({
 })`
     display: grid;
     grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
-    gap: 24px;
+    gap: 18px;
     align-items: start;
 
     @media(max-width: 1080px){
@@ -16,23 +16,23 @@ export const DashboardSidebar = styled.div.attrs({
 })`
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 18px;
 `;
 
 export const DashboardMain = styled.div.attrs({
 })`
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 18px;
 `;
 
 export const DashboardCard = styled.div.attrs({
 })`
-    padding: 24px;
+    padding: 18px;
     background: ${props => props.theme.palette.colors.white};
-    border-radius: 16px;
+    border-radius: 12px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
     display: flex;
     flex-direction: column;
 `;
@@ -41,17 +41,17 @@ export const DashboardSectionTitle = styled.h2.attrs({
 })`
     margin: 0;
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 700;
-    line-height: 28px;
+    line-height: 22px;
 `;
 
 export const DashboardSectionText = styled.p.attrs({
 })`
-    margin: 8px 0 0;
+    margin: 4px 0 0;
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 14px;
-    line-height: 22px;
+    font-size: 13px;
+    line-height: 20px;
 `;
 
 export const DashboardProfileName = styled.div.attrs({

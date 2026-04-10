@@ -54,7 +54,7 @@ function resetStorage(user = ADMIN_USER) {
             accessDate: "2026-04-08",
             adminName: "Mateus Sena",
             targetUser: "Loja Centro - Maria",
-            justification: "Acesso necessário para validar divergência em campanha semanal.",
+            justification: "Acesso necessario para validar divergencia em campanha semanal.",
             ticketCode: "#452",
             createdAt: "2026-04-08T10:00:00.000Z",
             createdBy: "admin-doc-01",
@@ -81,7 +81,7 @@ describe("Dashboard SupportAccess page", () => {
         resetStorage(SUBADMIN_USER);
         mountPage();
 
-        cy.contains("Acesso administrativo necessário").should("exist");
+        cy.contains("Acesso administrativo necessario").should("exist");
         cy.contains("Log de Suporte").should("exist");
     });
 });

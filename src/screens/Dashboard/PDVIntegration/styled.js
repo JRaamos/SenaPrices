@@ -38,7 +38,7 @@ export {
 export const TypeGrid = styled.div.attrs({})`
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 8px;
 
     @media(max-width: 720px){
         grid-template-columns: 1fr;
@@ -48,8 +48,8 @@ export const TypeGrid = styled.div.attrs({})`
 export const TypeCard = styled.button.attrs({
     type: "button",
 })`
-    padding: 16px;
-    border-radius: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
     border: 1px solid ${props => props.$active
         ? "rgba(59,130,246,0.22)"
         : props.theme.palette.colors.mystic};
@@ -57,39 +57,39 @@ export const TypeCard = styled.button.attrs({
         ? "rgba(59,130,246,0.08)"
         : "rgba(248,250,252,0.92)"};
     display: grid;
-    gap: 10px;
+    gap: 6px;
     text-align: left;
     cursor: ${props => props.disabled ? "default" : "pointer"};
     opacity: ${props => props.disabled && !props.$active ? 0.56 : 1};
 `;
 
 export const TypeIcon = styled.img.attrs({})`
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
 `;
 
 export const TypeTitle = styled.div.attrs({})`
     color: ${props => props.$active
         ? props.theme.palette.primary.main
         : props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 19px;
 `;
 
 export const TypeText = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 11px;
+    line-height: 16px;
 `;
 
 export const SwitchList = styled.div.attrs({})`
     display: grid;
-    gap: 12px;
+    gap: 8px;
 `;
 
 export const SwitchRow = styled.div.attrs({})`
-    padding: 14px 0;
+    padding: 10px 0;
     border-bottom: 1px solid ${props => props.$last ? "transparent" : props.theme.palette.colors.mystic};
     display: flex;
     align-items: flex-start;
@@ -105,23 +105,23 @@ export const SwitchMain = styled.div.attrs({})`
 
 export const SwitchTitle = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 19px;
 `;
 
 export const SwitchText = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 11px;
+    line-height: 16px;
 `;
 
 export const ToggleButton = styled.button.attrs({
     type: "button",
 })`
-    width: 44px;
-    min-width: 44px;
-    height: 24px;
+    width: 40px;
+    min-width: 40px;
+    height: 22px;
     border: 0;
     border-radius: 999px;
     background: ${props => props.$active
@@ -134,7 +134,7 @@ export const ToggleButton = styled.button.attrs({
         content: "";
         position: absolute;
         top: 3px;
-        left: ${props => props.$active ? "23px" : "3px"};
+        left: ${props => props.$active ? "20px" : "3px"};
         width: 18px;
         height: 18px;
         border-radius: 50%;
@@ -145,12 +145,12 @@ export const ToggleButton = styled.button.attrs({
 
 export const HistoryList = styled.div.attrs({})`
     display: grid;
-    gap: 12px;
+    gap: 10px;
 `;
 
 export const HistoryItem = styled.div.attrs({})`
     padding: 14px 16px;
-    border-radius: 14px;
+    border-radius: 10px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
     display: grid;
@@ -166,20 +166,20 @@ export const HistoryHeader = styled.div.attrs({})`
 
 export const HistoryTitle = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 19px;
 `;
 
 export const HistoryMeta = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 11px;
+    line-height: 16px;
 `;
 
 export const SyncBadge = styled.span.attrs({})`
     width: fit-content;
-    padding: 7px 10px;
+    padding: 5px 10px;
     border-radius: 999px;
     background: ${props => props.$tone === "green"
         ? "rgba(22,163,74,0.12)"
@@ -200,16 +200,16 @@ export const SyncBadge = styled.span.attrs({})`
 
 export const ActionRow = styled.div.attrs({})`
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 `;
 
 export const ActionButton = styled.button.attrs({
     type: "button",
 })`
-    min-height: 40px;
-    padding: 10px 14px;
-    border-radius: 12px;
+    min-height: 38px;
+    padding: 9px 14px;
+    border-radius: 8px;
     border: 1px solid ${props => props.$primary
         ? "rgba(59,130,246,0.18)"
         : props.theme.palette.colors.mystic};
@@ -219,8 +219,8 @@ export const ActionButton = styled.button.attrs({
     color: ${props => props.$primary
         ? props.theme.palette.colors.white
         : props.theme.palette.colors.slate};
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
     line-height: 18px;
     cursor: pointer;
     opacity: ${props => props.disabled ? 0.56 : 1};
@@ -228,22 +228,22 @@ export const ActionButton = styled.button.attrs({
 
 export const StepList = styled.div.attrs({})`
     display: grid;
-    gap: 12px;
+    gap: 10px;
 `;
 
 export const StepCard = styled.div.attrs({})`
-    padding: 16px;
-    border-radius: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
     display: grid;
-    gap: 12px;
+    gap: 10px;
 `;
 
 export const StepHeader = styled.div.attrs({})`
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
 `;
 
 export const StepNumber = styled.div.attrs({})`
@@ -263,26 +263,26 @@ export const StepNumber = styled.div.attrs({})`
 
 export const StepMain = styled.div.attrs({})`
     display: grid;
-    gap: 6px;
+    gap: 4px;
 `;
 
 export const StepTitle = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.ebony};
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
-    line-height: 22px;
+    line-height: 19px;
 `;
 
 export const StepText = styled.div.attrs({})`
     color: ${props => props.theme.palette.colors.slate};
-    font-size: 13px;
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 18px;
 `;
 
 export const CodeBlock = styled.pre.attrs({})`
     margin: 0;
     padding: 14px 16px;
-    border-radius: 14px;
+    border-radius: 8px;
     background: #0f172a;
     color: #cbd5e1;
     font-size: 12px;
@@ -295,12 +295,12 @@ export const CodeBlock = styled.pre.attrs({})`
 export const CompatibilityGrid = styled.div.attrs({})`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
+    gap: 6px;
 `;
 
 export const CompatibilityItem = styled.div.attrs({})`
-    padding: 10px 12px;
-    border-radius: 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
     border: 1px solid ${props => props.theme.palette.colors.mystic};
     background: rgba(248,250,252,0.92);
     color: ${props => props.theme.palette.colors.slate};

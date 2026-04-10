@@ -54,14 +54,16 @@ describe("Dashboard Import page", () => {
         }, { force: true });
 
         cy.contains("1 linha(s) carregadas para revisao.").should("exist");
+        cy.contains("Previa").click();
         cy.contains("Plano de importacao").should("exist");
         cy.contains("Cafe Pilao 500g").should("exist");
         cy.contains("Criar: 1").should("exist");
 
         cy.contains("Importar linhas validas").click();
         cy.contains("1 linha(s) processadas com sucesso na base.").should("exist");
+        cy.contains("Resultado").click();
         cy.contains("Ultima importacao").should("exist");
 
         cy.wrap(ReadObject("catalog-items")).should("have.length", 1);
     });
-});
+}
