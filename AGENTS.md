@@ -26,30 +26,49 @@ Se houver conflito entre design e arquitetura do projeto, a arquitetura do proje
 As skills desta pasta devem ser carregadas sob demanda, conforme o tipo de alteracao.
 
 Use estas referencias:
-
 - `.agents/skills/build-screen-from-figma.md`
   - quando criar ou reconstruir uma screen a partir do Figma
+  - quando a tarefa envolver arquitetura de screen, separacao entre `index.js`, `controller.js`, service e API
+  - quando houver duvida sobre onde colocar estado, handlers, efeitos ou integracao externa
+
+- `.agents/skills/frontend-ui-quality.md`
+  - quando houver decisao de refinamento visual
+  - quando for preciso garantir alta fidelidade ao Figma em medidas, alinhamento, proporcao e tipografia
+  - quando for preciso garantir que a UI nao fique com aparencia generica ou fora do padrao do projeto
+
+- `.agents/skills/extract-screen-subcomponents.md`
+  - quando a screen ficar grande demais
+  - quando surgir card, hero, section, skeleton, empty state ou subcomponente local dentro da tela
 
 - `.agents/skills/reuse-existing-components.md`
   - quando houver card, item, row, bloco repetido ou comportamento ja existente no projeto
 
-- `.agents/skills/use-header-sidebar-layout.md`
-  - quando a tela envolver `ContainerAuthenticated`, `ContainerUnauthenticated`, `PageHeader`, sidebar, topbar ou navegacao principal
+- `.agents/skills/render-conditions-inside-return.md`
+  - quando houver lógica condicional de renderização na screen
+  - quando existir tentacao de usar varios `if (...) return ...` fora do JSX
+  - quando surgir decisao de render ou props com `defaultX`, `resolvedX`, `hasX` e similares
+  - quando houver objetos intermediarios apenas para simplificar props ou condicoes
 
 - `.agents/skills/keep-theme-logic-in-styled.md`
   - quando houver logica visual dependente de theme, token ou variacao de estilo
+  - quando houver criacao, ajuste ou uso de cores e theme
 
-- `.agents/skills/keep-render-logic-inline.md`
-  - quando surgir decisao de render ou props com `defaultX`, `resolvedX`, `hasX` e similares
+- `.agents/skills/svg-and-image-usage.md`
+  - quando houver uso de ícones ou imagens vindos do Figma
+
+- `.agents/skills/frontend-mock-in-controller.md`
+  - quando a tela estiver usando dados mockados sem integração com API (não usar services nem simular API)
+
+- `.agents/skills/use-header-sidebar-layout.md`
+  - quando a tela envolver `ContainerAuthenticated`, `ContainerUnauthenticated`, `PageHeader`, sidebar, topbar ou navegacao principal
 
 - `.agents/skills/use-formcore-with-faker.md`
   - quando a tarefa envolver qualquer formulario, filtro lateral, multiform ou captura de dados
+  - quando houver uso direto de `components/Form`
+  - quando houver botoes, inputs, selects, toggles, radios, upload ou wrappers de formulario fora do padrao
 
 - `.agents/skills/use-project-table.md`
   - quando a tarefa envolver qualquer tabela, listagem tabular, grid paginada ou tabela com busca e filtros
-
-- `.agents/skills/follow-existing-examples-first.md`
-  - quando houver duvida de implementacao e for necessario seguir o padrao da versao inicial do projeto
 
 - `.agents/skills/use-strapi-image-and-error-helpers.md`
   - quando houver imagem com `url` vinda da API ou tratamento de resposta do servidor
@@ -57,7 +76,33 @@ Use estas referencias:
 - `.agents/skills/fill-address-from-zip-code-service.md`
   - quando houver formulario de endereco, CEP, preenchimento automatico de endereco ou consulta de logradouro
 
+- `.agents/skills/follow-existing-examples-first.md`
+  - quando houver duvida de implementacao e for necessario seguir o padrao da versao inicial do projeto
+  - quando a tarefa envolver formulario, tabela, dashboard ou fluxo ja existente
+
+- `.agents/skills/create-loading-with-skeleton.md`
+  - quando a screen tiver loading inicial ou carregamento de conteudo principal
+  - quando um spinner generico nao representar bem a estrutura real da tela
+
 Se mais de uma skill se aplicar, carregar todas as necessarias antes de implementar.
+
+Inventario atual da pasta `.agents/skills`:
+
+- `build-screen-from-figma.md`
+- `create-loading-with-skeleton.md`
+- `extract-screen-subcomponents.md`
+- `fill-address-from-zip-code-service.md`
+- `follow-existing-examples-first.md`
+- `frontend-mock-in-controller.md`
+- `frontend-ui-quality.md`
+- `keep-theme-logic-in-styled.md`
+- `render-conditions-inside-return.md`
+- `reuse-existing-components.md`
+- `svg-and-image-usage.md`
+- `use-formcore-with-faker.md`
+- `use-header-sidebar-layout.md`
+- `use-project-table.md`
+- `use-strapi-image-and-error-helpers.md`
 
 ---
 
@@ -137,7 +182,7 @@ Se houver logica de theme ou token, carregar:
 
 Se surgir esse tipo de logica, carregar:
 
-- `.agents/skills/keep-render-logic-inline.md`
+- `.agents/skills/render-conditions-inside-return.md`
 
 ---
 

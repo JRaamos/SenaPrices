@@ -10,6 +10,14 @@ Aplicar sempre que:
 
 ---
 
+## Se encontrar similar
+
+- reutilizar
+- adaptar via props
+- evitar duplicação
+
+---
+
 ## Ordem obrigatória de consulta
 
 Antes de inventar uma abordagem nova, consultar:
