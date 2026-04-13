@@ -13,11 +13,15 @@ import {
     FormContent,
     AppLogo,
     Content,
-    Touch
+    Touch,
+    MinimalShell,
+    MinimalTopAction,
+    MinimalCenterContent,
+    MinimalBottomAction,
 } from './styled'
  
 
-export default function ContainerUnauthenticated({ children, keep }){   
+export default function ContainerUnauthenticated({ children, keep, minimal, topAction, bottomAction }){   
     
     const n = useNavigate();
     const navigate = to => n(`/${ to }`); 
@@ -41,23 +45,37 @@ export default function ContainerUnauthenticated({ children, keep }){
     return ( 
         <> 
             <ThemedComponent>
-                <Content>
-                    <Row>
-                        <Col md={{ size:7 }}>
-                            <SideBackgroundImageContainer>
-                                <SideBackgroundImage />
-                                <SideBackgroundImageDegree />
-                            </SideBackgroundImageContainer>
-                        </Col>
-                        <Col md={{ size:5 }}>
-                            <FormContent>
-                                <Touch onClick={() => navigate('')}>
-                                    <AppLogo /> 
-                                </Touch>
+                <Content minimal={minimal}>
+                    { minimal ? (
+                        <MinimalShell>
+                            <MinimalTopAction>
+                                { topAction }
+                            </MinimalTopAction>
+                            <MinimalCenterContent>
                                 { children }
-                            </FormContent>
-                        </Col>
-                    </Row>  
+                            </MinimalCenterContent>
+                            <MinimalBottomAction>
+                                { bottomAction }
+                            </MinimalBottomAction>
+                        </MinimalShell>
+                    ) : (
+                        <Row>
+                            <Col md={{ size:7 }}>
+                                <SideBackgroundImageContainer>
+                                    <SideBackgroundImage />
+                                    <SideBackgroundImageDegree />
+                                </SideBackgroundImageContainer>
+                            </Col>
+                            <Col md={{ size:5 }}>
+                                <FormContent>
+                                    <Touch onClick={() => navigate('')}>
+                                        <AppLogo /> 
+                                    </Touch>
+                                    { children }
+                                </FormContent>
+                            </Col>
+                        </Row>  
+                    )}
                 </Content>
             </ThemedComponent>
         </>

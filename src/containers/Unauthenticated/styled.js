@@ -66,10 +66,42 @@ export const AppLogo = styled.img.attrs({
 
 export const Content = styled.div.attrs({ 
 })`           
-    overflow:hidden;
+    overflow: ${ props => props.minimal ? `auto` : `hidden` };
+    min-height: 100vh;
+    background: ${ props => props.minimal ? props.theme.palette.colors.slate50 : `transparent` };
 `; 
 
 export const Touch = styled.div.attrs({ 
 })`           
     cursor: pointer;
 `; 
+
+export const MinimalShell = styled.div.attrs({
+})`
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 16px 26px;
+`;
+
+export const MinimalTopAction = styled.div.attrs({
+})`
+    min-height: 32px;
+`;
+
+export const MinimalCenterContent = styled.div.attrs({
+})`
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 0;
+`;
+
+export const MinimalBottomAction = styled.div.attrs({
+})`
+    min-height: 24px;
+    display: flex;
+    justify-content: center;
+`;
