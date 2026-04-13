@@ -53,6 +53,8 @@ export const InputRaw = (props) => {
                         id={props.id}
                         disableUnderline
                         small={props.small}
+                        dense={props.dense}
+                        surface={props.surface}
                         type={safeType === 'password' ? visible ? 'text' : 'password' : safeType}
                         multiline={props.type === 'textarea' || props.multiline}
                         inputRef={props.inputRef}
@@ -152,6 +154,8 @@ export default function Input({
     value,
     secondary,
     disabled,
+    dense,
+    surface,
     onSubmitEditing,
     onChange,
     onChangeText,
@@ -166,6 +170,8 @@ export default function Input({
             value={value}
             secondary={secondary}
             disabled={disabled}
+            dense={dense}
+            surface={surface}
             onSubmitEditing={onSubmitEditing}
             onChange={onChange}
             onChangeText={onChangeText}

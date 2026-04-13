@@ -28,6 +28,8 @@ export const Select = ({
     label,
     title,
     space,
+    dense,
+    surface,
     optionLabelKey,
     optionValueKey,
 }) => {
@@ -84,6 +86,8 @@ export const Select = ({
                         <InputLabel id={id} color={ secondary ? 'secondary' : 'primary' } className="last-label">{ placeholder } { (required||multirequired) ? <InputRequired>*</InputRequired> : null } </InputLabel>
                         <MaterialSelect
                             small={small}
+                            dense={dense}
+                            surface={surface}
                             labelId={id}
                             color={ secondary ? 'secondary' : 'primary' }
                             id={`select-${id}`}

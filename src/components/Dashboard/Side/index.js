@@ -1,92 +1,143 @@
-import React, { useContext } from "react";  
+import React, { useContext, useMemo } from "react";
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 
-import {  
-
+import {
     DashboardMenuContainer,
-    DashboardMenu,
-    DashboardMenuHeader,
-    DashboardMenuHeaderIcon,
-
-    DashboardMenuHeaderUserContent,
-    DashboardMenuHeaderUserImage, 
-    DashboardMenuContent,
+    DashboardMenuShell,
+    DashboardMenuBrand,
+    DashboardMenuBrandText,
+    DashboardMenuBrandTitle,
+    DashboardMenuBrandSubtitle,
+    DashboardCollapseButton,
+    DashboardMenuList,
+    DashboardMenuItem,
+    DashboardMenuItemLabel,
     DashboardMenuFooter,
-    
-    DashboardVersionContent,
-    DashboardVersionText, 
-
-} from "./styled"; 
+    DashboardUserCard,
+    DashboardUserCardAvatar,
+    DashboardUserCardContent,
+    DashboardUserCardTitle,
+    DashboardUserCardCode,
+    DashboardUserCardAction,
+    DashboardMenuVersion,
+} from "./styled";
 
 import { DoLogout } from "services/authentication";
 import { CoreContext } from "context/CoreContext";
-import DashboardSideCollapse from "../SideCollapse";
+import { Icon } from "ui/styled";
 
-export default function DashboardSide({ fluid }){ 
+const menuOptions = [
+    { label: 'Criar Preço', icon: 'side-create-price', path: '/dashboard/create-price' },
+    { label: 'Criação Rápida', icon: 'side-quick-create', path: '/dashboard/create-price/quick', disabled: true },
+    { label: 'Impressão em Lote', icon: 'side-batch-print', path: '/dashboard/print-batch', disabled: true },
+    { label: 'Promoções', icon: 'side-promotions', path: '/dashboard/promotions', disabled: true },
+    { label: 'Histórico', icon: 'side-history', path: '/dashboard/history', disabled: true },
+    { label: 'Etiquetas', icon: 'side-labels', path: '/dashboard/labels', disabled: true },
+    { label: 'Criar Item', icon: 'side-create-item', path: '/dashboard/items/create', disabled: true },
+    { label: 'Itens', icon: 'side-items', path: '/dashboard/items', disabled: true },
+    { label: 'Importar', icon: 'side-import', path: '/dashboard/import', disabled: true },
+    { label: 'Relatórios', icon: 'side-reports', path: '/dashboard/reports', disabled: true },
+    { label: 'Integração PDV', icon: 'side-pdv', path: '/dashboard/pdv', disabled: true },
+    { label: 'Definições', icon: 'side-settings', path: '/dashboard/settings', disabled: true },
+    { label: 'Log de Suporte', icon: 'side-support', path: '/dashboard/support', disabled: true },
+    { label: 'Minha Conta', icon: 'side-account', path: '/dashboard/me' },
+]
+
+export default function DashboardSide({ fluid, }) {
     const n = useNavigate();
-    const navigate = to => n(`/${ to }`); 
+    const navigate = to => n(to);
+    const { pathname } = useLocation();
 
-    const { side, setSide } = useContext(CoreContext)
-    
-    const verifyClose = e => {
-        if(!e.target.closest('.menu-contant')){
-            setSide(false)
+    const { side, setSide, user } = useContext(CoreContext);
+
+    const verifyClose = (event) => {
+        if (!event.target.closest('.menu-contant')) {
+            setSide(false);
         }
-    }
+    };
 
     const exit = async () => {
-        await DoLogout()
-        navigate('login')
-    }
+        await DoLogout();
+        navigate('/login');
+    };
 
-    const menuOptions = [
-        { label: 'Home', icon: 'home', path: 'dashboard', border: true },
-        { label: 'Suporte', icon: 'proposal', path: 'dashboard/support' },
-    ]
+    const initials = useMemo(() => {
+        return user?.name?.trim()?.[0]?.toUpperCase() || 'M';
+    }, [user]);
 
-    const footerOptions = [
-        {
-            label: 'Minha Conta',
-            icon: 'user',
-            children: [
-                { label: "Meu Perfil", path: `dashboard/me` },
-                { label: "Senha e segurança", path: `dashboard/me/password` },
-            ]
-        },
-        // { label: 'Fale conosco', icon: 'contact', action:() => window.open("mailto:contato@company.com") },
-        { label: 'Sair', icon: 'exit', action: exit },
-    ];
+    const userName = useMemo(() => {
+        return user?.name || 'Master SenaPrices';
+    }, [user]);
 
-    return ( 
-        <>  
-            {
-                !side && !fluid ? null :
+    const userCode = useMemo(() => {
+        return user?.code || 'MASTER001';
+    }, [user]);
+
+    return (
+        <>
+            {!side && !fluid ? null :
                 <DashboardMenuContainer fluid={fluid} opened={side} onClick={verifyClose}>
-                    <DashboardMenu fluid={fluid} opened={side}>
-                        {
-                            fluid ? null : 
-                            <DashboardMenuHeader onClick={() => setSide(false)}>
-                                <DashboardMenuHeaderIcon src={'/icons/close-white.svg'} />
-                                {/* fechar */}
-                            </DashboardMenuHeader> 
-                        }
-                        <DashboardMenuHeaderUserContent fluid={fluid}>
-                            <DashboardMenuHeaderUserImage opened={side} /> 
-                        </DashboardMenuHeaderUserContent> 
-                        <DashboardMenuContent>
-                            <DashboardSideCollapse options={menuOptions} fluid={fluid} />
-                        </DashboardMenuContent>
-                        <DashboardMenuFooter>
-                            <DashboardSideCollapse options={footerOptions} fluid={fluid} />
-                            <DashboardVersionContent>
-                                <DashboardVersionText>1.0.0</DashboardVersionText>
-                                <DashboardVersionText>1.10.1.201</DashboardVersionText>
-                            </DashboardVersionContent>
+                    <DashboardMenuShell fluid={fluid} opened={side} >
+                        <DashboardMenuBrand opened={side}>
+                            {side ? (
+                                <DashboardMenuBrandText>
+                                    <DashboardMenuBrandTitle>
+                                        <span>Sena</span>
+                                        <strong>Prices</strong>
+                                    </DashboardMenuBrandTitle>
+                                    <DashboardMenuBrandSubtitle>Sistema promocional</DashboardMenuBrandSubtitle>
+                                </DashboardMenuBrandText>
+                            ) : (
+                                <DashboardUserCardAvatar opened={side}>SP</DashboardUserCardAvatar>
+                            )}
+                            <DashboardCollapseButton onClick={() => setSide(!side)}>
+                                <Icon icon="side-collapse" nomargin />
+                            </DashboardCollapseButton>
+                        </DashboardMenuBrand>
+
+                        <DashboardMenuList>
+                            {menuOptions.map((item) => (
+                                <DashboardMenuItem
+                                    key={item.label}
+                                    opened={side}
+                                    active={pathname === item.path}
+                                    disabled={item.disabled}
+                                    onClick={() => item.disabled ? null : navigate(item.path)}
+                                >
+                                    <Icon icon={item.icon} nomargin />
+                                    {!side ? null : <DashboardMenuItemLabel active={pathname === item.path}>{item.label}</DashboardMenuItemLabel>}
+                                </DashboardMenuItem>
+                            ))}
+                        </DashboardMenuList>
+
+                        <DashboardMenuFooter opened={side}>
+                            {side ? (
+                                <>
+                                    <DashboardUserCard onClick={() => navigate('/dashboard/me')}>
+                                        <DashboardUserCardAvatar opened={side}>{initials}</DashboardUserCardAvatar>
+                                        <DashboardUserCardContent>
+                                            <DashboardUserCardTitle>{userName}</DashboardUserCardTitle>
+                                            <DashboardUserCardCode>{userCode}</DashboardUserCardCode>
+                                        </DashboardUserCardContent>
+                                        <DashboardUserCardAction onClick={(event) => {
+                                            event.stopPropagation();
+                                            exit();
+                                        }}>
+                                            <Icon icon="side-logout" nomargin />
+                                        </DashboardUserCardAction>
+                                    </DashboardUserCard>
+                                    <DashboardMenuVersion>SenaPrices v1.0.0</DashboardMenuVersion>
+                                </>
+                            ) : (
+                                <DashboardUserCardAction onClick={exit}>
+                                    <Icon icon="side-logout" nomargin />
+                                </DashboardUserCardAction>
+                            )}
                         </DashboardMenuFooter>
-                    </DashboardMenu>
+                    </DashboardMenuShell>
                 </DashboardMenuContainer>
-            } 
+            }
         </>
     );
 }

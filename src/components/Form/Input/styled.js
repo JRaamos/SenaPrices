@@ -7,10 +7,11 @@ import { InputLabel } from '@mui/material';
 // import Input from '@mui/material/OutlinedInput'; 
 
 
-export const MaterialInput = styled(Input)(({ theme, type, small }) => ({
-    background: theme.palette.colors.backgroundgrey,
-    height: small ? 40 : 48,
-    borderRadius: 4,
+export const MaterialInput = styled(Input)(({ theme, type, small, dense, surface }) => ({
+    background: surface === 'white' ? theme.palette.colors.white : theme.palette.colors.backgroundgrey,
+    height: dense ? 32 : small ? 40 : 48,
+    borderRadius: dense ? 7 : 4,
+    border: surface === 'white' ? `1px solid ${theme.palette.colors.slate300}` : '1px solid transparent',
     ...(type === 'textarea' ? {
         minHeight: 180,
         verticalAlign: "top",

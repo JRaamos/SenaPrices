@@ -5,8 +5,10 @@ import Select from '@mui/material/Select';
 import { InputLabel } from '@mui/material';
 
 export const MaterialSelect = styled(Select)(({ theme, ...props }) => ({  
-    background: theme.palette.colors.backgroundgrey,
-    height: props.small ? 40 : 48,
+    background: props.surface === 'white' ? theme.palette.colors.white : theme.palette.colors.backgroundgrey,
+    height: props.dense ? 34 : props.small ? 40 : 48,
+    borderRadius: props.dense ? 7 : 4,
+    border: props.surface === 'white' ? `1px solid ${theme.palette.colors.slate300}` : '1px solid transparent',
 }));
 
 export const InputRequired = styledCmp.b.attrs({ 
