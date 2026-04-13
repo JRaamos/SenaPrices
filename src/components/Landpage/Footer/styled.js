@@ -1,73 +1,68 @@
-import styled from 'styled-components' 
+import styled from 'styled-components'
 
-export const FooterContainer = styled.div.attrs({ 
-})`          
-    background: ${ props => props.theme.palette.secondary.main }; 
-    padding: 60px 0;
-`;
-    
-export const FooterLogo = styled.img.attrs({ 
-    src:'/logo1024.png'
-})`          
-    width: 184px;
-    margin-bottom: 24px;
-`;
-   
-export const FooterTitle = styled.div.attrs({  
-})`          
-    font-size: 20px;
-    font-weight: 600;
-    color: ${ props => props.theme.palette.colors.white };
-    margin-bottom: 10px;
-`;
-
-   
-export const FooterText = styled.div.attrs({  
-})`          
-    font-size: 20px;
-    color: ${ props => props.theme.palette.colors.white };
-`;
-   
-export const FooterLink = styled.div.attrs({  
-})`          
-    font-size: 20px;
-    color: ${ props => props.theme.palette.colors.white };
-    margin-bottom: 10px;
-    cursor: pointer;
+export const FooterContainer = styled.footer.attrs({})`
+    background: ${p => p.theme.palette.colors.slate900};
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
+    flex-direction: column;
     align-items: center;
+    padding: 34px 32px 28px;
+    text-align: center;
 `;
 
-export const FooterLinkImage = styled.img.attrs({  
-})`          
-    height: 22px;
-    width: 22px;
-    margin-right: 16px;
-`;
-   
-export const FooterSection = styled.div.attrs({  
-})`           
-    margin-top: 64px;
-`;
-    
-export const FooterPhoneContent = styled.div.attrs({  
-})`           
+export const FooterLogo = styled.div.attrs({})`
     display: flex;
-    margin-top: 10px;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
 `;
-    
-export const FooterPhoneIcon = styled.img.attrs({  
-    src:'/icons/phone.svg'
-})`           
-    width: 24px;
-    margin-right: 20px;
+
+export const FooterLogoRow = styled.div.attrs({})`
+    display: flex;
+    gap: 1px;
+    color: ${p => p.theme.palette.colors.white};
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 15px;
+
+    span:last-child {
+        color: ${p => p.theme.palette.colors.blue500};
+    }
 `;
-   
-export const FooterCopyright = styled.div.attrs({  
-})`          
-    font-size: 20px;
-    font-weight: 300;
-    color: ${ props => props.theme.palette.colors.white };
-    margin: 60px 0 0;
-    text-align: center;
+
+export const FooterLogoEyebrow = styled.div.attrs({})`
+    color: ${p => p.theme.palette.colors.slate400};
+    font-size: 8px;
+    line-height: 8px;
+`;
+
+export const FooterLinks = styled.div.attrs({})`
+    display: flex;
+    gap: 20px;
+    margin-top: 22px;
+
+    a {
+        color: ${p => p.theme.palette.colors.slate300};
+        font-size: 13px;
+        line-height: 18px;
+        text-decoration: none;
+    }
+`;
+
+export const FooterDescription = styled.div.attrs({})`
+    color: ${p => p.theme.palette.colors.slate300};
+    font-size: 12px;
+    line-height: 17px;
+    margin-top: 6px;
+`;
+
+export const FooterLegal = styled.div.attrs({})`
+    color: ${p => p.theme.palette.colors.slate400};
+    font-size: 10px;
+    line-height: 15px;
+    margin-top: 12px;
+`;
+
+export const FooterCopy = styled.div.attrs({})`
+    display: none;
 `;

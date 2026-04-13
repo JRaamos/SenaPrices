@@ -1,72 +1,36 @@
-import React from "react"; 
-
-import { Row, Col, Container } from 'reactstrap'; 
-import { useNavigate } from 'react-router-dom';
+import React from 'react'
 
 import {
     FooterContainer,
+    FooterCopy,
+    FooterDescription,
+    FooterLegal,
+    FooterLinks,
     FooterLogo,
-    FooterTitle,
-    FooterText,
-    FooterLink,
-    FooterLinkImage,
-    FooterSection,
-    FooterPhoneContent,
-    FooterPhoneIcon,
-    FooterCopyright
-} from './styled' 
+    FooterLogoEyebrow,
+    FooterLogoRow,
+    FooterLogoText,
+} from './styled'
 
-export default function Footer(){ 
- 
-    const n = useNavigate();
-    const navigate = to => n(`/${ to }`); 
+export default function Footer({ description, lgpdText }) {
+    return (
+        <FooterContainer>
+            <FooterLogo>
+                <FooterLogoRow>
+                    <span>Sena</span>
+                    <span>Prices</span>
+                </FooterLogoRow>
+                <FooterLogoEyebrow>Sistema Promocional</FooterLogoEyebrow>
+            </FooterLogo>
 
-    return ( 
-        <> 
-            <FooterContainer>
-                <Container>
-                    <Row>
-                        <Col md={{size:5}}>
-                            <FooterLogo />
-                            <FooterTitle>AppGenerated</FooterTitle>
-                            <FooterText>Rua sem nome, 18, Sala 02, SP, São Paulo</FooterText>
-                            <FooterPhoneContent>
-                                <FooterPhoneIcon />
-                                <FooterLink>+55 (55) 5555-5555</FooterLink>
-                            </FooterPhoneContent>
-                        </Col>
-                        <Col md={{size:7}}>
-                            <Row>
-                                <Col md={{size:6}}>
-                                    <FooterSection>
-                                        <FooterTitle>&nbsp;</FooterTitle>
-                                        <FooterLink onClick={() => navigate('')}>Inicio</FooterLink>
-                                        <FooterLink onClick={() => navigate('about')}>Sobre</FooterLink>
-                                    </FooterSection>
-                                </Col>
-                                <Col md={{size:6}}> 
-                                    <FooterSection>
-                                        <FooterTitle>Nos siga nas redes</FooterTitle>
-                                        <FooterLink>
-                                            <FooterLinkImage src={'/icons/insta.svg'} />
-                                            Instagram
-                                        </FooterLink>
-                                        <FooterLink>
-                                            <FooterLinkImage src={'/icons/face.svg'} />
-                                            Facebook
-                                        </FooterLink> 
-                                    </FooterSection>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col > 
-                            <FooterCopyright>Criado por X-Apps</FooterCopyright> 
-                        </Col> 
-                    </Row>
-                </Container>
-            </FooterContainer>
-        </>
-    );
+            <FooterLinks>
+                <a href="#privacidade">Politica de Privacidade</a>
+                <a href="#termos">Termos de Uso</a>
+            </FooterLinks>
+
+            <FooterDescription>{ description }</FooterDescription>
+            <FooterLegal>{ lgpdText }</FooterLegal>
+            <FooterCopy />
+        </FooterContainer>
+    )
 }

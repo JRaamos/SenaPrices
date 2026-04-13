@@ -1,31 +1,14 @@
-import styled from 'styled-components' 
+import styled from 'styled-components'
 
-export const MoreInfosContainer = styled.div.attrs({ 
-})`          
-    background: ${ props => props.theme.palette.colors.lightshadow };
-    padding: 45px 0px;
-    margin: 100px 0;
-    position: relative;
-`; 
+export const MoreInfosContainer = styled.section.attrs({})`
+    background: ${p => p.theme.palette.colors.white};
+    padding: 64px 32px 84px;
+`;
 
-export const MoreInfosDecoration = styled.img.attrs({ 
-    src:'/icons/circle-1.svg'
-})`          
-    width: 793px;
-    position: absolute;
-    top: 0px;
-    left: -279px;
-`; 
+export const MoreInfosGrid = styled.div.attrs({})`
+    max-width: 900px;
+    margin: 0 auto;
+`;
 
-export const MoreInfosTitle = styled.div.attrs({ 
-})`          
-    color: ${ props => props.theme.palette.primary.main };
-    font-size: 32px;
-    font-weight: bold;   
-`; 
-
-export const MoreInfosText = styled.div.attrs({ 
-})`          
-    color: ${ props => props.theme.palette.colors.grey };
-    font-size: 20px; 
-`; 
+export const MoreInfosTitle = styled.div.attrs({})``;
+export const MoreInfosText = styled.div.attrs({})``;

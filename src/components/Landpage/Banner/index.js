@@ -1,28 +1,69 @@
-import React from "react";
+import React from 'react'
 
-import { Row, Col, Container } from 'reactstrap';
-
-import CardSelect from 'components/Landpage/Card/Select'
-
+import Button from 'components/Form/Button'
+import { Icon } from 'ui/styled'
 import {
-    BannerImage,
-    BannerOut,
+    BannerActions,
+    BannerBadge,
+    BannerBrand,
+    BannerBrandEyebrow,
+    BannerBrandText,
     BannerContent,
-    TextContainer
-} from "./styled";
-import { Icon, Title } from "ui/styled";
-import LineInfo from "components/LineInfo";
+    BannerDescription,
+    BannerFeature,
+    BannerFeatures,
+    BannerHero,
+    BannerSubtitle,
+    BannerTitle,
+    BannerVerticalLine,
+} from './styled'
 
-export default function Banner() {
+export default function Banner({
+    subtitle,
+    title,
+    description,
+    primaryAction,
+    secondaryAction,
+    features = [],
+}) {
     return (
-        <>
-            <BannerImage>
-                <Icon icon='logo2' />
-                <LineInfo text={'Sistema profissional para supermercados e varejos'} icon={'star'} />
-                <TextContainer>
-                    <Title centred>Crie cartazes promocionais em segundos</Title>
-                </TextContainer>
-            </BannerImage>
-        </>
-    );
+        <BannerHero>
+            <BannerContent>
+                <BannerBrand>
+                    <BannerBrandText>
+                        <span>Sena</span>
+                        <span>Prices</span>
+                    </BannerBrandText>
+                    <BannerBrandEyebrow>Sistema Promocional</BannerBrandEyebrow>
+                </BannerBrand>
+
+                <BannerBadge>
+                    <Icon icon="sparkle-blue" />
+                    <span>{subtitle}</span>
+                </BannerBadge>
+
+                <BannerTitle>{title}</BannerTitle>
+                <BannerDescription>{description}</BannerDescription>
+
+                <BannerActions>
+                    <Button fit large shadow nospace color="secondary" rightIcon="chevron" onClick={primaryAction?.onClick}>
+                        {primaryAction?.label}
+                    </Button>
+                    <Button fit large nospace color="ghostDark" outline onClick={secondaryAction?.onClick}>
+                        {secondaryAction?.label}
+                    </Button>
+                </BannerActions>
+
+                <BannerFeatures>
+                    {features.map((feature) => (
+                        <BannerFeature key={feature}>
+                            <Icon icon="check-pill" />
+                            <span>{feature}</span>
+                        </BannerFeature>
+                    ))}
+                </BannerFeatures>
+                <BannerVerticalLine />
+            </BannerContent>
+        </BannerHero>
+    )
 }

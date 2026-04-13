@@ -29,6 +29,9 @@ export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const n = useNavigate();
     const navigate = to => n(`/${to}`);
+    const scrollToPlans = () => {
+        document.getElementById('planos')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
 
     const options = {
         left: [
@@ -36,8 +39,8 @@ export default function Header() {
             { title: 'Sobre', action: () => navigate('about') }
         ],
         right: [
-            { title: 'Planos', color: 'lightgrey', outline: true, button: true, action: () => navigate('login') },
-            { title: 'Acessar o sistema', color: 'secondary', rightIcon: 'chevron', button: true, action: () => navigate('register') },
+            { title: 'Planos', color: 'ghostDark', outline: true, button: true, action: scrollToPlans },
+            { title: 'Acessar o sistema', color: 'secondary', rightIcon: 'chevron', button: true, action: () => navigate('login') },
         ]
     }
 
@@ -68,7 +71,7 @@ export default function Header() {
                                                 {
                                                     [...options?.right]?.map((item, key) => item.button ?
                                                         <HeaderMobileItem key={key} centred>
-                                                            <Button nospace outline={item.outline} rightIcon={item?.rightIcon} color={item?.color} nomargin onClick={item.action}>{item.title}</Button>
+                                                            <Button fit small nospace outline={item.outline} rightIcon={item?.rightIcon} color={item?.color} onClick={item.action}>{item.title}</Button>
                                                         </HeaderMobileItem>
                                                         :
                                                         <HeaderMobileItem key={key} active={item.active} color={item?.color} onClick={item.action}>{item.title}</HeaderMobileItem>
@@ -86,7 +89,7 @@ export default function Header() {
                                     options?.right?.map((item, key) => <div key={key}>
                                         {
                                             item.button ?
-                                                <Button nospace color={item?.color} rightIcon={item?.rightIcon} small outline={item.outline} onClick={item.action}>{item.title}</Button>
+                                                <Button fit nospace color={item?.color} rightIcon={item?.rightIcon} small outline={item.outline} onClick={item.action}>{item.title}</Button>
                                                 :
                                                 <HeaderMenuItem className={item.active ? "active" : ""} onClick={item.action}>{item.title}</HeaderMenuItem>
                                         }

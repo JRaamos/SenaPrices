@@ -1,69 +1,37 @@
-import styled from 'styled-components' 
+import styled from 'styled-components'
 
-export const MoreContainer = styled.div.attrs({ 
-})`          
-    padding: 80px 0 200px;
-    position: relative;
+export const MoreContainer = styled.section.attrs({})`
+    background: ${p => p.theme.palette.gradients.dark};
+    padding: 80px 32px;
 `;
-  
-export const MoreRow = styled.div.attrs({ 
-})`          
-    padding: 20px 0 ;
-    background: ${ props => props.theme.palette.primary.main };
-`;
- 
-export const MoreTitle = styled.div.attrs({ 
-})`          
-    font-size: 32px;
-    font-weight: bold;
-    color: ${ props => props.theme.palette.colors.white };
-`;
- 
-export const MoreLine = styled.div.attrs({ 
-})`          
-    margin: 10px 0 20px;
-    height: 2px;
-    border-radius: 1px;
-    background: ${ props => props.theme.palette.colors.white };
-    margin-right: 150px;
-`;
- 
-export const MoreText = styled.div.attrs({ 
-})` 
-    font-size: 16px; 
-    color: ${ props => props.theme.palette.colors.white };
-`;
- 
-export const MoreLogoCircle = styled.div.attrs({ 
-})` 
-    max-width: 398px;
-    width: 100%;
-    min-height: 398px;
-    max-height: 398px;
-    border-radius: 50%;
-    background:  ${ props => props.theme.palette.secondary.main };
-    box-shadow: 0px 14px 12px ${ props => props.theme.palette.colors.shadow };
+
+export const MoreWrap = styled.div.attrs({})`
+    max-width: 600px;
+    margin: 0 auto;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin: -50px 0 -50px auto;
-    overflow: hidden;
+    text-align: center;
 `;
- 
- 
-export const MoreLogo = styled.img.attrs({ 
-    src:'/logo1024.png'
-})` 
-    width: 400px;
+
+export const MoreIcon = styled.img.attrs({})`
+    width: 32px;
+    height: 32px;
+    margin-bottom: 16px;
 `;
- 
-export const MoreDecoration = styled.img.attrs({ 
-    src:'/icons/circle-2.svg'
-})` 
-    width: 793px;
-    position: absolute;
-    bottom: 10px;
-    right: -320px;
-    z-index: -1;
+
+export const MoreTitle = styled.h2.attrs({})`
+    margin: 0;
+    color: ${p => p.theme.palette.colors.slate50};
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    line-height: 45px;
 `;
- 
+
+export const MoreText = styled.p.attrs({})`
+    margin: 14px 0 28px;
+    color: ${p => p.theme.palette.colors.slate400};
+    font-size: 14px;
+    line-height: 23.1px;
+`;

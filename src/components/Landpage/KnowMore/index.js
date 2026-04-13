@@ -1,77 +1,41 @@
-import React from "react"; 
+import React from 'react'
 
-import { Row, Col, Container } from 'reactstrap'; 
+import { Col, Container, Row } from 'reactstrap'
 
-import Item from './Item'
-
+import LandpagePlanCard from 'components/cards/LandpagePlanCard'
 import {
-    MoreTitle,
+    KnowContent,
     MoreText,
-    KnowContent
-} from './styled' 
+    MoreTitle,
+    PlansToggle,
+    PlansToggleBullet,
+    PlansToggleLabel,
+} from './styled'
+import Toggle from 'components/Form/Toggle'
 
-export default function KnowMore(){ 
+export default function KnowMore({ title, subtitle, plans = [], footerNote }) {
+    return (
+        <KnowContent id="planos">
+            <Container>
+                <MoreTitle>{title}</MoreTitle>
+                <MoreText>{subtitle}</MoreText>
 
-    const doctors = [
-        {
-            image: 'https://loremflickr.com/320/320/art,grafite?random=1',
-            title: 'Lorem ipsum',
-            subtitle: 'Lorem ipsum',
-            rate: 5,
-            avaliations: 5,
-            description: 'dolor sit amet',
-            available: '19/01/2021'
-        },
-        {
-            image: 'https://loremflickr.com/320/320/art,grafite?random=2',
-            title: 'Lorem ipsum',
-            subtitle: 'Lorem ipsum',
-            rate: 5,
-            avaliations: 5,
-            description: 'dolor sit amet',
-            available: '19/01/2021'
-        },
-        {
-            image: 'https://loremflickr.com/320/320/art,grafite?random=3',
-            title: 'Lorem ipsum',
-            subtitle: 'Lorem ipsum',
-            rate: 5,
-            avaliations: 5,
-            description: 'dolor sit amet',
-            available: '19/01/2021'
-        },
-        {
-            image: 'https://loremflickr.com/320/320/art,grafite?random=4',
-            title: 'Lorem ipsum',
-            subtitle: 'Lorem ipsum',
-            rate: 5,
-            avaliations: 5,
-            description: 'dolor sit amet',
-            available: '19/01/2021'
-        }
-    ]
- 
-    return ( 
-        <> 
-            <KnowContent>
-                <Container>
-                    <Row>
-                        <Col>
-                            <MoreTitle>Know More :)</MoreTitle>
-                            <MoreText>Lorem ipsum dolor sit amet, consectetur adipiscing <b>elit</b></MoreText>
+                <PlansToggle>
+                    <PlansToggleLabel>Mensal</PlansToggleLabel>
+                    <Toggle label={'Anual'} />
+                    <PlansToggleLabel active>Economia de 10%</PlansToggleLabel>
+                </PlansToggle>
+
+                <Row className="justify-content-center">
+                    {plans.map((plan) => (
+                        <Col key={plan.title} md={{ size: 4 }}>
+                            <LandpagePlanCard {...plan} />
                         </Col>
-                    </Row> 
-                    <Row>
-                        {
-                            doctors.map((item, key) => 
-                                <Col key={key} md={{ size:6 }}> 
-                                    <Item {...item} />
-                                </Col>
-                            )
-                        }
-                    </Row>  
-                </Container> 
-            </KnowContent>
-        </>
-    );
+                    ))}
+                </Row>
+
+                <MoreText footer>{footerNote}</MoreText>
+            </Container>
+        </KnowContent>
+    )
 }

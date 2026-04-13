@@ -1,48 +1,29 @@
-import React from "react"; 
+import React from 'react'
 
-import { Row, Col, Container } from 'reactstrap';  
+import { Col, Container, Row } from 'reactstrap'
 
-import Item from './Item'
-
+import LandpageAccessCard from 'components/cards/LandpageAccessCard'
 import {
     MoreInfosContainer,
-    MoreInfosDecoration,
+    MoreInfosGrid,
+    MoreInfosText,
     MoreInfosTitle,
-    MoreInfosText
 } from './styled'
 
-export default function MoreInfos(){ 
-    const moreInfos = [
-        { title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', image: 'https://loremflickr.com/320/320/art,grafite?random=5' },
-        { title: 'Lorem ipsum dolor sit amet, consectetur adipiscing', image: 'https://loremflickr.com/320/320/art,grafite?random=6'  },
-        { title: 'Lorem ipsum dolor sit amet, consectetur', image: 'https://loremflickr.com/320/320/art,grafite?random=7'  },
-    ]
-    return ( 
-        <> 
-            <MoreInfosContainer> 
-                <MoreInfosDecoration />
-                <Container>
-                    <Row>
-                        <Col> 
-                            <MoreInfosTitle>
-                                Lorem ipsum dolor sit amet, consectetur
-                            </MoreInfosTitle>
-                            <MoreInfosText>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ut congue nisl. Duis lobortis ante vitae
-                            </MoreInfosText> 
-                        </Col>
-                    </Row> 
-                    <Row>
-                        {
-                            moreInfos.map((item, key) => 
-                                <Col key={key} md={{ size:4 }}> 
-                                    <Item variant={key} title={item.title} image={item.image} secondary={ key % 2 !== 0 }/>
-                                </Col>
-                            )
-                        }
+export default function MoreInfos({ cards = [] }) {
+    return (
+        <MoreInfosContainer>
+            <Container>
+                <MoreInfosGrid>
+                    <Row className="justify-content-center">
+                        {cards.map((card) => (
+                            <Col key={ card.title } md={{ size: 6 }}>
+                                <LandpageAccessCard { ...card } />
+                            </Col>
+                        ))}
                     </Row>
-                </Container>
-            </MoreInfosContainer>
-        </>
-    );
+                </MoreInfosGrid>
+            </Container>
+        </MoreInfosContainer>
+    )
 }

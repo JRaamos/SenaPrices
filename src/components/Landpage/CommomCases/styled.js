@@ -1,68 +1,43 @@
-import styled from 'styled-components' 
+import styled from 'styled-components'
 
-import Lottie from 'react-lottie';
-
-export const CommomContainer = styled.div.attrs({ 
-})`          
-    position: relative;
-    padding-top: 140px;
-    padding-bottom: 140px;
+export const CommomContainer = styled.section.attrs({})`
+    background: ${p => p.theme.palette.colors.slate50};
+    padding: 80px 32px 80px;
+    text-align: center;
 `;
 
-export const CommomDecoration = styled.img.attrs({ 
-    src:'/icons/circle-2.svg'
-})`          
-    position: absolute;
-    width: 793px;
-    right: -320px;
-    bottom: -280px;
-`;
-
-export const CommomTitle = styled.h1.attrs({  
-})`          
-    font-size: 32px;
-    font-weight: bold;
-    color: ${ props => props.theme.palette.secondary.main };
+export const CommomTitle = styled.h2.attrs({})`
     margin: 0;
-`;  
+    color: ${p => p.theme.palette.colors.slate900};
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    line-height: 45px;
+`;
 
-export const CommomList = styled.ul.attrs({  
-})`          
-    list-style: none;
-    padding: 0;
-    margin-top: 70px;
-    margin-left: 20px;
-`;  
+export const CommomSubtitle = styled.p.attrs({})`
+    max-width: 520px;
+    margin: 10px auto 0;
+    color: ${p => p.theme.palette.colors.slate500};
+    font-size: 14px;
+    line-height: 23.1px;
+`;
 
-export const CommomListItem = styled.li.attrs({  
-})`          
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: ${ props => props.theme.palette.colors.grey };
-    
-    &:before{
-        content: "\\2022"; 
-        color: ${ props => props.theme.palette.primary.main }; 
-        font-weight: bold; 
-        display: inline-block; 
-        width: 1em; 
-        margin-left: -1em;
+export const CommomGrid = styled.div.attrs({})`
+    max-width: 1020px;
+    margin: 56px auto 0;
+`;
+
+export const CommomHint = styled.div.attrs({})`
+    margin-top: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: ${p => p.theme.palette.colors.slate500};
+    font-size: 12px;
+    line-height: 18px;
+
+    span:first-child {
+        color: ${p => p.theme.palette.colors.yellow500};
     }
-`;  
-
-export const CommomAnimation = styled(Lottie).attrs( props => ({  
-    options:{
-        loop: true,
-        autoplay: true, 
-        rendererSettings: {
-            preserveAspectRatio: 'xMidYMid slice'
-        },
-        animationData: props.animationData
-    },
-    // height: 500,
-    // width: 500
-}))`           
-    margin-top: 140px ;
-    max-width: 499px;
-    width: 100%;
-`;  
+`;

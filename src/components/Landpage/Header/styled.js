@@ -4,12 +4,15 @@ import { Container } from 'reactstrap';
 export const HeaderContainer = styled.div.attrs({
 })`
     background-color: ${props => props.theme.palette.header.main};
-    min-height: 73px;
+    min-height: 56px;
     width: 100%;
     padding: 0px 32px;
-    box-shadow: 0px 3px 6px ${props => props.theme.palette.colors.shadow};
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     display: flex;
     justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 20;
 `;
 
 export const HeaderContainerExtend = styled(Container).attrs({
@@ -21,7 +24,7 @@ export const RowCenter = styled.div.attrs({
 })`
     display: flex;
     align-items: center;
-    height: 73px;
+    height: 56px;
 
     @media(max-width: 767px){
         justify-content: space-between;
@@ -33,8 +36,8 @@ export const RowEnd = styled.div.attrs({
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    height: 73px;
-    gap: 0 20px;
+    height: 56px;
+    gap: 0 8px;
 
     @media(max-width: 767px){
         display: none;
@@ -77,7 +80,7 @@ export const HeaderMenuItem = styled.li.attrs({
     padding: 0 15px;
     cursor: pointer;
     color: ${props => props.theme.palette.colors.white};
-    font-size: 15px;
+    font-size: 13px;
 
     ${props => props.active ? `
             background-color: ${props => props.theme.palette.colors.shadow};
@@ -117,11 +120,11 @@ export const HeaderMobileMenu = styled.ul.attrs({
     position: fixed;
     right: 0;
     bottom: 0;
-    top: 60px;
+    top: 56px;
     width: 100%;
     max-width: 180px;
 
-    background-color: ${props => props.theme.palette.primary.main};
+    background-color: ${props => props.theme.palette.header.main};
     list-style: none;
     padding:0;
     margin:0;

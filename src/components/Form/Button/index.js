@@ -25,6 +25,9 @@ export const Button = ({
   rightIcon,
   icon,
   small,
+  large,
+  shadow,
+  fontSize,
   disabled,
 }) => {
     const safeColor = theme.palette?.[color] ? color : "primary"
@@ -34,7 +37,20 @@ export const Button = ({
     return (
         <>
           <ThemedComponent>
-              <ColorButton variant={ link ? "text" : outline ? "outlined" : "contained" } color={ safeColor } nospace={nospace} centred={centred} rounded={rounded} fit={fit} small={small} onClick={safeOnClick} disabled={disabled}>
+              <ColorButton
+                variant={ link ? "text" : outline ? "outlined" : "contained" }
+                color={ safeColor }
+                nospace={ nospace }
+                centred={ centred }
+                rounded={ rounded }
+                fit={ fit }
+                small={ small }
+                large={ large }
+                shadow={ shadow }
+                fontSize={ fontSize }
+                onClick={ safeOnClick }
+                disabled={ disabled }
+              >
                 { safeLeftIcon && <Icon icon={safeLeftIcon} /> }
                 {
                   loading ? <Load color={ safeColor } outline={outline} /> : <>
@@ -67,6 +83,9 @@ Button.propTypes = {
   rightIcon: PropTypes.string,
   icon: PropTypes.string,
   small: PropTypes.bool,
+  large: PropTypes.bool,
+  shadow: PropTypes.bool,
+  fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   disabled: PropTypes.bool,
 };
 
@@ -89,6 +108,9 @@ Button.defaultProps = {
   rightIcon: null,
   icon: null,
   small: false,
+  large: false,
+  shadow: false,
+  fontSize: undefined,
   disabled: false,
 };
 

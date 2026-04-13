@@ -1,89 +1,38 @@
-import React from "react"; 
+import React from 'react'
 
-import { Row, Col, Container } from 'reactstrap'; 
-  
+import { Col, Container, Row } from 'reactstrap'
+
+import LandpageFeatureCard from 'components/cards/LandpageFeatureCard'
 import {
     CommomContainer,
-    CommomDecoration,
+    CommomGrid,
+    CommomHint,
+    CommomSubtitle,
     CommomTitle,
-    CommomList,
-    CommomListItem,
-    CommomAnimation
 } from './styled'
 
-export default function CommomCases(){ 
+export default function CommomCases({ title, subtitle, hint, items = [] }) {
+    return (
+        <CommomContainer>
+            <Container>
+                <CommomTitle>{ title }</CommomTitle>
+                <CommomSubtitle>{ subtitle }</CommomSubtitle>
 
-    const commomLeft = [
-        { title: 'Lorem ipsum dolor sit amet'},
-        { title: 'Consectetur adipiscing elit'},
-        { title: 'Curabitur ut congue nisl'},
-        { title: 'Duis lobortis ante'},
-        { title: 'Vitae hendrerit efficitur'},
-        { title: 'Quisque dolor magna'},
-        { title: 'Efficitur et nunc id'},
-        { title: 'Pretium porta mauris'},
-        { title: 'Integer vel lobortis risus'},
-        { title: 'Duis consectetur ac ante at ullamcorper'},
-        { title: 'Nullam luctus sollicitudin odio'}
-    ]
-
-    const commomRight = [ 
-        { title: 'Nullam luctus sollicitudin odio'},
-        { title: 'Duis consectetur ac ante at ullamcorper'},
-        { title: 'Integer vel lobortis risus'},
-        { title: 'Pretium porta mauris'},
-        { title: 'Efficitur et nunc id'},
-        { title: 'Quisque dolor magna'},
-        { title: 'Vitae hendrerit efficitur'},
-        { title: 'Duis lobortis ante'},
-        { title: 'Curabitur ut congue nisl'},
-        { title: 'Consectetur adipiscing elit'},
-        { title: 'Lorem ipsum dolor sit amet'},
-    ]
-
-    return ( 
-        <> 
-            <CommomContainer> 
-                <CommomDecoration />
-                <Container>
+                <CommomGrid>
                     <Row>
-                        <Col>
-                            <CommomTitle> Lorem ipsum dolor sit amet</CommomTitle>
-                        </Col>
+                        {items.map((item) => (
+                            <Col key={ item.title } md={{ size: 3 }}>
+                                <LandpageFeatureCard { ...item } />
+                            </Col>
+                        ))}
                     </Row>
-                    <Row>
-                        <Col md={{size:7}}>
-                            <Row>
-                                <Col md={{size:6}}>
-                                    <CommomList>
-                                        {
-                                            commomLeft.map((item, key) => 
-                                                <CommomListItem key={key}>
-                                                    { item.title }
-                                                </CommomListItem>
-                                            )
-                                        }
-                                    </CommomList>
-                                </Col>
-                                <Col md={{size:6}}>
-                                    <CommomList>
-                                        {
-                                            commomRight.map((item, key) => 
-                                                <CommomListItem key={key}>
-                                                    { item.title }
-                                                </CommomListItem>
-                                            )
-                                        }
-                                    </CommomList>
-                                </Col>
-                            </Row>
-                        </Col>
-                        <Col md={{size:5}}>
-                            <CommomAnimation animationData={require('assets/lotties/particles.json')} />
-                        </Col>
-                    </Row>
-                </Container>
-            </CommomContainer>
-        </>
-    );
+                </CommomGrid>
+
+                <CommomHint>
+                    <span>*</span>
+                    <span>{ hint }</span>
+                </CommomHint>
+            </Container>
+        </CommomContainer>
+    )
 }
