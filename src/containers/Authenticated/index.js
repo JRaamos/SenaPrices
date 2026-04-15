@@ -51,7 +51,7 @@ export default function ContainerAuthenticated({ children, actions, loading, hid
                         <DashboardBody >
                             <DashboardSide fluid={LAYOUT_FLUID} />
                             <DashboardBodyContainer fluid={LAYOUT_FLUID}>
-                                <DashboardBodyContent >
+                                <DashboardBodyContent>
                                     {children}
                                 </DashboardBodyContent>
                                 {actions?.length ? <PageActions actions={actions} loading={loading} /> : null}

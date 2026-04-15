@@ -9,8 +9,9 @@ export const DashboardBody = styled.div.attrs({
     position: relative;
     min-height: 100vh;
     max-height: 100vh;
-    background: ${props => props.theme.palette.colors.slate100};
+    background: ${props => props.theme.palette.colors.white};
     display: flex;
+    justify-content: flex-end;
     align-items: flex-start;
     overflow: auto;
     width: 100vw;
@@ -21,8 +22,9 @@ export const DashboardBody = styled.div.attrs({
 export const DashboardBodyContainer = styled.div.attrs({
     id: "body-scroll"
 })`
-    flex:1;
+
     background: ${props => props.theme.palette.colors.slate100};
+    min-width: calc(100% - 220px);
     ${p => p?.fluid ? `
             overflow:auto;
             min-height: 100vh;

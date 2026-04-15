@@ -29,7 +29,7 @@ import { Icon } from "ui/styled";
 
 const menuOptions = [
     { label: 'Criar Preço', icon: 'side-create-price', path: '/dashboard/create-price' },
-    { label: 'Criação Rápida', icon: 'side-quick-create', path: '/dashboard/create-price/quick', disabled: true },
+    { label: 'Criação Rápida', icon: 'side-quick-create', path: '/dashboard/create-price/quick' },
     { label: 'Impressão em Lote', icon: 'side-batch-print', path: '/dashboard/print-batch', disabled: true },
     { label: 'Promoções', icon: 'side-promotions', path: '/dashboard/promotions', disabled: true },
     { label: 'Histórico', icon: 'side-history', path: '/dashboard/history', disabled: true },
