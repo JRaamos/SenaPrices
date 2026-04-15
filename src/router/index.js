@@ -21,6 +21,7 @@ import DashboardSupportForm from "screens/Dashboard/SupportForm";
 import DashboardMePassword from "screens/Dashboard/MePassword";
 import DashboardCreatePrice from "screens/CreatePrice";
 import DashboardCreatePriceQuick from "screens/CreatePriceQuick";
+import DashboardPrintBatch from "screens/PrintBatch";
 
 export default function AppRouter() {
     return (
@@ -37,6 +38,7 @@ export default function AppRouter() {
                     <Route path="/dashboard" exact element={<DashboardHome />} />
                     <Route path="/dashboard/create-price" exact element={<DashboardCreatePrice />} />
                     <Route path="/dashboard/create-price/quick" exact element={<DashboardCreatePriceQuick />} />
+                    <Route path="/dashboard/print-batch" exact element={<DashboardPrintBatch />} />
                     <Route path="/dashboard/me" exact element={<DashboardMe />} />
                     <Route path="/dashboard/me/password" exact element={<DashboardMePassword />} />
 
